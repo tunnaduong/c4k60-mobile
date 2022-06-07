@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import {
   Alert,
   Text,
@@ -50,9 +50,6 @@ export class ChatText extends React.Component {
   }
 }
 
-var EventEmitter = require("events").EventEmitter;
-require("events").EventEmitter.prototype._maxListeners = 100;
-
 //pointerEvents="none"
 export default class MusicScreen extends React.Component {
   constructor(props) {
@@ -68,11 +65,12 @@ export default class MusicScreen extends React.Component {
       time: 0,
       settings: {},
       search: "",
+      played: false,
     };
     this.inputText = React.createRef();
     this.playerRef = React.createRef();
     //c4k60-backend-server.herokuapp.com
-    this.socket = io("ws://c4k60-backend-server.herokuapp.com/");
+    this.socket = io("ws://172.20.10.2:2222/");
 
     this.socket.on("chat-message", (msg) => {
       this.setState({ chatMessages: [...this.state.chatMessages, msg] });
@@ -84,6 +82,11 @@ export default class MusicScreen extends React.Component {
 
   updateSingleSegment = (index) => {
     this.setState({ singleIndex: index });
+    this.togglePlaying();
+  };
+
+  togglePlaying = () => {
+    this.setState((prev) => ({ played: !prev.played }));
   };
 
   getData = async () => {
@@ -127,7 +130,7 @@ export default class MusicScreen extends React.Component {
         height={220}
         ref={(ref) => (this.playerRef = ref)}
         videoId={this.state.videos}
-        play="true"
+        play={this.state.played}
         initialPlayerParams={{ controls: false, loop: true }}
         onChangeState={(event) => {
           if (event == "unstarted") {
@@ -142,13 +145,20 @@ export default class MusicScreen extends React.Component {
           if (event == "ended") {
             this.fet2();
           }
+          if (event == "paused") {
+            this.togglePlaying();
+            this.fet2();
+            console.log("paused");
+            console.log(this.state.played);
+          }
         }}
       />
     );
   };
 
   fet2 = () => {
-    fetch("http://c4k60-backend-server.herokuapp.com/live", {
+    let yo = this;
+    fetch("http://172.20.10.2:2222/live", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -157,21 +167,25 @@ export default class MusicScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        const videoToPlay = responseJson.video_ids[responseJson.now_playing];
+        // const videoToPlay =
+        //   responseJson.server_idle_videos_playback_id[
+        //     responseJson.now_playing_position
+        //   ];
+        const test = responseJson.video_in_queue.findIndex(
+          (data) => data.position == responseJson.now_playing_position
+        );
+        const vid2play = responseJson.video_in_queue[test].video_id;
         const startTime = responseJson.elapsed_time;
-        const settings = responseJson.settings;
+        yo.playerRef.seekTo(startTime, true);
+        console.log(startTime);
         this.setState({
-          videos: videoToPlay,
-          time: startTime,
-          settings: settings,
+          videos: vid2play,
         });
       });
-    console.log(this.state.time);
-    this.playerRef.seekTo(this.state.time, true);
   };
 
   fetchQueue = () => {
-    fetch("http://c4k60-backend-server.herokuapp.com/live", {
+    fetch("http://172.20.10.2:2222/live", {
       method: "GET",
       headers: {
         Accept: "application/json",

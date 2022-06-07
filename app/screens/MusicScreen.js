@@ -23,9 +23,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 //Platform.OS === "ios"
 
-var EventEmitter = require("events").EventEmitter;
-require("events").EventEmitter.prototype._maxListeners = 100;
-
 export default function MusicScreen() {
   const [elapsed, setElapsed] = React.useState(0);
   const [singleIndex, setSingleIndex] = React.useState(0);

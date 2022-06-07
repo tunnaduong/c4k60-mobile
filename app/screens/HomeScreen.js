@@ -484,7 +484,7 @@ export class HomeScreen extends Component {
             }
           >
             <View>
-              <HomeScreenCarousel style={{ borderRadius: 100 }} />
+              <HomeScreenCarousel style={{ position: "relative" }} />
             </View>
             <View
               style={{

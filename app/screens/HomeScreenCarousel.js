@@ -21,14 +21,14 @@ export default class HomeScreenCarousel extends React.Component {
                 ? Dimensions.get("screen").width > 500
                   ? 720
                   : 375
-                : Dimensions.get("window").width
+                : Dimensions.get("window").width - 30
             }
             height={
               Platform.OS === "web"
                 ? Dimensions.get("screen").width > 500
                   ? 400
                   : 200
-                : 200
+                : 200 - 25
             }
             delay={3000}
             indicatorSize={
@@ -330,6 +330,11 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    borderRadius: 20,
+    overflow: "hidden",
   },
   contentContainer: {
     justifyContent: "flex-end",
