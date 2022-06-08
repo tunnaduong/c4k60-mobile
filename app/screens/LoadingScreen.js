@@ -19,6 +19,12 @@ class LoadingScreen extends React.Component {
       if (value !== null && value === "abc123") {
         Platform.OS === "web" ? true : Toast.showLoading("Đang tải...");
         setTimeout(() => {
+          this.props.navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "MainScreen" }],
+            })
+          );
           this.props.navigation.navigate("MainScreen");
           Platform.OS === "web" ? true : Toast.hide();
         }, 800);
@@ -28,7 +34,7 @@ class LoadingScreen extends React.Component {
           this.props.navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{ name: "Login" }, { name: "Welcome" }],
+              routes: [{ name: "Welcome" }],
             })
           );
           Platform.OS === "web" ? true : Toast.hide();
