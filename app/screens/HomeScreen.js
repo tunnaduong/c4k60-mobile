@@ -314,7 +314,6 @@ export class HomeScreen extends Component {
     this.responseList();
     this.getBirthday("show_recents");
     this.getData();
-    console.log("home reloaded" + Math.random());
   }
 
   responseList(input) {

@@ -9,10 +9,15 @@ import NotiScreen from "./app/screens/NotiScreen";
 import MusicScreen from "./app/screens/MusicScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Test from "./app/screens/Test";
+import Logger from "./app/utils/logger";
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const TestingComponent = (props) => (
+    <Test logger={<Logger label="counter" {...props} />} />
+  );
   StatusBar.setBarStyle("dark-content", true);
   return (
     <NavigationContainer>
@@ -72,6 +77,15 @@ function App() {
           }}
           name="MusicScreen"
           component={MusicScreen}
+        />
+        <Stack.Screen
+          options={{
+            headerBackTitle: "",
+            title: "Testing 123",
+            headerShown: true,
+          }}
+          name="Testing"
+          component={TestingComponent}
         />
       </Stack.Navigator>
     </NavigationContainer>

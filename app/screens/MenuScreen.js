@@ -221,6 +221,9 @@ export default class MenuScreen extends React.Component {
             flexDirection: "row",
             alignItems: "center",
           }}
+          onPress={() => {
+            this.props.navigation.navigate("Testing");
+          }}
         >
           <Ionicons
             name="chatbox-ellipses-outline"

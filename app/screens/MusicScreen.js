@@ -150,7 +150,7 @@ export default function MusicScreen() {
       .get("http://" + baseBackendServerURL + "/live")
       .catch((error) => {
         console.log(error.message);
-        Alert.alert(error.message);
+        // Alert.alert(error.message);
       });
     setCurrentLiveData(response.data);
   };
@@ -211,7 +211,11 @@ export default function MusicScreen() {
         >
           <ProgressBar
             indeterminate={!started}
-            progress={isNaN(currentProgress) ? 0 : currentProgress}
+            progress={
+              isNaN(currentProgress) || !isFinite(currentProgress)
+                ? 0
+                : currentProgress
+            }
             color={Colors.yellow400}
             style={{ marginTop: -0.7 }}
           />
