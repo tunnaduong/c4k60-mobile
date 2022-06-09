@@ -38,17 +38,20 @@
     "react-native-ionicons": "^4.6.5",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-paper": "^4.12.1",
     "react-native-parallax-scroll-view": "^0.21.3",
     "react-native-reanimated": "~2.2.0",
     "react-native-segmented-control-tab": "^4.0.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "^12.1.1",
+    "react-native-text-ticker": "^1.14.0",
     "react-native-tiny-toast": "^1.0.7",
     "react-native-vector-icons": "^9.0.0",
     "react-native-web": "0.17.1",
     "react-native-webview": "^11.15.0",
     "react-native-youtube-iframe": "^2.2.1",
-    "socket.io-client": "^4.4.0"
+    "socket.io-client": "^4.4.0",
+    "expo-updates": "~0.10.15"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

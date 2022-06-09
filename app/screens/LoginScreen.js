@@ -82,8 +82,8 @@ export default class LoginScreen extends Component {
               setTimeout(() => {
                 this.props.navigation.dispatch(
                   CommonActions.reset({
-                    index: 1,
-                    routes: [{ name: "Login" }, { name: "MainScreen" }],
+                    index: 0,
+                    routes: [{ name: "MainScreen" }],
                   })
                 );
               }, 800);

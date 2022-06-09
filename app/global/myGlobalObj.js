@@ -1,0 +1,2 @@
+myGlobalObj = {};
+export default myGlobalObj;
