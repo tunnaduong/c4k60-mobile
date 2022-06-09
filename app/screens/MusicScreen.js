@@ -24,7 +24,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import { ProgressBar, Colors } from "react-native-paper";
 import TextTicker from "react-native-text-ticker";
-import myGlobalObj from "../global/myGlobalObj";
 
 //Platform.OS === "ios"
 // const baseBackendServerURL = "172.20.10.2:2222";
@@ -34,17 +33,13 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function MusicScreen() {
-  const [elapsed, setElapsed] = React.useState(0);
+  const [elapsed, setElapsed] = React.useState(100);
   const [video, setVideo] = React.useState("");
   const [playing, setPlaying] = React.useState(true);
   const [currentLiveData, setCurrentLiveData] = React.useState("abc");
-  const [currentProgress, setProgress] = useState(0);
+  const [currentProgress, setProgress] = useState(0.1);
   const [started, setStarted] = useState(false);
-  const playerRef = createRef();
-
-  useEffect(() => {
-    // playerRef.current?.seekTo(elapsed, true);
-  });
+  const player = useRef();
 
   useEffect(() => {
     console.log("socket connected");
@@ -54,7 +49,6 @@ export default function MusicScreen() {
   useEffect(() => {
     getData();
     syncWithServer();
-    playerRef.current?.seekTo(elapsed, true);
   }, []);
 
   useEffect(() => {
@@ -69,10 +63,16 @@ export default function MusicScreen() {
       <YoutubePlayer
         width={windowWidth}
         height={220}
-        ref={playerRef}
+        ref={player}
         videoId={video}
         play={playing}
-        initialPlayerParams={{ controls: false, start: elapsed }}
+        initialPlayerParams={{
+          controls: false,
+          rel: 0,
+          showClosedCaptions: true,
+          start: 100,
+          cc_lang_pref: "vi",
+        }}
         style={{ alignItems: "center" }}
         onChangeState={(event) => {
           if (event == "unstarted") {
@@ -86,12 +86,14 @@ export default function MusicScreen() {
             console.log("Video is ended, now loading next song...");
             getData();
             syncWithServer();
-            playerRef.current?.seekTo(elapsed, true);
+            setTimeout(() => {
+              getData();
+              syncWithServer();
+            }, 2000);
           }
           if (event == "paused") {
             console.log("Video is paused...");
             console.log("Is playing: " + playing);
-            playerRef.current?.seekTo(elapsed, true);
           }
           if (event == "playing") {
             setStarted(true);
@@ -112,7 +114,6 @@ export default function MusicScreen() {
       setElapsed(elapsed);
       console.log("Server timestamp: " + elapsed);
     });
-    playerRef.current?.seekTo(elapsed, true);
   };
 
   const title = () => {
@@ -153,23 +154,24 @@ export default function MusicScreen() {
         // Alert.alert(error.message);
       });
     setCurrentLiveData(response.data);
+    return response.data;
   };
 
-  useEffect(() => {
-    playerRef.current
-      ?.getCurrentTime()
-      .then((currentTime) => {
-        playerRef.current
-          ?.getDuration()
-          .then((duration) => {
-            // myGlobalObj.progress = currentTime / duration;
-            // console.log("Progress: " + myGlobalObj.progress);
-            setProgress(currentTime / duration);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-  }, [playerRef]);
+  // useEffect(() => {
+  //   playerRef.current
+  //     ?.getCurrentTime()
+  //     .then((currentTime) => {
+  //       playerRef.current
+  //         ?.getDuration()
+  //         .then((duration) => {
+  //           // myGlobalObj.progress = currentTime / duration;
+  //           // console.log("Progress: " + myGlobalObj.progress);
+  //           setProgress(currentTime / duration);
+  //         })
+  //         .catch((err) => console.log(err));
+  //     })
+  //     .catch((err) => console.log(err));
+  // });
 
   return (
     <>
@@ -281,7 +283,6 @@ export default function MusicScreen() {
                 onPress={() => {
                   getData();
                   syncWithServer();
-                  playerRef.current?.seekTo(elapsed, true);
                 }}
               >
                 <Ionicons
@@ -297,7 +298,6 @@ export default function MusicScreen() {
                   if (!playing) {
                     getData();
                     syncWithServer();
-                    playerRef.current?.seekTo(elapsed, true);
                   }
                 }}
               >
