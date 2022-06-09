@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  Easing,
 } from "react-native";
 import UserAvatar from "./UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
@@ -31,6 +32,7 @@ const baseBackendServerURL = "192.168.1.114:2222";
 const socket = io("ws://" + baseBackendServerURL + "/");
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+const style = require("../global/style");
 
 export default function MusicScreen() {
   const [elapsed, setElapsed] = React.useState(100);
@@ -175,40 +177,30 @@ export default function MusicScreen() {
 
   return (
     <>
-      <View
-        style={{
-          backgroundColor: "black",
-          display: "flex",
-          alignItems: "center",
-        }}
-        pointerEvents="none"
-      >
+      <View style={style.YTrender} pointerEvents="none">
+        <View style={style.liveBadge_container}>
+          <View style={style.liveBadge}>
+            <Text style={style.liveBadge_text}>Trực tiếp</Text>
+          </View>
+          <View style={style.liveBadge_watching}>
+            <Text style={style.liveBadge_text}>
+              <Ionicons
+                name={"eye"}
+                size={15}
+                color={"white"}
+                style={{ marginRight: 15 }}
+              />{" "}
+              {currentLiveData.users_watching}
+            </Text>
+          </View>
+        </View>
         {renderYoutube()}
       </View>
 
-      <View
-        style={{
-          backgroundColor: "white",
-          height: 60,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 3,
-          },
-          shadowOpacity: 0.29,
-          shadowRadius: 4.65,
-
-          elevation: 7,
-        }}
-      >
+      <View style={style.nowPlayingBox}>
         <ImageBackground
           source={song_img("bg")}
-          style={{
-            width: windowWidth,
-            height: 60,
-            flex: 1,
-            resizeMode: "cover",
-          }}
+          style={style.nowPlayingBox_coverBg}
           blurRadius={4.5}
         >
           <ProgressBar
@@ -221,54 +213,34 @@ export default function MusicScreen() {
             color={Colors.yellow400}
             style={{ marginTop: -0.7 }}
           />
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "rgba(0, 0, 0, .3)",
-              padding: 7,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
+          <View style={style.nowPlayingBox_upperContainer}>
             <Image
               source={song_img()}
-              style={{
-                width: 45,
-                height: 45,
-                borderRadius: 10,
-                marginRight: 10,
-              }}
+              style={style.nowPlayingBox_songImg}
             ></Image>
 
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                flexGrow: 1,
-                maxWidth: windowWidth - 165,
-                marginRight: 20,
-              }}
-            >
+            <View style={style.nowPlayingBox_middle}>
               <TextTicker
-                duration={10000}
-                style={{
-                  fontWeight: "700",
-                  fontSize: 16,
-                  color: "white",
-                }}
+                bounce
+                bounceDelay={1500}
+                easing={Easing.linear}
+                animationType={"bounce"}
+                bounceSpeed={50}
+                marqueeDelay={750}
+                bouncePadding={{ left: 0, right: 0 }}
+                style={style.textTicker}
               >
                 {title()}
               </TextTicker>
               <TextTicker
-                duration={10000}
-                numberOfLines={1}
-                style={{
-                  fontWeight: "400",
-                  fontSize: 12.5,
-                  maxWidth: windowWidth - 165,
-                  color: "white",
-                }}
+                bounce
+                bounceDelay={1500}
+                easing={Easing.linear}
+                animationType={"bounce"}
+                bounceSpeed={50}
+                marqueeDelay={750}
+                bouncePadding={{ left: 0, right: 0 }}
+                style={style.textTicker}
               >
                 {channel()}
               </TextTicker>
