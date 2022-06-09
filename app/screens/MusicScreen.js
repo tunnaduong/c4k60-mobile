@@ -43,6 +43,10 @@ export default function MusicScreen() {
   const playerRef = createRef();
 
   useEffect(() => {
+    // playerRef.current?.seekTo(elapsed, true);
+  });
+
+  useEffect(() => {
     console.log("socket connected");
     socket.connect();
   }, []);
@@ -152,21 +156,19 @@ export default function MusicScreen() {
   };
 
   useEffect(() => {
-    setInterval(() => {
-      playerRef.current
-        ?.getCurrentTime()
-        .then((currentTime) => {
-          playerRef.current
-            ?.getDuration()
-            .then((duration) => {
-              // myGlobalObj.progress = currentTime / duration;
-              // console.log("Progress: " + myGlobalObj.progress);
-              setProgress(currentTime / duration);
-            })
-            .catch((err) => console.log(err));
-        })
-        .catch((err) => console.log(err));
-    }, 2000);
+    playerRef.current
+      ?.getCurrentTime()
+      .then((currentTime) => {
+        playerRef.current
+          ?.getDuration()
+          .then((duration) => {
+            // myGlobalObj.progress = currentTime / duration;
+            // console.log("Progress: " + myGlobalObj.progress);
+            setProgress(currentTime / duration);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
   }, [playerRef]);
 
   return (
