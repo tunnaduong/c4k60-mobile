@@ -21,6 +21,7 @@ module.exports = StyleSheet.create({
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
     elevation: 7,
+    marginTop: -1,
   },
   nowPlayingBox_coverBg: {
     width: windowWidth,
@@ -41,6 +42,9 @@ module.exports = StyleSheet.create({
     height: 45,
     borderRadius: 10,
     marginRight: 10,
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
   },
   nowPlayingBox_middle: {
     display: "flex",
@@ -74,8 +78,12 @@ module.exports = StyleSheet.create({
   },
   liveBadge_watching: {
     marginLeft: 5,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     padding: 5,
     borderRadius: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
