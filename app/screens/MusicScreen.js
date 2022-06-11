@@ -16,10 +16,10 @@ import {
   ImageBackground,
   Easing,
   Animated,
+  ScrollView,
 } from "react-native";
 import UserAvatar from "./UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
-import SegmentedControlTab from "react-native-segmented-control-tab";
 import io from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,23 +27,33 @@ import axios from "axios";
 import { ProgressBar, Colors } from "react-native-paper";
 import TextTicker from "react-native-text-ticker";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { Snackbar } from "react-native-paper";
+import config from "../configurations/config";
+import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 const Tab = createMaterialTopTabNavigator();
 
 //Platform.OS === "ios"
-// const baseBackendServerURL = "172.20.10.2:2222";
-const baseBackendServerURL = "192.168.1.114:2222";
+const baseBackendServerURL =
+  config.baseBackendServerURL + ":" + config.backendServerPort;
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const style = require("../global/style");
 
-export default function MusicScreen() {
+export default function MusicScreen(props) {
   const [elapsedState, setElapsed] = React.useState(100);
   const [video, setVideo] = React.useState("");
   const [playing, setPlaying] = React.useState(true);
   const [currentLiveData, setCurrentLiveData] = React.useState("abc");
-  const [currentProgress, setProgress] = useState(0.1);
+  const [currentProgress, setProgress] = useState(0);
   const [started, setStarted] = useState(false);
+  const [snackbarShow, setSnackbarShow] = useState(false);
+  const [errMsg, setErrMsg] = useState("UNKNOWN_ERR");
+  const [msg, setMsg] = useState(
+    "Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + errMsg
+  );
+  const [msgBtn, setMsgBtn] = useState("Tải lại");
   const player = useRef();
 
   useEffect(() => {
@@ -52,10 +62,12 @@ export default function MusicScreen() {
     socket.on("connect", () => {
       console.log("connected to socket server");
     });
+    watchingAnimation();
     getData();
     syncWithServer();
     return () => {
       socket.disconnect();
+      setPlaying(false);
       console.log("user exited");
     };
   }, []);
@@ -95,9 +107,11 @@ export default function MusicScreen() {
           }
           if (event == "paused") {
             console.log("Video is paused...");
+            setPlaying(false);
             console.log("Is playing: " + playing);
           }
           if (event == "playing") {
+            watchingAnimation();
             setStarted(true);
           }
         }}
@@ -106,17 +120,26 @@ export default function MusicScreen() {
   };
 
   const syncWithServer = async () => {
-    await axios.get("http://" + baseBackendServerURL + "/live").then((res) => {
-      const position = res.data.video_in_queue.findIndex(
-        (data) => data.position == res.data.now_playing_position
-      );
-      const videoToPlay = res.data.video_in_queue[position].video_id;
-      const elapsed = parseInt(res.data.elapsed_time);
-      setVideo(videoToPlay);
-      setElapsed(elapsed);
-      console.log("Server timestamp: " + elapsed);
-      player.current.seekTo(elapsed, true);
-    });
+    await axios
+      .get("http://" + baseBackendServerURL + "/live")
+      .then((res) => {
+        const position = res.data.video_in_queue.findIndex(
+          (data) => data.position == res.data.now_playing_position
+        );
+        const videoToPlay = res.data.video_in_queue[position].video_id;
+        const elapsed = parseInt(res.data.elapsed_time);
+        setVideo(videoToPlay);
+        setElapsed(elapsed);
+        console.log("Server timestamp: " + elapsed);
+        player.current.seekTo(elapsed, true);
+      })
+      .catch((error) => {
+        console.log(error.message);
+        setSnackbarShow(true);
+        setErrMsg(error.message);
+        setMsg("Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + error.message);
+        // Alert.alert(error.message);
+      });
   };
 
   const title = () => {
@@ -141,8 +164,11 @@ export default function MusicScreen() {
     }
   };
 
-  const channel = () => {
+  const channel = (setting) => {
     if (currentLiveData != "abc") {
+      if (setting == "request") {
+        return currentLiveData.now_playing_video_info.requested_by;
+      }
       return currentLiveData.now_playing_video_info.uploaded_by;
     } else {
       return "";
@@ -154,15 +180,17 @@ export default function MusicScreen() {
       .get("http://" + baseBackendServerURL + "/live")
       .catch((error) => {
         console.log(error.message);
-        // Alert.alert(error.message);
+        setSnackbarShow(true);
+        setErrMsg(error.message);
+        setMsg("Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + error.message);
       });
     setCurrentLiveData(response.data);
     return response.data;
   };
 
-  const fadeAnim = useRef(new Animated.Value(0.5)).current;
+  const fadeAnim = useRef(new Animated.Value(0.72)).current;
 
-  useEffect(() => {
+  const watchingAnimation = () => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(fadeAnim, {
@@ -171,13 +199,13 @@ export default function MusicScreen() {
           useNativeDriver: true,
         }),
         Animated.timing(fadeAnim, {
-          toValue: 0.73,
-          duration: 1250,
+          toValue: 0.72,
+          duration: 1000,
           useNativeDriver: true,
         }),
       ])
     ).start();
-  }, [fadeAnim]);
+  };
 
   useEffect(() => {
     player.current
@@ -200,12 +228,21 @@ export default function MusicScreen() {
       <View style={style.YTrender} pointerEvents="none">
         <View style={style.liveBadge_container}>
           <Animated.View
-            style={{
-              backgroundColor: "red",
-              padding: 5,
-              borderRadius: 5,
-              opacity: fadeAnim,
-            }}
+            style={
+              playing
+                ? {
+                    backgroundColor: "red",
+                    padding: 5,
+                    borderRadius: 5,
+                    opacity: fadeAnim,
+                  }
+                : {
+                    backgroundColor: "#7F7F7F",
+                    padding: 5,
+                    borderRadius: 5,
+                    opacity: 1,
+                  }
+            }
           >
             <Text style={style.liveBadge_text}>Trực tiếp</Text>
           </Animated.View>
@@ -213,7 +250,7 @@ export default function MusicScreen() {
             <View style={{ paddingLeft: 3, paddingRight: 6 }}>
               <Ionicons name={"eye"} size={16} color={"white"} />
             </View>
-            <Text style={style.liveBadge_text}>
+            <Text style={style.liveBadge_watching_text}>
               {currentLiveData.users_watching}
             </Text>
           </View>
@@ -246,7 +283,29 @@ export default function MusicScreen() {
                 }}
               ></Image>
             </View>
-            <View style={style.nowPlayingBox_middle}>
+            <MaskedView
+              maskElement={
+                <LinearGradient
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  colors={[
+                    "rgba(0,0,0,0)",
+                    "rgba(0,0,0,1)",
+                    "rgba(0,0,0,1)",
+                    "rgba(0,0,0,0)",
+                  ]}
+                  locations={[0, 0.05, 0.95, 1]}
+                  style={{
+                    width: "97%",
+                    marginLeft: 3,
+                    height: 40,
+                    position: "absolute",
+                    zIndex: 10,
+                  }}
+                ></LinearGradient>
+              }
+              style={style.nowPlayingBox_middle}
+            >
               <TextTicker
                 bounce
                 bounceDelay={1500}
@@ -254,8 +313,9 @@ export default function MusicScreen() {
                 animationType={"bounce"}
                 bounceSpeed={50}
                 marqueeDelay={750}
-                bouncePadding={{ left: 0, right: 0 }}
+                bouncePadding={{ left: 0, right: 10 }}
                 style={style.textTicker}
+                shouldAnimateTreshold={5}
               >
                 {title()}
               </TextTicker>
@@ -266,12 +326,19 @@ export default function MusicScreen() {
                 animationType={"bounce"}
                 bounceSpeed={50}
                 marqueeDelay={750}
-                bouncePadding={{ left: 0, right: 0 }}
-                style={{ color: "white", fontSize: 13 }}
+                style={{
+                  color: "white",
+                  fontSize: 13,
+                  lineHeight: 20,
+                  paddingLeft: 10,
+                }}
+                bouncePadding={{ left: 0, right: 10 }}
+                shouldAnimateTreshold={5}
               >
-                {channel()}
+                {channel() + " - Yêu cầu bởi: " + channel("request")}
               </TextTicker>
-            </View>
+            </MaskedView>
+
             <View
               style={{
                 flexDirection: "row",
@@ -320,69 +387,23 @@ export default function MusicScreen() {
           </View>
         </ImageBackground>
       </View>
-      <Tab.Navigator
-        initialLayout={{ height: 30 }}
-        screenOptions={{
-          tabBarLabelStyle: { fontSize: 12 },
-          tabBarItemStyle: { minHeight: 10, maxHeight: 75 },
-          tabBarStyle: { minHeight: 10, maxHeight: 75 },
-          tabBarShowLabel: false,
-          tabBarIndicatorStyle: { backgroundColor: "#007AFF" },
+      {props.tab}
+      <Snackbar
+        visible={snackbarShow}
+        onDismiss={() => {
+          setSnackbarShow(false);
+        }}
+        action={{
+          label: msgBtn,
+          onPress: () => {
+            // Do something
+            syncWithServer();
+            getData();
+          },
         }}
       >
-        <Tab.Screen
-          name="Tiếp theo"
-          component={Queue}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name={"list"} color={color} size={22} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Chat"
-          component={Chat}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name={"chatbox-ellipses"} color={color} size={22} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Tìm bài hát"
-          component={Queue}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name={"search"} color={color} size={22} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Lời bài hát"
-          component={Queue}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name={"text"} color={color} size={22} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </>
-  );
-}
-
-function Chat() {
-  return (
-    <>
-      <Text>Tung Anh</Text>
-    </>
-  );
-}
-
-function Queue() {
-  return (
-    <>
-      <Text>Tung Anh 2</Text>
+        {msg}
+      </Snackbar>
     </>
   );
 }

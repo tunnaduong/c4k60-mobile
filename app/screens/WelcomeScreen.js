@@ -30,7 +30,7 @@ class WelcomeScreen extends React.Component {
           />
         </View>
         <View style={{ paddingBottom: 30 }}>
-          <Carousel
+          {/* <Carousel
             width={Dimensions.get("screen").width}
             height={470}
             delay={3000}
@@ -179,7 +179,7 @@ class WelcomeScreen extends React.Component {
                 </Text>
               </View>
             </View>
-          </Carousel>
+          </Carousel> */}
         </View>
         <TouchableOpacity
           activeOpacity={Platform.OS === "ios" ? 0.4 : null}

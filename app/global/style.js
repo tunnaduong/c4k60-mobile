@@ -51,12 +51,14 @@ module.exports = StyleSheet.create({
     flexDirection: "column",
     flexGrow: 1,
     maxWidth: windowWidth - 165,
+    marginLeft: -10,
     marginRight: 20,
   },
   textTicker: {
     fontWeight: "700",
     fontSize: 16,
     color: "white",
+    paddingLeft: 10,
   },
   liveBadge_container: {
     position: "absolute",
@@ -68,6 +70,11 @@ module.exports = StyleSheet.create({
   },
   liveBadge: {
     backgroundColor: "red",
+    padding: 5,
+    borderRadius: 5,
+  },
+  liveBadge_offsync: {
+    backgroundColor: "#7F7F7F",
     padding: 5,
     borderRadius: 5,
   },
@@ -85,5 +92,11 @@ module.exports = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  liveBadge_watching_text: {
+    color: "white",
+    textTransform: "uppercase",
+    fontWeight: "500",
+    paddingRight: 2,
   },
 });
