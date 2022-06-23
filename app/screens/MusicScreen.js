@@ -370,7 +370,7 @@ export default function MusicScreen({ tab, childToParent }) {
                 bouncePadding={{ left: 0, right: 10 }}
                 shouldAnimateTreshold={5}
               >
-                {channel() + " - Yêu cầu bởi: " + channel("request")}
+                {channel() + " - Bởi: " + channel("request")}
               </TextTicker>
             </MaskedView>
 

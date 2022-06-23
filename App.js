@@ -54,9 +54,6 @@ function App() {
         setActiveVideo(pos);
       };
       const hideModal = () => setVisible(false);
-      // useEffect(() => {
-      //   setCurrentLiveData(data);
-      // }, [data]);
 
       return (
         <Provider>
@@ -145,6 +142,7 @@ function App() {
                                 style={{
                                   display: "flex",
                                   flexDirection: "row",
+                                  alignItems: "center",
                                 }}
                               >
                                 <View
@@ -325,7 +323,16 @@ function App() {
                     }
                   })
               ) : (
-                <Text>Loading...</Text>
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 200,
+                  }}
+                >
+                  <Text>Đang tải danh sách phát...</Text>
+                </View>
               )}
             </ScrollView>
           </KeyboardAvoidingView>
