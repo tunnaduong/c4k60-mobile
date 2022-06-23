@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   RefreshControl,
+  View,
 } from "react-native";
 import LoadingScreen from "./app/screens/LoadingScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
@@ -32,6 +33,7 @@ const baseBackendServerURL =
 
 LogBox.ignoreLogs([
   "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
+  "JSON Parse error: Unrecognized token '<'",
 ]);
 
 const Stack = createNativeStackNavigator();
@@ -77,7 +79,7 @@ function App() {
             style={{ height: "100%" }}
           >
             {Array.isArray(currentLiveData.video_in_queue) ? (
-              currentLiveData.video_in_queue.map((row) => {
+              currentLiveData.video_in_queue.map((row, index) => {
                 return (
                   <List.Item
                     title={row.video_title}
@@ -87,10 +89,15 @@ function App() {
                       console.log("clicked");
                     }}
                     left={() => (
-                      <Image
-                        source={{ uri: row.video_thumbnail }}
-                        style={{ width: 90, height: 50 }}
-                      />
+                      <View style={{ display: "flex", flexDirection: "row" }}>
+                        <View>
+                          <Text>{index}</Text>
+                        </View>
+                        <Image
+                          source={{ uri: row.video_thumbnail }}
+                          style={{ width: 90, height: 50 }}
+                        />
+                      </View>
                     )}
                   />
                 );

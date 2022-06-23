@@ -31,10 +31,10 @@ import { Snackbar } from "react-native-paper";
 import config from "../configurations/config";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
+import myGlobalObj from "../global/myGlobalObj";
 
 const Tab = createMaterialTopTabNavigator();
 
-//Platform.OS === "ios"
 const baseBackendServerURL =
   config.baseBackendServerURL + ":" + config.backendServerPort;
 const windowWidth = Dimensions.get("window").width;
@@ -53,22 +53,48 @@ export default function MusicScreen(props) {
   const [msg, setMsg] = useState(
     "Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + errMsg
   );
-  const [msgBtn, setMsgBtn] = useState("Tải lại");
+  const [msgBtn, _setMsgBtn] = useState("Tải lại");
   const player = useRef();
 
+  const fetchStorage = async () => {
+    const username = await AsyncStorage.getItem("username");
+    if (username) {
+      myGlobalObj.username = username;
+    }
+    return username;
+  };
+
   useEffect(() => {
+    fetchStorage();
     const socket = io("ws://" + baseBackendServerURL + "/");
     socket.connect();
     socket.on("connect", () => {
-      console.log("connected to socket server");
+      console.log(myGlobalObj.username + " connected to socket server");
     });
+    socket.on("refresh", () => {
+      console.log("Received refresh signal from server! Now restarting...");
+      getData();
+      syncWithServer();
+    });
+    socket.on("play", () => {
+      console.log("Received play signal from server! Now playing video...");
+      setPlaying(true);
+    });
+    socket.on("views", () => {
+      console.log(
+        "Received reload views count signal from server! Now reloading views count..."
+      );
+      getData();
+    });
+    fetchStorage().then((user) => socket.emit("conn", user));
     watchingAnimation();
     getData();
     syncWithServer();
     return () => {
+      socket.emit("discon", myGlobalObj.username);
       socket.disconnect();
       setPlaying(false);
-      console.log("user exited");
+      console.log("User exited");
     };
   }, []);
 
@@ -143,7 +169,7 @@ export default function MusicScreen(props) {
   };
 
   const title = () => {
-    if (currentLiveData != "abc") {
+    if (currentLiveData != "abc" && currentLiveData.now_playing_video_info) {
       return currentLiveData.now_playing_video_info.video_title;
     } else {
       return "Đang tải...";
@@ -151,7 +177,7 @@ export default function MusicScreen(props) {
   };
 
   const song_img = (setting) => {
-    if (currentLiveData != "abc") {
+    if (currentLiveData != "abc" && currentLiveData.now_playing_video_info) {
       return {
         uri: currentLiveData.now_playing_video_info.video_thumbnail,
       };
@@ -165,7 +191,7 @@ export default function MusicScreen(props) {
   };
 
   const channel = (setting) => {
-    if (currentLiveData != "abc") {
+    if (currentLiveData != "abc" && currentLiveData.now_playing_video_info) {
       if (setting == "request") {
         return currentLiveData.now_playing_video_info.requested_by;
       }
@@ -188,7 +214,7 @@ export default function MusicScreen(props) {
     return response.data;
   };
 
-  const fadeAnim = useRef(new Animated.Value(0.72)).current;
+  const fadeAnim = useRef(new Animated.Value(0.65)).current;
 
   const watchingAnimation = () => {
     Animated.loop(
@@ -199,7 +225,7 @@ export default function MusicScreen(props) {
           useNativeDriver: true,
         }),
         Animated.timing(fadeAnim, {
-          toValue: 0.72,
+          toValue: 0.65,
           duration: 1000,
           useNativeDriver: true,
         }),
