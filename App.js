@@ -5,7 +5,7 @@ import {
   ScrollView,
   Text,
   Image,
-  RefreshControl,
+  TouchableOpacity,
   View,
 } from "react-native";
 import LoadingScreen from "./app/screens/LoadingScreen";
@@ -26,6 +26,7 @@ import axios from "axios";
 import config from "./app/configurations/config";
 import { List } from "react-native-paper";
 import { FAB } from "react-native-paper";
+import { Modal, Portal, Provider } from "react-native-paper";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -39,155 +40,386 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const TestingComponent = (props) => <Test />;
+  const TestingComponent = () => <Test />;
 
-  const QueueComponent = () => {
-    const [currentLiveData, setCurrentLiveData] = React.useState([]);
-    const [refreshing, setRefreshing] = React.useState(false);
+  const Music = (props) => {
+    const [data, setData] = React.useState("");
 
-    useEffect(() => {
-      getData();
-    }, []);
+    const QueueComponent = () => {
+      const [visible, setVisible] = React.useState(false);
+      const [activeVideo, setActiveVideo] = React.useState(1);
 
-    const getData = async () => {
-      const response = await axios
-        .get("http://" + baseBackendServerURL + "/live")
-        .catch((error) => {
-          console.log(error.message);
-        });
-      setCurrentLiveData(response.data);
-      // console.log(currentLiveData);
-      return response.data;
+      const showModal = (pos) => {
+        setVisible(true);
+        setActiveVideo(pos);
+      };
+      const hideModal = () => setVisible(false);
+      // useEffect(() => {
+      //   setCurrentLiveData(data);
+      // }, [data]);
+
+      return (
+        <Provider>
+          <Portal>
+            <Modal
+              visible={visible}
+              onDismiss={hideModal}
+              contentContainerStyle={{
+                backgroundColor: "white",
+                padding: 20,
+                marginRight: 30,
+                marginLeft: 30,
+                borderRadius: 10,
+                alignSelf: "center",
+              }}
+            >
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#EDEDED",
+                    padding: 8,
+                    borderRadius: 30,
+                    marginRight: 15,
+                  }}
+                >
+                  <Ionicons
+                    name="thumbs-up-outline"
+                    size={30}
+                    color={"#434343"}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#EDEDED",
+                    padding: 8,
+                    borderRadius: 30,
+                    marginRight: 15,
+                  }}
+                >
+                  <Ionicons
+                    name="thumbs-down-outline"
+                    size={30}
+                    color={"#434343"}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#EDEDED",
+                    padding: 8,
+                    borderRadius: 30,
+                  }}
+                >
+                  <Ionicons
+                    name={
+                      data.now_playing_position == activeVideo
+                        ? "play-skip-forward-outline"
+                        : "trash-outline"
+                    }
+                    size={30}
+                    color={
+                      data.now_playing_position == activeVideo
+                        ? "#434343"
+                        : "#F03232"
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
+            </Modal>
+          </Portal>
+          <KeyboardAvoidingView style={{ height: "100%" }}>
+            <ScrollView style={{ height: "100%" }}>
+              {Array.isArray(data.video_in_queue) ? (
+                data.video_in_queue
+                  .filter((ele) => ele.position >= data.now_playing_position)
+                  .map((row, index) => {
+                    if (index != 0) {
+                      return (
+                        <List.Item
+                          title={row.video_title}
+                          description={"Bởi: " + row.requested_by}
+                          key={row.position}
+                          onPress={() => showModal(row.position)}
+                          left={() => {
+                            return (
+                              <View
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    justifyContent: "center",
+                                    minWidth: 35,
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      color: "#4E4E4E",
+                                      marginRight: 10,
+                                      textAlign: "right",
+                                    }}
+                                  >
+                                    #{index}
+                                  </Text>
+                                </View>
+                                <Image
+                                  source={{ uri: row.video_thumbnail }}
+                                  style={{ width: 70, height: 40 }}
+                                />
+                              </View>
+                            );
+                          }}
+                          right={() => {
+                            return (
+                              <View
+                                style={{
+                                  marginLeft: 10,
+                                  marginRight: 10,
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
+                                {data.now_playing_video_info.voting.like_count >
+                                  0 && (
+                                  <View
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Ionicons
+                                      name="thumbs-up"
+                                      size={18}
+                                      color={"#434343"}
+                                    />
+                                    <Text style={{ marginLeft: 5 }}>
+                                      {
+                                        data.now_playing_video_info.voting
+                                          .like_count
+                                      }
+                                    </Text>
+                                  </View>
+                                )}
+                                {data.now_playing_video_info.voting.vote_skip >
+                                  0 && (
+                                  <View
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Ionicons
+                                      name="play-skip-forward"
+                                      size={18}
+                                      color={"#434343"}
+                                    />
+                                    <Text style={{ marginLeft: 5 }}>
+                                      {
+                                        data.now_playing_video_info.voting
+                                          .vote_skip
+                                      }
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            );
+                          }}
+                        />
+                      );
+                    } else {
+                      return (
+                        <List.Item
+                          title={row.video_title}
+                          description={"Bởi: " + row.requested_by}
+                          key={row.position}
+                          onPress={() => showModal(row.position)}
+                          left={() => {
+                            return (
+                              <View
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    justifyContent: "center",
+                                    alignItems: "flex-end",
+                                    paddingRight: 8,
+                                    minWidth: 35,
+                                  }}
+                                >
+                                  <Ionicons
+                                    name={"play"}
+                                    size={18}
+                                    color={"#4E4E4E"}
+                                  />
+                                </View>
+                                <Image
+                                  source={{ uri: row.video_thumbnail }}
+                                  style={{ width: 70, height: 40 }}
+                                />
+                              </View>
+                            );
+                          }}
+                          right={() => {
+                            return (
+                              <View
+                                style={{
+                                  marginLeft: 10,
+                                  marginRight: 10,
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
+                                {data.now_playing_video_info.voting.like_count >
+                                  0 && (
+                                  <View
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Ionicons
+                                      name="thumbs-up"
+                                      size={18}
+                                      color={"#434343"}
+                                    />
+                                    <Text style={{ marginLeft: 5 }}>
+                                      {
+                                        data.now_playing_video_info.voting
+                                          .like_count
+                                      }
+                                    </Text>
+                                  </View>
+                                )}
+                                {data.now_playing_video_info.voting.vote_skip >
+                                  0 && (
+                                  <View
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <Ionicons
+                                      name="play-skip-forward"
+                                      size={18}
+                                      color={"#434343"}
+                                    />
+                                    <Text style={{ marginLeft: 5 }}>
+                                      {
+                                        data.now_playing_video_info.voting
+                                          .vote_skip
+                                      }
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            );
+                          }}
+                          style={{ backgroundColor: "#D8D8D8" }}
+                        />
+                      );
+                    }
+                  })
+              ) : (
+                <Text>Loading...</Text>
+              )}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </Provider>
+      );
+    };
+
+    const childToParent = (childdata) => {
+      setData(childdata);
     };
 
     return (
-      <>
-        <KeyboardAvoidingView style={{ height: "100%" }}>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => {
-                  setRefreshing(true);
-                  getData();
-                  setTimeout(() => {
-                    setRefreshing(false);
-                  }, 800);
-                }}
-              />
-            }
-            style={{ height: "100%" }}
-          >
-            {Array.isArray(currentLiveData.video_in_queue) ? (
-              currentLiveData.video_in_queue.map((row, index) => {
-                return (
-                  <List.Item
-                    title={row.video_title}
-                    description={row.uploaded_by}
-                    key={row.position}
-                    onPress={() => {
-                      console.log("clicked");
-                    }}
-                    left={() => (
-                      <View style={{ display: "flex", flexDirection: "row" }}>
-                        <View>
-                          <Text>{index}</Text>
-                        </View>
-                        <Image
-                          source={{ uri: row.video_thumbnail }}
-                          style={{ width: 90, height: 50 }}
-                        />
-                      </View>
-                    )}
-                  />
-                );
-              })
-            ) : (
-              <Text>Loading...</Text>
-            )}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </>
-    );
-  };
-
-  const Music = (props) => (
-    <MusicScreen
-      tab={
-        <>
-          <Tab.Navigator
-            screenOptions={{
-              tabBarLabelStyle: { fontSize: 12 },
-              tabBarItemStyle: { minHeight: 10, maxHeight: 75 },
-              tabBarStyle: { minHeight: 10, maxHeight: 75 },
-              tabBarShowLabel: false,
-              tabBarIndicatorStyle: { backgroundColor: "#007AFF" },
-            }}
-            style={{ height: "100%" }}
-          >
-            <Tab.Screen
-              name="Tiếp theo"
-              component={QueueComponent}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Ionicons name={"list"} color={color} size={22} />
-                ),
+      <MusicScreen
+        childToParent={childToParent}
+        tab={
+          <>
+            <Tab.Navigator
+              screenOptions={{
+                tabBarLabelStyle: { fontSize: 12 },
+                tabBarItemStyle: { minHeight: 10, maxHeight: 75 },
+                tabBarStyle: { minHeight: 10, maxHeight: 75 },
+                tabBarShowLabel: false,
+                tabBarIndicatorStyle: { backgroundColor: "#007AFF" },
               }}
               style={{ height: "100%" }}
-            />
-            <Tab.Screen
-              name="Chat"
-              component={TestingComponent}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Ionicons name={"chatbox-ellipses"} color={color} size={22} />
-                ),
+            >
+              <Tab.Screen
+                name="Tiếp theo"
+                component={QueueComponent}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <Ionicons name={"list"} color={color} size={22} />
+                  ),
+                }}
+                style={{ height: "100%" }}
+              />
+              <Tab.Screen
+                name="Chat"
+                component={TestingComponent}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <Ionicons
+                      name={"chatbox-ellipses"}
+                      color={color}
+                      size={22}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Bạn bè đang xem"
+                component={TestingComponent}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <Ionicons name={"people"} color={color} size={22} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Tìm bài hát"
+                component={TestingComponent}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <Ionicons name={"search"} color={color} size={22} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Lời bài hát"
+                component={TestingComponent}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <Ionicons name={"text"} color={color} size={22} />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+            <FAB
+              style={{
+                position: "absolute",
+                margin: 16,
+                right: 0,
+                bottom: 30,
+                backgroundColor: "#FF5674",
               }}
+              icon="heart"
+              onPress={() => console.log("Pressed")}
             />
-            <Tab.Screen
-              name="Bạn bè đang xem"
-              component={TestingComponent}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Ionicons name={"people"} color={color} size={22} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Tìm bài hát"
-              component={TestingComponent}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Ionicons name={"search"} color={color} size={22} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Lời bài hát"
-              component={TestingComponent}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Ionicons name={"text"} color={color} size={22} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-          <FAB
-            style={{
-              position: "absolute",
-              margin: 16,
-              right: 0,
-              bottom: 30,
-              backgroundColor: "#FF5674",
-            }}
-            icon="heart"
-            onPress={() => console.log("Pressed")}
-          />
-        </>
-      }
-      {...props}
-    />
-  );
+          </>
+        }
+        {...props}
+      />
+    );
+  };
   StatusBar.setBarStyle("dark-content", true);
   return (
     <NavigationContainer>

@@ -41,7 +41,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const style = require("../global/style");
 
-export default function MusicScreen(props) {
+export default function MusicScreen({ tab, childToParent }) {
   const [elapsedState, setElapsed] = React.useState(100);
   const [video, setVideo] = React.useState("");
   const [playing, setPlaying] = React.useState(true);
@@ -97,6 +97,10 @@ export default function MusicScreen(props) {
       console.log("User exited");
     };
   }, []);
+
+  useEffect(() => {
+    childToParent(currentLiveData);
+  }, [currentLiveData]);
 
   const renderYoutube = () => {
     return (
@@ -234,20 +238,25 @@ export default function MusicScreen(props) {
   };
 
   useEffect(() => {
-    player.current
-      .getCurrentTime()
-      .then((currentTime) => {
-        player.current
-          .getDuration()
-          .then((duration) => {
-            // myGlobalObj.progress = currentTime / duration;
-            // console.log("Progress: " + myGlobalObj.progress);
-            setProgress(currentTime / duration);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-  });
+    var refresh = setInterval(() => {
+      player.current
+        .getCurrentTime()
+        .then((currentTime) => {
+          player.current
+            .getDuration()
+            .then((duration) => {
+              // myGlobalObj.progress = currentTime / duration;
+              // console.log("Progress: " + myGlobalObj.progress);
+              setProgress(currentTime / duration);
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    }, 1000);
+    return () => {
+      clearInterval(refresh);
+    };
+  }, []);
 
   return (
     <>
@@ -413,7 +422,7 @@ export default function MusicScreen(props) {
           </View>
         </ImageBackground>
       </View>
-      {props.tab}
+      {tab}
       <Snackbar
         visible={snackbarShow}
         onDismiss={() => {
