@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import LoadingScreen from "./app/screens/LoadingScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
@@ -331,7 +332,10 @@ function App() {
                     height: 200,
                   }}
                 >
-                  <Text>Đang tải danh sách phát...</Text>
+                  <ActivityIndicator size={"large"} color="#636568" />
+                  <Text style={{ marginTop: 15 }}>
+                    Đang tải danh sách phát...
+                  </Text>
                 </View>
               )}
             </ScrollView>

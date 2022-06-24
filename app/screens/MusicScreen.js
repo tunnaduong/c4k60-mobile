@@ -106,7 +106,7 @@ export default function MusicScreen({ tab, childToParent }) {
     return (
       <YoutubePlayer
         width={windowWidth}
-        height={220}
+        height={windowWidth / (16 / 9)}
         ref={player}
         videoId={video}
         play={playing}
@@ -370,7 +370,7 @@ export default function MusicScreen({ tab, childToParent }) {
                 bouncePadding={{ left: 0, right: 10 }}
                 shouldAnimateTreshold={5}
               >
-                {channel() + " - Bởi: " + channel("request")}
+                {channel()}
               </TextTicker>
             </MaskedView>
 
