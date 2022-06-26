@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   StatusBar,
   KeyboardAvoidingView,
@@ -8,6 +8,10 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Dimensions,
+  Pressable,
+  TextInput,
+  Platform,
 } from "react-native";
 import LoadingScreen from "./app/screens/LoadingScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
@@ -28,6 +32,9 @@ import config from "./app/configurations/config";
 import { List } from "react-native-paper";
 import { FAB } from "react-native-paper";
 import { Modal, Portal, Provider } from "react-native-paper";
+import UserAvatar from "./app/screens/UserAvatar";
+import { SafeAreaView } from "react-native-web";
+// import { HomeScreen } from "./app/screens/HomeScreen copy";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -41,10 +48,140 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const TestingComponent = () => <Test />;
+  const inputText = useRef();
+
+  const TestingComponent = () => <Text>Tung Anh</Text>;
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
+    const [torf, setTrueOrFalse] = React.useState(false);
+
+    const ChatComponent = () => {
+      return (
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={
+            Platform.OS === "ios"
+              ? Dimensions.get("screen").height > 667
+                ? 182
+                : 170
+              : 0
+          }
+        >
+          <ScrollView style={{ flex: 1 }}></ScrollView>
+          <View
+            style={{
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: -2,
+              },
+              shadowOpacity: 0.23,
+              shadowRadius: 2.62,
+              elevation: 4,
+              backgroundColor: "white",
+            }}
+          >
+            <View
+              style={{
+                paddingTop: 10,
+                paddingLeft: 10,
+                paddingRight: 10,
+                paddingBottom: 10,
+                width: "100%",
+                backgroundColor: "#F2F2F1",
+                paddingBottom:
+                  Platform.OS === "ios"
+                    ? Dimensions.get("screen").height > 667
+                      ? 25
+                      : 10
+                    : 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <UserAvatar
+                  username={"tunganh"}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 50,
+                    marginRight: 10,
+                  }}
+                />
+                <Pressable
+                  style={{
+                    backgroundColor: "#DFDEDD",
+                    height: 40,
+                    width: "79%",
+                    borderRadius: 50,
+                    padding: 7,
+                    paddingLeft: 13,
+                    flexDirection: "row",
+                    flex: 1,
+                  }}
+                  onPress={() => {
+                    setTrueOrFalse(true);
+                    // inputText.current.focus();
+                    // if (Platform.OS == "ios") {
+                    setTimeout(() => inputText.current.focus(), 50);
+                    // } else if (torf == true) {
+                    //   setTimeout(() => inputText.current.focus(), 1000);
+                    // }
+                  }}
+                >
+                  <View pointerEvents="none" style={{ flex: 1 }}>
+                    <TextInput
+                      ref={inputText}
+                      style={
+                        Platform.OS === "web"
+                          ? {
+                              fontSize: 14,
+                              flex: 1,
+                              lineHeight: 25,
+                            }
+                          : {
+                              fontSize: 14,
+                              flex: 1,
+                            }
+                      }
+                      placeholder="Nhập bình luận..."
+                      multiline={true}
+                      onFocus={() => {
+                        Platform.OS == "android" && setTrueOrFalse(true);
+                      }}
+                      onBlur={() => setTrueOrFalse(false)}
+                    ></TextInput>
+                  </View>
+                  <Ionicons
+                    style={{
+                      textAlign: "right",
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                    }}
+                    name={"camera-outline"}
+                    size={25}
+                  />
+                </Pressable>
+                <Pressable
+                  style={{
+                    alignItems: "center",
+                    paddingLeft: 10,
+                  }}
+                >
+                  <Ionicons name={"send"} size={25} color={"#007AFF"} />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      );
+    };
 
     const QueueComponent = () => {
       const [visible, setVisible] = React.useState(false);
@@ -351,6 +488,7 @@ function App() {
     return (
       <MusicScreen
         childToParent={childToParent}
+        keyboardSummon={torf}
         tab={
           <>
             <Tab.Navigator
@@ -375,7 +513,7 @@ function App() {
               />
               <Tab.Screen
                 name="Chat"
-                component={TestingComponent}
+                component={ChatComponent}
                 options={{
                   tabBarIcon: ({ color }) => (
                     <Ionicons
@@ -419,7 +557,7 @@ function App() {
                 position: "absolute",
                 margin: 16,
                 right: 0,
-                bottom: 30,
+                bottom: 75,
                 backgroundColor: "#FF5674",
               }}
               icon="heart"

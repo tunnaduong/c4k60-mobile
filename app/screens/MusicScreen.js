@@ -41,7 +41,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const style = require("../global/style");
 
-export default function MusicScreen({ tab, childToParent }) {
+export default function MusicScreen({ tab, childToParent, keyboardSummon }) {
   const [elapsedState, setElapsed] = React.useState(100);
   const [video, setVideo] = React.useState("");
   const [playing, setPlaying] = React.useState(true);
@@ -102,11 +102,13 @@ export default function MusicScreen({ tab, childToParent }) {
     childToParent(currentLiveData);
   }, [currentLiveData]);
 
+  const fadeAnim = useRef(new Animated.Value(0.65)).current;
+
   const renderYoutube = () => {
     return (
       <YoutubePlayer
         width={windowWidth}
-        height={windowWidth / (16 / 9)}
+        height={keyboardSummon ? 0 : windowWidth / (16 / 9)}
         ref={player}
         videoId={video}
         play={playing}
@@ -217,8 +219,6 @@ export default function MusicScreen({ tab, childToParent }) {
     setCurrentLiveData(response.data);
     return response.data;
   };
-
-  const fadeAnim = useRef(new Animated.Value(0.65)).current;
 
   const watchingAnimation = () => {
     Animated.loop(

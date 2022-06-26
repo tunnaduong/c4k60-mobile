@@ -21,7 +21,6 @@ import HomeScreenCarousel from "./HomeScreenCarousel";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBirthdayCake, faBullhorn } from "@fortawesome/free-solid-svg-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ScrollZoomHeader from "react-native-header-zoom-scroll";
 
 const Tab = createBottomTabNavigator();
 
