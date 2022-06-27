@@ -39,9 +39,7 @@ import NewsfeedScreen from "./app/screens/NewsfeedScreen";
 import NotificationScreen from "./app/screens/NotificationScreen";
 import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
-import Test from "./app/screens/Test";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
-import Logger from "./app/utils/logger";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -110,7 +108,11 @@ function App() {
             }
           >
             <ScrollView
-              style={{ flex: 1, paddingTop: 10, paddingBottom: 10 }}
+              style={{
+                flex: 1,
+                paddingTop: 10,
+                paddingBottom: 10,
+              }}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -124,6 +126,11 @@ function App() {
                   }}
                 />
               }
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "flex-end",
+                flexDirection: "column",
+              }}
             >
               {chatData.map((item) => {
                 if (item.msg_type == "user_join") {
@@ -140,7 +147,7 @@ function App() {
                         style={{
                           backgroundColor: "white",
                           padding: 6.5,
-                          borderRadius: "50%",
+                          borderRadius: 30,
                           overflow: "hidden",
                           borderWidth: 0.5,
                           borderStyle: "solid",
@@ -215,8 +222,9 @@ function App() {
                             <Text
                               style={{
                                 fontSize: 10,
-                                lineHeight: 19,
                                 color: "gray",
+                                alignSelf: "flex-end",
+                                paddingBottom: 4.5,
                               }}
                             >
                               {"  "}
