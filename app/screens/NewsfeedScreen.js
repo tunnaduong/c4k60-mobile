@@ -1,12 +1,8 @@
-import React, { Component } from "react";
-import { Text, View } from "react-native";
+import React from "react";
+import { View } from "react-native";
 
-export default class NewsfeedScreen extends Component {
+export default class NewsfeedScreen extends React.Component {
   render() {
-    return (
-      <>
-        <View style={{ backgroundColor: "white", height: "100%" }}></View>
-      </>
-    );
+    return <View style={{ backgroundColor: "white", height: "100%" }}></View>;
   }
 }

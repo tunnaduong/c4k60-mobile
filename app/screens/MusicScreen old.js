@@ -14,7 +14,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../components/UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import io from "socket.io-client";

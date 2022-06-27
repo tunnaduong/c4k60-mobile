@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { CommonActions } from "@react-navigation/native";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../components/UserAvatar";
 
 export default class MenuScreen extends React.Component {
   constructor() {

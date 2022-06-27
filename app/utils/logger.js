@@ -1,4 +1,4 @@
 export default function Logger(props) {
-  console.log(`${props.label} rendered ${props.times} times`);
+  console.log(`${props.label} rendered `);
   return null; // what is returned here is irrelevant...
 }

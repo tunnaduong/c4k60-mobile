@@ -18,7 +18,7 @@ import {
   Animated,
   ScrollView,
 } from "react-native";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../components/UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
 import io from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";

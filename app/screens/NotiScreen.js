@@ -17,7 +17,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Badge } from "react-native-elements";
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../components/UserAvatar";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImageView from "react-native-image-viewing";
