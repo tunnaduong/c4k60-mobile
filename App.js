@@ -1,40 +1,47 @@
-import React, { useEffect, useRef } from "react";
-import {
-  StatusBar,
-  KeyboardAvoidingView,
-  ScrollView,
-  Text,
-  Image,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-  Dimensions,
-  Pressable,
-  TextInput,
-  Platform,
-} from "react-native";
-import LoadingScreen from "./app/screens/LoadingScreen";
-import WelcomeScreen from "./app/screens/WelcomeScreen";
-import LoginScreen from "./app/screens/LoginScreen";
-import SignupScreen from "./app/screens/SignupScreen";
-import HomeScreen from "./app/screens/HomeScreen";
-import NotiScreen from "./app/screens/NotiScreen";
-import MusicScreen from "./app/screens/MusicScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Test from "./app/screens/Test";
-import Logger from "./app/utils/logger";
-import { LogBox } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import moment from "moment";
+import React, { useEffect, useRef } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  LogBox,
+  Platform,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import CommentChat from "./app/components/CommentChat";
+import UserAvatar from "./app/components/UserAvatar";
+import UserFullName from "./app/components/UserFullName";
 import config from "./app/configurations/config";
-import { List } from "react-native-paper";
-import { FAB } from "react-native-paper";
-import { Modal, Portal, Provider } from "react-native-paper";
-import UserAvatar from "./app/screens/UserAvatar";
-import { SafeAreaView } from "react-native-web";
-// import { HomeScreen } from "./app/screens/HomeScreen copy";
+import ChatScreen from "./app/screens/ChatScreen";
+import HomeScreen from "./app/screens/HomeScreen";
+import LoadingScreen from "./app/screens/LoadingScreen";
+import LoginScreen from "./app/screens/LoginScreen";
+import MenuScreen from "./app/screens/MenuScreen";
+import MusicScreen from "./app/screens/MusicScreen";
+import NewsfeedScreen from "./app/screens/NewsfeedScreen";
+import NotificationScreen from "./app/screens/NotificationScreen";
+import NotiScreen from "./app/screens/NotiScreen";
+import SignupScreen from "./app/screens/SignupScreen";
+import Test from "./app/screens/Test";
+import WelcomeScreen from "./app/screens/WelcomeScreen";
+import Logger from "./app/utils/logger";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -45,141 +52,200 @@ LogBox.ignoreLogs([
   "JSON Parse error: Unrecognized token '<'",
 ]);
 
+LogBox.ignoreLogs([
+  "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function",
+]);
+
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const inputText = useRef();
+  const [usrname, setUsername] = React.useState("");
+
+  const getData = async () => {
+    const username = await AsyncStorage.getItem("username");
+    if (username !== null) {
+      setUsername(username);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const inputText = React.createRef();
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
-    const [torf, setTrueOrFalse] = React.useState(false);
+    // const [torf, setTrueOrFalse] = React.useState(false);
 
     const ChatComponent = () => {
+      const [chatData, setChatData] = React.useState([]);
+      const [refreshing, setRefreshing] = React.useState(false);
+
+      useEffect(() => {
+        getChatLogs();
+      }, []);
+
+      const getChatLogs = async () => {
+        const response = await axios.get(
+          "https://api.c4k60.com/v1.0/radio/chatlogs"
+        );
+        setChatData(response.data.items);
+        return response.data;
+      };
+
       return (
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          keyboardVerticalOffset={
-            Platform.OS === "ios"
-              ? Dimensions.get("screen").height > 667
-                ? 182
-                : 170
-              : 0
-          }
-        >
-          <ScrollView style={{ flex: 1 }}></ScrollView>
-          <View
-            style={{
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: -2,
-              },
-              shadowOpacity: 0.23,
-              shadowRadius: 2.62,
-              elevation: 4,
-              backgroundColor: "white",
-            }}
+        <>
+          <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : null}
+            keyboardVerticalOffset={
+              Platform.OS === "ios"
+                ? Dimensions.get("screen").height > 667
+                  ? 402
+                  : 382
+                : 0
+            }
           >
-            <View
-              style={{
-                paddingTop: 10,
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingBottom: 10,
-                width: "100%",
-                backgroundColor: "#F2F2F1",
-                paddingBottom:
-                  Platform.OS === "ios"
-                    ? Dimensions.get("screen").height > 667
-                      ? 25
-                      : 10
-                    : 10,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <UserAvatar
-                  username={"tunganh"}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 50,
-                    marginRight: 10,
+            <ScrollView
+              style={{ flex: 1, paddingTop: 10, paddingBottom: 10 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => {
+                    setRefreshing(true);
+                    getChatLogs().then(() => {
+                      setTimeout(() => {
+                        setRefreshing(false);
+                      }, 750);
+                    });
                   }}
                 />
-                <Pressable
-                  style={{
-                    backgroundColor: "#DFDEDD",
-                    height: 40,
-                    width: "79%",
-                    borderRadius: 50,
-                    padding: 7,
-                    paddingLeft: 13,
-                    flexDirection: "row",
-                    flex: 1,
-                  }}
-                  onPress={() => {
-                    setTrueOrFalse(true);
-                    // inputText.current.focus();
-                    // if (Platform.OS == "ios") {
-                    setTimeout(() => inputText.current.focus(), 50);
-                    // } else if (torf == true) {
-                    //   setTimeout(() => inputText.current.focus(), 1000);
-                    // }
-                  }}
-                >
-                  <View pointerEvents="none" style={{ flex: 1 }}>
-                    <TextInput
-                      ref={inputText}
-                      style={
-                        Platform.OS === "web"
-                          ? {
-                              fontSize: 14,
-                              flex: 1,
-                              lineHeight: 25,
-                            }
-                          : {
-                              fontSize: 14,
-                              flex: 1,
-                            }
-                      }
-                      placeholder="Nhập bình luận..."
-                      multiline={true}
-                      onFocus={() => {
-                        Platform.OS == "android" && setTrueOrFalse(true);
+              }
+            >
+              {chatData.map((item) => {
+                if (item.msg_type == "user_join") {
+                  return (
+                    <View
+                      style={{
+                        alignItems: "center",
+                        marginTop: 10,
+                        marginBottom: 10,
                       }}
-                      onBlur={() => setTrueOrFalse(false)}
-                    ></TextInput>
-                  </View>
-                  <Ionicons
-                    style={{
-                      textAlign: "right",
-                      paddingLeft: 5,
-                      paddingRight: 5,
-                    }}
-                    name={"camera-outline"}
-                    size={25}
-                  />
-                </Pressable>
-                <Pressable
-                  style={{
-                    alignItems: "center",
-                    paddingLeft: 10,
-                  }}
-                >
-                  <Ionicons name={"send"} size={25} color={"#007AFF"} />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
+                      key={item.id}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "white",
+                          padding: 6.5,
+                          borderRadius: "50%",
+                          overflow: "hidden",
+                          borderWidth: 0.5,
+                          borderStyle: "solid",
+                          borderColor: "gray",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <UserAvatar
+                          username={item.thumbnail.split("user:")[1]}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 15,
+                            marginRight: 5,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            fontWeight: "500",
+                            fontSize: 12,
+                            alignSelf: "center",
+                          }}
+                        >
+                          {item.msg}
+                        </Text>
+                        <Text
+                          style={{
+                            fontWeight: "300",
+                            fontSize: 12,
+                            alignSelf: "center",
+                          }}
+                        >
+                          {" "}
+                          đã tham gia!
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                } else if (item.msg_type == "chat") {
+                  return (
+                    <TouchableHighlight
+                      underlayColor="rgba(0, 0, 0, .15)"
+                      key={item.id}
+                      onPress={() => null}
+                    >
+                      <View
+                        style={{
+                          margin: 10,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <UserAvatar
+                          username={item.thumbnail.split("user:")[1]}
+                          style={{
+                            width: 35,
+                            height: 35,
+                            borderRadius: 25,
+                            marginRight: 10,
+                            alignItems: "flex-start",
+                          }}
+                        />
+                        <View style={{ flex: 1 }}>
+                          <View style={{ flexDirection: "row" }}>
+                            <UserFullName
+                              style={{
+                                fontWeight: "700",
+                                marginBottom: 3,
+                              }}
+                              username={item.created_by}
+                            />
+
+                            <Text
+                              style={{
+                                fontSize: 10,
+                                lineHeight: 19,
+                                color: "gray",
+                              }}
+                            >
+                              {"  "}
+                              {moment(item.time).calendar()}
+                            </Text>
+                          </View>
+                          <View style={{ flexDirection: "row" }}>
+                            <Text
+                              style={{
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              {item.msg}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </TouchableHighlight>
+                  );
+                }
+              })}
+            </ScrollView>
+            <CommentChat
+              username={usrname}
+              placeholderText={"Nhập tin nhắn..."}
+              ref={inputText}
+            />
+          </KeyboardAvoidingView>
+        </>
       );
     };
 
@@ -486,89 +552,326 @@ function App() {
     };
 
     return (
-      <MusicScreen
-        childToParent={childToParent}
-        keyboardSummon={torf}
-        tab={
-          <>
-            <Tab.Navigator
-              screenOptions={{
-                tabBarLabelStyle: { fontSize: 12 },
-                tabBarItemStyle: { minHeight: 10, maxHeight: 75 },
-                tabBarStyle: { minHeight: 10, maxHeight: 75 },
-                tabBarShowLabel: false,
-                tabBarIndicatorStyle: { backgroundColor: "#007AFF" },
-              }}
-              style={{ height: "100%" }}
-            >
-              <Tab.Screen
-                name="Tiếp theo"
-                component={QueueComponent}
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons name={"list"} color={color} size={22} />
-                  ),
+      <>
+        <MusicScreen
+          childToParent={childToParent}
+          // keyboardSummon={torf}
+          tab={
+            <>
+              <Tab.Navigator
+                screenOptions={{
+                  tabBarLabelStyle: { fontSize: 12 },
+                  tabBarItemStyle: { minHeight: 10, maxHeight: 75 },
+                  tabBarStyle: { minHeight: 10, maxHeight: 75 },
+                  tabBarShowLabel: false,
+                  tabBarIndicatorStyle: { backgroundColor: "#007AFF" },
                 }}
                 style={{ height: "100%" }}
-              />
-              <Tab.Screen
-                name="Chat"
-                component={ChatComponent}
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons
-                      name={"chatbox-ellipses"}
-                      color={color}
-                      size={22}
-                    />
-                  ),
+              >
+                <Tab.Screen
+                  name="Tiếp theo"
+                  component={QueueComponent}
+                  options={{
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons name={"list"} color={color} size={22} />
+                    ),
+                  }}
+                  style={{ height: "100%" }}
+                />
+                <Tab.Screen
+                  name="Chat"
+                  component={ChatComponent}
+                  options={{
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons
+                        name={"chatbox-ellipses"}
+                        color={color}
+                        size={22}
+                      />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Bạn bè đang xem"
+                  component={TestingComponent}
+                  options={{
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons name={"people"} color={color} size={22} />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Tìm bài hát"
+                  component={TestingComponent}
+                  options={{
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons name={"search"} color={color} size={22} />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="Lời bài hát"
+                  component={TestingComponent}
+                  options={{
+                    tabBarIcon: ({ color }) => (
+                      <Ionicons name={"text"} color={color} size={22} />
+                    ),
+                  }}
+                />
+              </Tab.Navigator>
+              <FAB
+                style={{
+                  position: "absolute",
+                  margin: 16,
+                  right: 0,
+                  bottom: 75,
+                  backgroundColor: "#FF5674",
                 }}
+                icon="heart"
+                onPress={() => console.log("Pressed")}
               />
-              <Tab.Screen
-                name="Bạn bè đang xem"
-                component={TestingComponent}
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons name={"people"} color={color} size={22} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Tìm bài hát"
-                component={TestingComponent}
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons name={"search"} color={color} size={22} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Lời bài hát"
-                component={TestingComponent}
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons name={"text"} color={color} size={22} />
-                  ),
-                }}
-              />
-            </Tab.Navigator>
-            <FAB
-              style={{
-                position: "absolute",
-                margin: 16,
-                right: 0,
-                bottom: 75,
-                backgroundColor: "#FF5674",
-              }}
-              icon="heart"
-              onPress={() => console.log("Pressed")}
-            />
-          </>
-        }
-        {...props}
-      />
+            </>
+          }
+          {...props}
+        />
+      </>
     );
   };
+
+  const HomeScreenNew = () => {
+    const Tab = createBottomTabNavigator();
+    return (
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Newsfeed") {
+              iconName = focused ? "newspaper" : "newspaper-outline";
+            } else if (route.name === "Chat") {
+              iconName = focused ? "chatbubble" : "chatbubble-outline";
+            } else if (route.name === "Notifications") {
+              iconName = focused ? "notifications" : "notifications-outline";
+            } else if (route.name === "Menu") {
+              iconName = focused ? "menu" : "menu-outline";
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: () => {
+              return null;
+            },
+            headerShown: false,
+            headerBackButtonMenuEnabled: false,
+          }}
+        />
+        <Tab.Screen
+          name="Newsfeed"
+          component={NewsfeedScreen}
+          options={{
+            headerTitle: () => {
+              return null;
+            },
+            tabBarLabel: () => {
+              return null;
+            },
+            headerShown: true,
+            headerLeft: () => (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                  }}
+                >
+                  <Image
+                    style={{ width: 100, height: 35 }}
+                    source={require("./app/assets/logo.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            ),
+            headerRight: () => (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    marginRight: 13,
+                    backgroundColor: "rgba(0,0,0,0.10)",
+                    padding: 5,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    borderRadius: 100,
+                    marginBottom: 5,
+                  }}
+                >
+                  <Ionicons name="search" size={23} color={"black"} />
+                </View>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Chat"
+          component={ChatScreen}
+          options={{
+            title: () => {
+              return null;
+            },
+            headerShown: true,
+            headerTitleAlign: "left",
+            headerRight: () => (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    marginRight: 13,
+                    backgroundColor: "rgba(0,0,0,0.10)",
+                    padding: 5,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    borderRadius: 100,
+                    marginBottom: 5,
+                  }}
+                >
+                  <Ionicons name="create-outline" size={23} color={"black"} />
+                </View>
+              </TouchableOpacity>
+            ),
+            headerStyle: {
+              shadowColor: "transparent",
+              borderBottomWidth: 0,
+            },
+            headerTitle: (
+              props // App Logo
+            ) => (
+              <React.Fragment>
+                <View style={{ justifyContent: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                    Chat
+                  </Text>
+                </View>
+              </React.Fragment>
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Notifications"
+          component={NotificationScreen}
+          options={{
+            title: () => {
+              return null;
+            },
+            headerShown: true,
+            headerTitleAlign: "left",
+            headerRight: () => (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    marginRight: 13,
+                    backgroundColor: "rgba(0,0,0,0.10)",
+                    padding: 5,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    borderRadius: 100,
+                    marginBottom: 5,
+                  }}
+                >
+                  <Ionicons name="search" size={23} color={"black"} />
+                </View>
+              </TouchableOpacity>
+            ),
+            headerStyle: {
+              shadowColor: "transparent",
+              borderBottomWidth: 0,
+            },
+            headerTitle: (
+              props // App Logo
+            ) => (
+              <React.Fragment>
+                <View style={{ justifyContent: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                    Thông báo
+                  </Text>
+                </View>
+              </React.Fragment>
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Menu"
+          component={MenuScreen}
+          options={{
+            title: () => {
+              return null;
+            },
+            headerShown: true,
+            headerTitleAlign: "left",
+            headerRight: () => (
+              <TouchableOpacity>
+                <View
+                  style={{
+                    marginRight: 13,
+                    backgroundColor: "rgba(0,0,0,0.10)",
+                    padding: 5,
+                    paddingLeft: 6,
+                    paddingRight: 6,
+                    borderRadius: 100,
+                    marginBottom: 5,
+                  }}
+                >
+                  <Ionicons name="search" size={23} color={"black"} />
+                </View>
+              </TouchableOpacity>
+            ),
+            headerStyle: {
+              shadowColor: "transparent",
+              borderBottomWidth: 0,
+            },
+            headerTitle: (
+              props // App Logo
+            ) => (
+              <React.Fragment>
+                <View style={{ justifyContent: "flex-start" }}>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                    Menu
+                  </Text>
+                </View>
+              </React.Fragment>
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    );
+  };
+
   StatusBar.setBarStyle("dark-content", true);
   return (
     <NavigationContainer>
@@ -609,7 +912,7 @@ function App() {
             gestureEnabled: false,
           }}
           name="MainScreen"
-          component={HomeScreen}
+          component={HomeScreenNew}
         />
         <Stack.Screen
           options={{
