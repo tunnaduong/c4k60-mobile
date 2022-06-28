@@ -22,6 +22,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
+  AppState,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -40,6 +41,8 @@ import NotificationScreen from "./app/screens/NotificationScreen";
 import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
+import io from "socket.io-client";
+import localStorage from "react-native-sync-localstorage";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -57,207 +60,290 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [usrname, setUsername] = React.useState("");
+  const inputText = React.useRef(null);
 
-  const getData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    if (username !== null) {
-      setUsername(username);
+  const socket = io("ws://" + baseBackendServerURL + "/");
+  socket.connect();
+  socket.on("connect", () => {
+    console.log("Connected to socket server from App.js");
+  });
+
+  //   useEffect(() => {
+  //     AppState.addEventListener('change', handleAppStateChange);
+
+  //     return () => {
+  //       AppState.removeEventListener('change', handleAppStateChange);
+  //     };
+  //  }, []);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (nextAppState === "inactive") {
+      console.log("the app is closed");
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const inputText = React.createRef();
-
   const TestingComponent = () => <Text>Tung Anh</Text>;
+
+  const ChatComponent = React.memo(() => {
+    const [usrname, setUsername] = React.useState("");
+
+    const getData = async () => {
+      const username = await AsyncStorage.getItem("username");
+      if (username !== null) {
+        setUsername(username);
+      }
+    };
+
+    const [chatData, setChatData] = React.useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const [currentInputText, setCurrentInputText] = React.useState("");
+
+    const scrollViewRef = useRef();
+    useEffect(() => {
+      getData();
+      getChatLogs();
+    }, []);
+
+    const getChatLogs = async () => {
+      const response = await axios.get(
+        "https://api.c4k60.com/v1.0/radio/chatlogs"
+      );
+      setChatData(response.data.items);
+      // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
+      // console.log(
+      //   "data: " + JSON.parse(localStorage.getItem("chat-data"))[0].msg
+      // );
+      return response.data;
+    };
+
+    const sendChat = async (created_by, msg_type, message, thumbnail) => {
+      if (message == "") return;
+      try {
+        const response = await axios.post(
+          "https://api.c4k60.com/v1.0/radio/chatlogs/",
+          {
+            by: created_by,
+            msg_type: msg_type,
+            message: message,
+            thumbnail: thumbnail,
+          }
+        );
+        return response.data.code;
+      } catch (err) {
+        // console.log(err);
+      }
+    };
+
+    const submit = () => {
+      sendChat(usrname, "chat", currentInputText, "user:" + usrname).then(
+        (res) => {
+          setCurrentInputText("");
+          getChatLogs();
+          if (res == 200) {
+            console.log("200 OK sending refresh");
+            sendRefresh();
+          }
+        }
+      );
+    };
+
+    const sendRefresh = async () => {
+      const response = await axios.get(
+        "http://" + baseBackendServerURL + "/admin/api/client/refresh/"
+      );
+      return response.data;
+    };
+
+    const rend = () => {
+      return chatData.map((item) => {
+        if (item.msg_type == "user_join") {
+          return (
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+              key={item.id}
+            >
+              <View
+                style={{
+                  backgroundColor: "white",
+                  padding: 6.5,
+                  borderRadius: 30,
+                  overflow: "hidden",
+                  borderWidth: 0.5,
+                  borderStyle: "solid",
+                  borderColor: "gray",
+                  flexDirection: "row",
+                }}
+              >
+                <UserAvatar
+                  username={item.thumbnail.split("user:")[1]}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 15,
+                    marginRight: 5,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontWeight: "500",
+                    fontSize: 12,
+                    alignSelf: "center",
+                  }}
+                >
+                  {item.msg}
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: "300",
+                    fontSize: 12,
+                    alignSelf: "center",
+                  }}
+                >
+                  {" "}
+                  đã tham gia!
+                </Text>
+              </View>
+            </View>
+          );
+        } else if (item.msg_type == "chat") {
+          return (
+            <TouchableHighlight
+              underlayColor="rgba(0, 0, 0, .15)"
+              key={item.id}
+              onPress={() => null}
+            >
+              <View
+                style={{
+                  margin: 10,
+                  flexDirection: "row",
+                }}
+              >
+                <UserAvatar
+                  username={item.thumbnail.split("user:")[1]}
+                  style={{
+                    width: 35,
+                    height: 35,
+                    borderRadius: 25,
+                    marginRight: 10,
+                    alignItems: "flex-start",
+                  }}
+                />
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: "row" }}>
+                    <UserFullName
+                      style={{
+                        fontWeight: "700",
+                        marginBottom: 3,
+                      }}
+                      username={item.created_by}
+                    />
+
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: "gray",
+                        alignSelf: "flex-end",
+                        paddingBottom: 4.5,
+                      }}
+                    >
+                      {"  "}
+                      {moment(item.time).calendar()}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text
+                      style={{
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {item.msg}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableHighlight>
+          );
+        }
+      });
+    };
+
+    return (
+      <>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          keyboardVerticalOffset={
+            Platform.OS === "ios"
+              ? Dimensions.get("screen").height > 667
+                ? 402
+                : 382
+              : 0
+          }
+        >
+          <ScrollView
+            ref={scrollViewRef}
+            style={{
+              flex: 1,
+              paddingTop: 10,
+              // paddingBottom: 10,
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                title="Tải thêm tin nhắn..."
+                onRefresh={() => {
+                  setRefreshing(true);
+                  getChatLogs().then(() => {
+                    setTimeout(() => {
+                      setRefreshing(false);
+                    }, 750);
+                  });
+                }}
+              />
+            }
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "flex-end",
+              flexDirection: "column",
+            }}
+            onContentSizeChange={() => {
+              scrollViewRef.current.scrollToEnd({ animated: false });
+            }}
+          >
+            <View style={{ marginBottom: 15 }}>{rend()}</View>
+          </ScrollView>
+          <CommentChat
+            username={usrname}
+            placeholderText={"Nhập tin nhắn..."}
+            ref={inputText}
+            value={currentInputText}
+            onChangeText={(text) => {
+              setCurrentInputText(text);
+            }}
+            onSubmit={submit}
+            onUpload={() => {
+              return null;
+            }}
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key == "Enter") {
+                submit();
+              }
+            }}
+          />
+        </KeyboardAvoidingView>
+      </>
+    );
+  });
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
     // const [torf, setTrueOrFalse] = React.useState(false);
 
-    const ChatComponent = () => {
-      const [chatData, setChatData] = React.useState([]);
-      const [refreshing, setRefreshing] = React.useState(false);
-
-      useEffect(() => {
-        getChatLogs();
-      }, []);
-
-      const getChatLogs = async () => {
-        const response = await axios.get(
-          "https://api.c4k60.com/v1.0/radio/chatlogs"
-        );
-        setChatData(response.data.items);
-        return response.data;
-      };
-
-      return (
-        <>
-          <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : null}
-            keyboardVerticalOffset={
-              Platform.OS === "ios"
-                ? Dimensions.get("screen").height > 667
-                  ? 402
-                  : 382
-                : 0
-            }
-          >
-            <ScrollView
-              style={{
-                flex: 1,
-                paddingTop: 10,
-                paddingBottom: 10,
-              }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => {
-                    setRefreshing(true);
-                    getChatLogs().then(() => {
-                      setTimeout(() => {
-                        setRefreshing(false);
-                      }, 750);
-                    });
-                  }}
-                />
-              }
-              contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: "flex-end",
-                flexDirection: "column",
-              }}
-            >
-              {chatData.map((item) => {
-                if (item.msg_type == "user_join") {
-                  return (
-                    <View
-                      style={{
-                        alignItems: "center",
-                        marginTop: 10,
-                        marginBottom: 10,
-                      }}
-                      key={item.id}
-                    >
-                      <View
-                        style={{
-                          backgroundColor: "white",
-                          padding: 6.5,
-                          borderRadius: 30,
-                          overflow: "hidden",
-                          borderWidth: 0.5,
-                          borderStyle: "solid",
-                          borderColor: "gray",
-                          flexDirection: "row",
-                        }}
-                      >
-                        <UserAvatar
-                          username={item.thumbnail.split("user:")[1]}
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 15,
-                            marginRight: 5,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontWeight: "500",
-                            fontSize: 12,
-                            alignSelf: "center",
-                          }}
-                        >
-                          {item.msg}
-                        </Text>
-                        <Text
-                          style={{
-                            fontWeight: "300",
-                            fontSize: 12,
-                            alignSelf: "center",
-                          }}
-                        >
-                          {" "}
-                          đã tham gia!
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                } else if (item.msg_type == "chat") {
-                  return (
-                    <TouchableHighlight
-                      underlayColor="rgba(0, 0, 0, .15)"
-                      key={item.id}
-                      onPress={() => null}
-                    >
-                      <View
-                        style={{
-                          margin: 10,
-                          flexDirection: "row",
-                        }}
-                      >
-                        <UserAvatar
-                          username={item.thumbnail.split("user:")[1]}
-                          style={{
-                            width: 35,
-                            height: 35,
-                            borderRadius: 25,
-                            marginRight: 10,
-                            alignItems: "flex-start",
-                          }}
-                        />
-                        <View style={{ flex: 1 }}>
-                          <View style={{ flexDirection: "row" }}>
-                            <UserFullName
-                              style={{
-                                fontWeight: "700",
-                                marginBottom: 3,
-                              }}
-                              username={item.created_by}
-                            />
-
-                            <Text
-                              style={{
-                                fontSize: 10,
-                                color: "gray",
-                                alignSelf: "flex-end",
-                                paddingBottom: 4.5,
-                              }}
-                            >
-                              {"  "}
-                              {moment(item.time).calendar()}
-                            </Text>
-                          </View>
-                          <View style={{ flexDirection: "row" }}>
-                            <Text
-                              style={{
-                                flexWrap: "wrap",
-                              }}
-                            >
-                              {item.msg}
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </TouchableHighlight>
-                  );
-                }
-              })}
-            </ScrollView>
-            <CommentChat
-              username={usrname}
-              placeholderText={"Nhập tin nhắn..."}
-              ref={inputText}
-            />
-          </KeyboardAvoidingView>
-        </>
-      );
-    };
-
-    const QueueComponent = () => {
+    const QueueComponent = React.memo(() => {
       const [visible, setVisible] = React.useState(false);
       const [activeVideo, setActiveVideo] = React.useState(1);
 
@@ -553,7 +639,7 @@ function App() {
           </KeyboardAvoidingView>
         </Provider>
       );
-    };
+    });
 
     const childToParent = (childdata) => {
       setData(childdata);
@@ -879,6 +965,13 @@ function App() {
       </Tab.Navigator>
     );
   };
+
+  useEffect(() => {
+    return () => {
+      socket.disconnect();
+      console.log("User exited from App.js");
+    };
+  }, []);
 
   StatusBar.setBarStyle("dark-content", true);
   return (

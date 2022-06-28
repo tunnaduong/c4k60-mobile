@@ -4,7 +4,18 @@ import UserAvatar from "./UserAvatar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const CommentChat = React.forwardRef(
-  ({ username, placeholderText, onSubmit, onUpload }, ref) => {
+  (
+    {
+      username,
+      placeholderText,
+      onSubmit,
+      onUpload,
+      onChangeText,
+      value,
+      onKeyPress,
+    },
+    ref
+  ) => {
     return (
       <View
         style={{
@@ -77,6 +88,9 @@ const CommentChat = React.forwardRef(
                 placeholder={placeholderText}
                 multiline={true}
                 ref={ref}
+                onChangeText={onChangeText}
+                value={value}
+                onKeyPress={onKeyPress}
               ></TextInput>
               <TouchableOpacity onPress={onUpload}>
                 <Ionicons

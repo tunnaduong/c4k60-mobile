@@ -41,7 +41,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const style = require("../global/style");
 
-export default function MusicScreen({ tab, childToParent, keyboardSummon }) {
+function MusicScreen({ tab, childToParent, keyboardSummon }) {
   const [elapsedState, setElapsed] = React.useState(100);
   const [video, setVideo] = React.useState("");
   const [playing, setPlaying] = React.useState(true);
@@ -92,7 +92,6 @@ export default function MusicScreen({ tab, childToParent, keyboardSummon }) {
     syncWithServer();
     return () => {
       socket.emit("discon", myGlobalObj.username);
-      socket.disconnect();
       setPlaying(false);
       console.log("User exited");
     };
@@ -442,3 +441,5 @@ export default function MusicScreen({ tab, childToParent, keyboardSummon }) {
     </>
   );
 }
+
+export default React.memo(MusicScreen);

@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import axios from "axios";
 
-export default function UserFullName({ username, style }) {
+const UserFullName = React.memo(function UserFullName({ username, style }) {
   const [name, setName] = React.useState("");
 
   const getName = async () => {
@@ -11,12 +11,12 @@ export default function UserFullName({ username, style }) {
         username: username,
       });
       setName(response.data.info.full_name);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   getName();
 
   return <Text style={style}>{name}</Text>;
-}
+});
+
+export default UserFullName;
