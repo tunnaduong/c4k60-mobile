@@ -4,7 +4,6 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
-  TransitionPresets,
   CardStyleInterpolators,
 } from "@react-navigation/stack";
 import axios from "axios";
@@ -27,6 +26,7 @@ import {
   TouchableOpacity,
   View,
   AppState,
+  ImageBackground,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -46,6 +46,7 @@ import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import SearchScreen from "./app/screens/SearchScreen";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -61,6 +62,9 @@ LogBox.ignoreLogs([
 ]);
 
 const Stack = createStackNavigator();
+
+const statusBarHeight =
+  Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
 
 function App() {
   const inputText = React.useRef(null);
@@ -722,7 +726,92 @@ function App() {
     );
   };
 
-  const HomeScreenNew = () => {
+  const SameHeader = ({ title, icon, action, havingBorder, havingIcon }) => {
+    return (
+      <>
+        <View
+          style={
+            havingBorder
+              ? {
+                  width: "100%",
+                  height: statusBarHeight + 45,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  backgroundColor: "white",
+                  borderBottomWidth: 0.2,
+                  borderColor: "rgba(0,0,0,0.2)",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 0,
+                  },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 2,
+                  elevation: 7,
+                }
+              : {
+                  width: "100%",
+                  height: statusBarHeight + 45,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  backgroundColor: "white",
+                }
+          }
+        >
+          {havingIcon ? (
+            <TouchableOpacity style={{ marginTop: statusBarHeight }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 10,
+                  marginTop: 1.8,
+                }}
+              >
+                <Image
+                  style={{ width: 100, height: 35 }}
+                  source={require("./app/assets/logo.png")}
+                  resizeMode="contain"
+                />
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "bold",
+                textAlign: "left",
+                marginTop: statusBarHeight,
+                marginLeft: 15,
+              }}
+            >
+              {title}
+            </Text>
+          )}
+          <TouchableOpacity
+            onPress={action}
+            style={{ marginTop: statusBarHeight }}
+          >
+            <View
+              style={{
+                marginRight: 13,
+                backgroundColor: "rgba(0,0,0,0.10)",
+                padding: 5,
+                paddingLeft: 6,
+                paddingRight: 6,
+                borderRadius: 100,
+                marginBottom: 5,
+              }}
+            >
+              <Ionicons name={icon} size={23} color={"black"} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+
+  const HomeScreenNew = ({ navigation }) => {
     const Tab = createBottomTabNavigator();
     return (
       <Tab.Navigator
@@ -754,8 +843,64 @@ function App() {
             title: () => {
               return null;
             },
-            headerShown: false,
+            headerShown: true,
             headerBackButtonMenuEnabled: false,
+            header: () => {
+              return (
+                <>
+                  <ImageBackground
+                    source={require("./app/assets/headerBg.png")}
+                    style={{
+                      width: "100%",
+                      height: statusBarHeight + 45,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TouchableOpacity style={{ marginTop: statusBarHeight }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 10,
+                          marginTop: 1.8,
+                        }}
+                      >
+                        <Image
+                          style={{ width: 100, height: 35 }}
+                          source={require("./app/assets/logo.png")}
+                          resizeMode="contain"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("SearchScreen");
+                      }}
+                      style={{ marginTop: statusBarHeight }}
+                    >
+                      <View
+                        style={{
+                          marginRight: 13,
+                          backgroundColor: "rgba(255,255,255,0.20)",
+                          padding: 5,
+                          paddingLeft: 6,
+                          paddingRight: 6,
+                          borderRadius: 100,
+                          marginBottom: 5,
+                        }}
+                      >
+                        <Ionicons name="search" size={23} color={"white"} />
+                      </View>
+                    </TouchableOpacity>
+                  </ImageBackground>
+                </>
+              );
+            },
+            headerStyle: {
+              shadowColor: "transparent",
+              borderBottomWidth: 0,
+            },
           }}
         />
         <Tab.Screen
@@ -769,40 +914,16 @@ function App() {
               return null;
             },
             headerShown: true,
-            headerLeft: () => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 10,
-                  }}
-                >
-                  <Image
-                    style={{ width: 100, height: 35 }}
-                    source={require("./app/assets/logo.png")}
-                    resizeMode="contain"
-                  />
-                </View>
-              </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    marginRight: 13,
-                    backgroundColor: "rgba(0,0,0,0.10)",
-                    padding: 5,
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    borderRadius: 100,
-                    marginBottom: 5,
-                  }}
-                >
-                  <Ionicons name="search" size={23} color={"black"} />
-                </View>
-              </TouchableOpacity>
-            ),
+            header: () => {
+              return (
+                <SameHeader
+                  icon="search"
+                  action={() => navigation.navigate("SearchScreen")}
+                  havingBorder
+                  havingIcon
+                />
+              );
+            },
           }}
         />
         <Tab.Screen
@@ -814,44 +935,17 @@ function App() {
             },
             headerShown: true,
             headerTitleAlign: "left",
-            headerRight: () => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    marginRight: 13,
-                    backgroundColor: "rgba(0,0,0,0.10)",
-                    padding: 5,
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    borderRadius: 100,
-                    marginBottom: 5,
+            header: () => {
+              return (
+                <SameHeader
+                  title="Chat"
+                  icon="create-outline"
+                  action={() => {
+                    console.log("pressed");
                   }}
-                >
-                  <Ionicons name="create-outline" size={23} color={"black"} />
-                </View>
-              </TouchableOpacity>
-            ),
-            headerStyle: {
-              shadowColor: "transparent",
-              borderBottomWidth: 0,
+                />
+              );
             },
-            headerTitle: (
-              props // App Logo
-            ) => (
-              <React.Fragment>
-                <View style={{ justifyContent: "flex-start" }}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      fontWeight: "bold",
-                      textAlign: "left",
-                    }}
-                  >
-                    Chat
-                  </Text>
-                </View>
-              </React.Fragment>
-            ),
           }}
         />
         <Tab.Screen
@@ -863,44 +957,15 @@ function App() {
             },
             headerShown: true,
             headerTitleAlign: "left",
-            headerRight: () => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    marginRight: 13,
-                    backgroundColor: "rgba(0,0,0,0.10)",
-                    padding: 5,
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    borderRadius: 100,
-                    marginBottom: 5,
-                  }}
-                >
-                  <Ionicons name="search" size={23} color={"black"} />
-                </View>
-              </TouchableOpacity>
-            ),
-            headerStyle: {
-              shadowColor: "transparent",
-              borderBottomWidth: 0,
+            header: () => {
+              return (
+                <SameHeader
+                  title="Thông báo"
+                  icon="search"
+                  action={() => navigation.navigate("SearchScreen")}
+                />
+              );
             },
-            headerTitle: (
-              props // App Logo
-            ) => (
-              <React.Fragment>
-                <View style={{ justifyContent: "flex-start" }}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      fontWeight: "bold",
-                      textAlign: "left",
-                    }}
-                  >
-                    Thông báo
-                  </Text>
-                </View>
-              </React.Fragment>
-            ),
           }}
         />
         <Tab.Screen
@@ -912,44 +977,15 @@ function App() {
             },
             headerShown: true,
             headerTitleAlign: "left",
-            headerRight: () => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    marginRight: 13,
-                    backgroundColor: "rgba(0,0,0,0.10)",
-                    padding: 5,
-                    paddingLeft: 6,
-                    paddingRight: 6,
-                    borderRadius: 100,
-                    marginBottom: 5,
-                  }}
-                >
-                  <Ionicons name="search" size={23} color={"black"} />
-                </View>
-              </TouchableOpacity>
-            ),
-            headerStyle: {
-              shadowColor: "transparent",
-              borderBottomWidth: 0,
+            header: () => {
+              return (
+                <SameHeader
+                  title="Menu"
+                  icon="search"
+                  action={() => navigation.navigate("SearchScreen")}
+                />
+              );
             },
-            headerTitle: (
-              props // App Logo
-            ) => (
-              <React.Fragment>
-                <View style={{ justifyContent: "flex-start" }}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      fontWeight: "bold",
-                      textAlign: "left",
-                    }}
-                  >
-                    Menu
-                  </Text>
-                </View>
-              </React.Fragment>
-            ),
           }}
         />
       </Tab.Navigator>
@@ -1012,7 +1048,6 @@ function App() {
             headerBackTitle: "",
             title: "Nghe nhạc cùng nhau",
             headerShown: true,
-            cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
           }}
           name="MusicScreen"
           component={Music}
@@ -1030,7 +1065,7 @@ function App() {
           options={{
             title: "Tìm kiếm",
             headerShown: false,
-            // gestureEnabled: true,
+            gestureEnabled: false,
             cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
             transitionSpec: {
               open: configAni,

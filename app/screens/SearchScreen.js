@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableHighlight,
   ScrollView,
+  StatusBar,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -20,7 +21,7 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
       <View style={styles.topBar}>
         <TouchableHighlight
           style={styles.backButton}
@@ -60,7 +61,8 @@ export default function SearchScreen({ navigation }) {
             style={styles.image}
           />
           <Text style={{ textAlign: "center", fontSize: 16, color: "gray" }}>
-            Thử bắt đầu bằng cách tìm kiếm thông báo, bạn bè, số điện thoại...
+            Thử bắt đầu bằng cách tìm kiếm thông báo lớp, bạn bè, số điện
+            thoại...
           </Text>
         </View>
       </ScrollView>
