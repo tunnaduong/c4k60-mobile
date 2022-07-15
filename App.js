@@ -2,7 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+  CardStyleInterpolators,
+} from "@react-navigation/stack";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
@@ -41,8 +45,7 @@ import NotificationScreen from "./app/screens/NotificationScreen";
 import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
-import io from "socket.io-client";
-import localStorage from "react-native-sync-localstorage";
+import SearchScreen from "./app/screens/SearchScreen";
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -57,30 +60,17 @@ LogBox.ignoreLogs([
   "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function",
 ]);
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 function App() {
   const inputText = React.useRef(null);
 
-  // const socket = io("ws://" + baseBackendServerURL + "/");
-  // socket.connect();
-  // socket.on("connect", () => {
-  // console.log("Connected to socket server from App.js");
-  // });
-
-  //   useEffect(() => {
-  //     AppState.addEventListener('change', handleAppStateChange);
-
-  //     return () => {
-  //       AppState.removeEventListener('change', handleAppStateChange);
-  //     };
-  //  }, []);
-
-  // const handleAppStateChange = (nextAppState) => {
-  //   if (nextAppState === "inactive") {
-  //     console.log("the app is closed");
-  //   }
-  // };
+  const configAni = {
+    animation: "timing",
+    config: {
+      duration: 200,
+    },
+  };
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
@@ -966,13 +956,6 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    return () => {
-      socket.disconnect();
-      console.log("User exited from App.js");
-    };
-  }, []);
-
   StatusBar.setBarStyle("dark-content", true);
   return (
     <NavigationContainer>
@@ -1029,6 +1012,7 @@ function App() {
             headerBackTitle: "",
             title: "Nghe nhạc cùng nhau",
             headerShown: true,
+            cardStyleInterpolator: CardStyleInterpolators.forNoAnimation,
           }}
           name="MusicScreen"
           component={Music}
@@ -1041,6 +1025,20 @@ function App() {
           }}
           name="Testing"
           component={TestingComponent}
+        />
+        <Stack.Screen
+          options={{
+            title: "Tìm kiếm",
+            headerShown: false,
+            // gestureEnabled: true,
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+            transitionSpec: {
+              open: configAni,
+              close: configAni,
+            },
+          }}
+          name="SearchScreen"
+          component={SearchScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

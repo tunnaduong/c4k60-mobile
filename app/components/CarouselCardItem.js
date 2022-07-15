@@ -23,15 +23,25 @@ const CarouselCardItem = ({ item, index }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    borderRadius: 15,
     width: ITEM_WIDTH,
-    overflow: "hidden",
     flex: 1,
     justifyContent: "flex-end",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+    borderRadius: 15,
+    marginTop: 15,
+    marginBottom: 10,
   },
   image: {
     width: ITEM_WIDTH,
     height: 180,
+    borderRadius: 15,
   },
   header: {
     color: "white",
@@ -54,7 +64,9 @@ const styles = StyleSheet.create({
   },
   blackFade: {
     position: "absolute",
-    width: Dimensions.get("screen").width,
+    width: ITEM_WIDTH,
+    borderRadius: 15,
+    overflow: "hidden",
   },
 });
 

@@ -12,7 +12,6 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-tiny-toast";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
@@ -148,6 +147,7 @@ export default class HomeScreen extends Component {
                       flexDirection: "row",
                       alignItems: "center",
                       marginLeft: 10,
+                      marginTop: 1.8,
                     }}
                   >
                     <Image
@@ -157,7 +157,11 @@ export default class HomeScreen extends Component {
                     />
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate("SearchScreen");
+                  }}
+                >
                   <View
                     style={{
                       marginRight: 13,
@@ -176,7 +180,11 @@ export default class HomeScreen extends Component {
             </ImageBackground>
             <ImageBackground
               source={require("../assets/headerBg.png")}
-              style={{ width: "100%", height: 50, zIndex: -1 }}
+              style={{
+                width: "100%",
+                height: 45,
+                zIndex: -1,
+              }}
             >
               <View
                 style={{
@@ -216,7 +224,7 @@ export default class HomeScreen extends Component {
             }
           >
             <View>
-              <HomeScreenCarousel style={{ marginTop: 15 }} />
+              <HomeScreenCarousel />
             </View>
             <TouchableHighlight
               underlayColor="rgba(0, 0, 0, .6)"

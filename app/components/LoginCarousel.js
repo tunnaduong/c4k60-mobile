@@ -21,6 +21,8 @@ export default function LoginCarousel({ style }) {
           itemWidth={ITEM_WIDTH}
           onSnapToItem={(index) => setIndex(index)}
           inactiveSlideScale={1}
+          loop
+          autoplay
         />
         <Pagination
           dotsLength={data.length}
