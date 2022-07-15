@@ -9,8 +9,8 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import Carousel from "react-native-carousel-view";
 import { CommonActions } from "@react-navigation/native";
+import LoginCarousel from "../components/LoginCarousel";
 
 class WelcomeScreen extends React.Component {
   render() {
@@ -29,157 +29,8 @@ class WelcomeScreen extends React.Component {
             style={styles.logo}
           />
         </View>
-        <View style={{ paddingBottom: 30 }}>
-          {/* <Carousel
-            width={Dimensions.get("screen").width}
-            height={470}
-            delay={3000}
-            indicatorAtBottom={true}
-            indicatorSize={
-              Platform.OS === "ios" || Platform.OS === "web" ? 12 : 20
-            }
-            indicatorOffset={-20}
-            indicatorColor="#fff"
-            inactiveIndicatorColor="#C4C4C4"
-          >
-            <View style={styles.contentContainer}>
-              <View style={{ position: "absolute", padding: 15 }}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Chào mừng đến với C4K60 Mobile
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 20,
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  App di động dành riêng cho học sinh chuyên Nga K60 Chuyên Biên
-                  Hòa.
-                </Text>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <View style={{ position: "absolute", padding: 15 }}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Không bao giờ bỏ lỡ thông tin
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 20,
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Ngại lên web lớp xem thông tin? Đã có C4K60 Mobile lo!
-                </Text>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <View style={{ position: "absolute", padding: 15 }}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 28,
-                    fontWeight: "bold",
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Kết nối thầy cô và bạn bè
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 18,
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Gắn kết mọi người trong tập thể lớp và giáo viên với nhau, dù
-                  ở bất kỳ nơi đâu. Đó là tiêu chí hoạt động của app C4K60.
-                </Text>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <View style={{ position: "absolute", padding: 15 }}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Nhanh, gọn, tiện lợi
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 20,
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Đó là những từ có thể dùng để miêu tả cho ứng dụng này.
-                </Text>
-              </View>
-            </View>
-            <View style={styles.contentContainer}>
-              <View style={{ position: "absolute", padding: 15 }}>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 28,
-                    fontWeight: "bold",
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Và còn nhiều tính năng khác...
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 18,
-                    textShadowColor: "rgba(0, 0, 0, 1)",
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 4,
-                  }}
-                >
-                  Hãy tự mình khám phá nhé! Chúc bạn có một trải nghiệm thú vị.
-                </Text>
-              </View>
-            </View>
-          </Carousel> */}
+        <View style={{ paddingBottom: 20 }}>
+          <LoginCarousel />
         </View>
         <TouchableOpacity
           activeOpacity={Platform.OS === "ios" ? 0.4 : null}

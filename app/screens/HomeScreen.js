@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  TouchableHighlight,
   RefreshControl,
   ImageBackground,
   Image,
@@ -14,7 +15,7 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-tiny-toast";
-import HomeScreenCarousel from "./HomeScreenCarousel";
+import HomeScreenCarousel from "../components/HomeScreenCarousel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import UserAvatar from "../components/UserAvatar";
@@ -25,264 +26,6 @@ const screenHeight = Dimensions.get("window").height;
 
 const statusBarHeight =
   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
-
-const Tab = createBottomTabNavigator();
-
-// export class MyTabs extends Component {
-//   constructor() {
-//     super();
-//     this.state = {
-//       noticount: 0,
-//     };
-//     this.getData();
-//   }
-//   getData = async () => {
-//     try {
-//       const count = await AsyncStorage.getItem("noticount");
-//       if (count !== null) {
-//         // value previously stored
-//         this.setState({ noticount: count });
-//       }
-//     } catch (e) {
-//       // error reading value
-//     }
-//   };
-//   render() {
-//     return (
-//       <Tab.Navigator
-//         screenOptions={({ route }) => ({
-//           tabBarIcon: ({ focused, color, size }) => {
-//             let iconName;
-
-//             if (route.name === "Home") {
-//               iconName = focused ? "home" : "home-outline";
-//             } else if (route.name === "Newsfeed") {
-//               iconName = focused ? "newspaper" : "newspaper-outline";
-//             } else if (route.name === "Chat") {
-//               iconName = focused ? "chatbubble" : "chatbubble-outline";
-//             } else if (route.name === "Notifications") {
-//               iconName = focused ? "notifications" : "notifications-outline";
-//             } else if (route.name === "Menu") {
-//               iconName = focused ? "menu" : "menu-outline";
-//             }
-
-//             // You can return any component that you like here!
-//             return <Ionicons name={iconName} size={size} color={color} />;
-//           },
-//         })}
-//       >
-//         <Tab.Screen
-//           name="Home"
-//           component={HomeScreen}
-//           options={{
-//             title: () => {
-//               return null;
-//             },
-//             headerShown: false,
-//             headerBackButtonMenuEnabled: false,
-//           }}
-//         />
-//         <Tab.Screen
-//           name="Newsfeed"
-//           component={NewsfeedScreen}
-//           options={{
-//             headerLeft: () => (
-//               <TouchableOpacity>
-//                 <View
-//                   style={{
-//                     flexDirection: "row",
-//                     alignItems: "center",
-//                     marginLeft: 10,
-//                   }}
-//                 >
-//                   <Image
-//                     style={{ width: 100, height: 35 }}
-//                     source={require("../assets/logo.png")}
-//                     resizeMode="contain"
-//                   />
-//                 </View>
-//               </TouchableOpacity>
-//             ),
-//             headerRight: () => (
-//               <TouchableOpacity>
-//                 <View
-//                   style={{
-//                     marginRight: 13,
-//                     backgroundColor: "rgba(0,0,0,0.10)",
-//                     padding: 5,
-//                     paddingLeft: 6,
-//                     paddingRight: 6,
-//                     borderRadius: 100,
-//                     marginBottom: 5,
-//                   }}
-//                 >
-//                   <Ionicons name="search" size={23} color={"black"} />
-//                 </View>
-//               </TouchableOpacity>
-//             ),
-//             title: () => {
-//               return null;
-//             },
-//           }}
-//         />
-//         <Tab.Screen
-//           name="Chat"
-//           component={ChatScreen}
-//           options={{
-//             title: () => {
-//               return null;
-//             },
-//             headerShown: true,
-//             headerTitleAlign: "left",
-//             headerRight: () => (
-//               <TouchableOpacity>
-//                 <View
-//                   style={{
-//                     marginRight: 13,
-//                     backgroundColor: "rgba(0,0,0,0.10)",
-//                     padding: 5,
-//                     paddingLeft: 6,
-//                     paddingRight: 6,
-//                     borderRadius: 100,
-//                     marginBottom: 5,
-//                   }}
-//                 >
-//                   <Ionicons name="create-outline" size={23} color={"black"} />
-//                 </View>
-//               </TouchableOpacity>
-//             ),
-//             headerStyle: {
-//               shadowColor: "transparent",
-//               borderBottomWidth: 0,
-//             },
-//             headerTitle: (
-//               props // App Logo
-//             ) => (
-//               <React.Fragment>
-//                 <View style={{ justifyContent: "flex-start" }}>
-//                   <Text
-//                     style={{
-//                       fontSize: 25,
-//                       fontWeight: "bold",
-//                       textAlign: "left",
-//                     }}
-//                   >
-//                     Chat
-//                   </Text>
-//                 </View>
-//               </React.Fragment>
-//             ),
-//             tabBarBadge: 1,
-//           }}
-//         />
-//         <Tab.Screen
-//           name="Notifications"
-//           component={NotificationScreen}
-//           options={{
-//             title: () => {
-//               return null;
-//             },
-//             headerShown: true,
-//             headerTitleAlign: "left",
-//             headerRight: () => (
-//               <TouchableOpacity>
-//                 <View
-//                   style={{
-//                     marginRight: 13,
-//                     backgroundColor: "rgba(0,0,0,0.10)",
-//                     padding: 5,
-//                     paddingLeft: 6,
-//                     paddingRight: 6,
-//                     borderRadius: 100,
-//                     marginBottom: 5,
-//                   }}
-//                 >
-//                   <Ionicons name="search" size={23} color={"black"} />
-//                 </View>
-//               </TouchableOpacity>
-//             ),
-//             headerStyle: {
-//               shadowColor: "transparent",
-//               borderBottomWidth: 0,
-//             },
-//             headerTitle: (
-//               props // App Logo
-//             ) => (
-//               <React.Fragment>
-//                 <View style={{ justifyContent: "flex-start" }}>
-//                   <Text
-//                     style={{
-//                       fontSize: 25,
-//                       fontWeight: "bold",
-//                       textAlign: "left",
-//                     }}
-//                   >
-//                     Thông báo
-//                   </Text>
-//                 </View>
-//               </React.Fragment>
-//             ),
-//             tabBarBadge: this.state.noticount,
-//           }}
-//         />
-//         <Tab.Screen
-//           name="Menu"
-//           component={MenuScreen}
-//           options={{
-//             title: () => {
-//               return null;
-//             },
-//             headerShown: true,
-//             headerTitleAlign: "left",
-//             headerRight: () => (
-//               <TouchableOpacity>
-//                 <View
-//                   style={{
-//                     marginRight: 13,
-//                     backgroundColor: "rgba(0,0,0,0.10)",
-//                     padding: 5,
-//                     paddingLeft: 6,
-//                     paddingRight: 6,
-//                     borderRadius: 100,
-//                     marginBottom: 5,
-//                   }}
-//                 >
-//                   <Ionicons name="search" size={23} color={"black"} />
-//                 </View>
-//               </TouchableOpacity>
-//             ),
-//             headerStyle: {
-//               shadowColor: "transparent",
-//               borderBottomWidth: 0,
-//             },
-//             headerTitle: (
-//               props // App Logo
-//             ) => (
-//               <React.Fragment>
-//                 <View style={{ justifyContent: "flex-start" }}>
-//                   <Text
-//                     style={{
-//                       fontSize: 25,
-//                       fontWeight: "bold",
-//                       textAlign: "left",
-//                     }}
-//                   >
-//                     Menu
-//                   </Text>
-//                 </View>
-//               </React.Fragment>
-//             ),
-//           }}
-//         />
-//       </Tab.Navigator>
-//     );
-//   }
-// }
-
-// LogBox.ignoreLogs([
-//   "Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.",
-// ]);
-
 export default class HomeScreen extends Component {
   constructor() {
     super();
@@ -473,31 +216,60 @@ export default class HomeScreen extends Component {
             }
           >
             <View>
-              {/* <HomeScreenCarousel style={{ position: "relative" }} /> */}
+              <HomeScreenCarousel style={{ marginTop: 15 }} />
             </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                height: 100,
-                marginTop: 25,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 14,
-              }}
+            <TouchableHighlight
+              underlayColor="rgba(0, 0, 0, .6)"
+              onPress={() => null}
             >
-              <View>
-                <UserAvatar
-                  username={this.state.username}
-                  style={{ height: 50, width: 50, borderRadius: 100 }}
-                />
+              <View
+                style={{
+                  backgroundColor: "white",
+                  height: 100,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  padding: 14,
+                }}
+              >
+                <View>
+                  <UserAvatar
+                    username={this.state.username}
+                    style={{ height: 50, width: 50, borderRadius: 100 }}
+                  />
+                </View>
+                <View style={{ marginLeft: 17 }}>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontWeight: "600",
+                      width: screenWidth - 115,
+                      marginBottom: 3,
+                    }}
+                  >
+                    Chào {this.getGreetingTime(moment())}, {this.state.name}
+                  </Text>
+                  <Text
+                    numberOfLines={2}
+                    style={{
+                      width: screenWidth - 115,
+                    }}
+                  >
+                    Mỗi ngày mới là một cơ hội để thay đổi bản thân bạn.
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    // align item right
+                    flex: 1,
+                    alignItems: "flex-end",
+                    marginRight: -10,
+                  }}
+                >
+                  <Ionicons name="chevron-forward-outline" size={30} />
+                </View>
               </View>
-              <View style={{ marginLeft: 17 }}>
-                <Text style={{ fontWeight: "600" }}>
-                  Chào {this.getGreetingTime(moment())}, {this.state.name}
-                </Text>
-              </View>
-            </View>
+            </TouchableHighlight>
           </ScrollView>
         </View>
       </>

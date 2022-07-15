@@ -19,6 +19,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-tiny-toast";
 import { CommonActions } from "@react-navigation/native";
+import localStorage from "react-native-sync-localstorage";
 
 export default class LoginScreen extends Component {
   constructor(props) {

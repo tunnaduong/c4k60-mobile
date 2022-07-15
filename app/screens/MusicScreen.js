@@ -70,6 +70,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
     socket.connect();
     socket.on("connect", () => {
       console.log(myGlobalObj.username + " connected to socket server");
+      socket.emit("conn", myGlobalObj.username);
     });
     socket.on("refresh", () => {
       console.log("Received refresh signal from server! Now restarting...");
@@ -86,7 +87,6 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
       );
       getData();
     });
-    fetchStorage().then((user) => socket.emit("conn", user));
     watchingAnimation();
     getData();
     syncWithServer();

@@ -62,11 +62,11 @@ const Stack = createNativeStackNavigator();
 function App() {
   const inputText = React.useRef(null);
 
-  const socket = io("ws://" + baseBackendServerURL + "/");
-  socket.connect();
-  socket.on("connect", () => {
-    console.log("Connected to socket server from App.js");
-  });
+  // const socket = io("ws://" + baseBackendServerURL + "/");
+  // socket.connect();
+  // socket.on("connect", () => {
+  // console.log("Connected to socket server from App.js");
+  // });
 
   //   useEffect(() => {
   //     AppState.addEventListener('change', handleAppStateChange);
@@ -76,11 +76,11 @@ function App() {
   //     };
   //  }, []);
 
-  const handleAppStateChange = (nextAppState) => {
-    if (nextAppState === "inactive") {
-      console.log("the app is closed");
-    }
-  };
+  // const handleAppStateChange = (nextAppState) => {
+  //   if (nextAppState === "inactive") {
+  //     console.log("the app is closed");
+  //   }
+  // };
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
