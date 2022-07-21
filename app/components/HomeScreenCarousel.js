@@ -18,8 +18,11 @@ export default function HomeScreenCarousel({ style }) {
           itemWidth={ITEM_WIDTH}
           onSnapToItem={(index) => setIndex(index)}
           inactiveSlideScale={0.8}
-          loop
+          // loop={true}
+          lockScrollWhileSnapping
+          autoplayDelay={0}
           autoplay
+          loop
         />
       </View>
       <Pagination

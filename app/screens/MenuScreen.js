@@ -9,44 +9,65 @@ import {
   Text,
   Pressable,
   View,
+  Animated,
+  Easing,
   Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { CommonActions } from "@react-navigation/native";
+import { CommonActions, useIsFocused } from "@react-navigation/native";
 import UserAvatar from "../components/UserAvatar";
+import createAnimation from "../utils/createAnimation";
 
-export default class MenuScreen extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-      username: "",
-      modalVisible: false,
-    };
-    this.getData();
-  }
+export default function MenuScreen({ navigation, route }) {
+  const [name, setName] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [modalVisible, setModalVisible] = React.useState(false);
 
-  getData = async () => {
+  const translateX = new Animated.Value(0);
+  const opacity = new Animated.Value(0);
+
+  const isFocused = useIsFocused();
+  const prevScreen = route.params.previous_screen;
+
+  const fadeIn = (from) => {
+    translateX.setValue(from == "right" ? 150 : -150);
+    opacity.setValue(0.1);
+
+    Animated.parallel([
+      createAnimation(translateX, 150, Easing.inout, null, 0),
+      createAnimation(opacity, 200, Easing.inout, null, 1),
+    ]).start();
+  };
+
+  React.useEffect(() => {
+    isFocused && prevScreen != "MenuScreen" && fadeIn("right");
+  });
+
+  React.useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
     const name = await AsyncStorage.getItem("name");
     const username = await AsyncStorage.getItem("username");
     if (name !== null && username !== null) {
-      this.setState({ name: name, username: username });
+      setName(name);
+      setUsername(username);
     }
   };
 
-  goToScreen = () => {
-    this.clearAll();
-    this.props.navigation.dispatch(
+  const goToScreen = () => {
+    clearAll();
+    navigation.dispatch(
       CommonActions.reset({
-        index: -1,
-        routes: [{ name: "MainScreen" }, { name: "Loading" }],
+        index: 1,
+        routes: [{ name: "Loading" }],
       })
     );
-    Platform.OS === "web" ? this.window.location.reload() : null;
   };
-  clearAll = async () => {
+  const clearAll = async () => {
     try {
       await AsyncStorage.removeItem("token");
       await AsyncStorage.removeItem("name");
@@ -55,7 +76,8 @@ export default class MenuScreen extends React.Component {
       // clear error
     }
   };
-  onPressIOS() {
+
+  const onPressIOS = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         title: "Bạn có chắc chắn muốn đăng xuất không?",
@@ -68,13 +90,13 @@ export default class MenuScreen extends React.Component {
         if (buttonIndex === 0) {
           // cancel action
         } else if (buttonIndex === 1) {
-          this.goToScreen();
-          this.clearAll();
+          goToScreen();
+          clearAll();
         }
       }
     );
-  }
-  onPressAndroid = () =>
+  };
+  const onPressAndroid = () =>
     Alert.alert(
       "Thông báo",
       "Bạn có chắc chắn muốn đăng xuất không?",
@@ -82,8 +104,8 @@ export default class MenuScreen extends React.Component {
         {
           text: "Có",
           onPress: () => {
-            this.goToScreen();
-            this.clearAll();
+            goToScreen();
+            clearAll();
           },
         },
         {
@@ -94,251 +116,253 @@ export default class MenuScreen extends React.Component {
       { cancelable: true }
     );
 
-  render() {
-    return (
-      <View style={{ padding: 15, backgroundColor: "white", height: "100%" }}>
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-        >
-          <UserAvatar username={this.state.username} style={styles.avatar} />
-          <View style={{ marginLeft: 12 }}>
-            <Text style={{ fontSize: 20 }}>{this.state.name}</Text>
-            <Text style={{ color: "#7F7F7F" }}>Xem trang cá nhân của bạn</Text>
-          </View>
-        </TouchableOpacity>
-        <Divider style={{ marginTop: 13 }} />
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="images-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"orange"}
-          />
-          <Text style={{ fontSize: 15 }}>Ảnh và video</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="gift-outline"
-            color={"#FD6E6C"}
-            size={25}
-            style={{ marginRight: 10 }}
-          />
-          <Text style={{ fontSize: 15 }}>Sinh nhật sắp tới</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="people-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"#1EA82B"}
-          />
-          <Text style={{ fontSize: 15 }}>Hồ sơ thành viên</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="location-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"#E02C99"}
-          />
-          <Text style={{ fontSize: 15 }}>Bạn bè quanh đây</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            this.props.navigation.navigate("MusicScreen");
-          }}
-        >
-          <Ionicons
-            name="musical-notes-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"#24BBB9"}
-          />
-          <Text style={{ fontSize: 15 }}>Nghe nhạc cùng nhau</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            this.props.navigation.navigate("Testing");
-          }}
-        >
-          <Ionicons
-            name="chatbox-ellipses-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"#206AFE"}
-          />
-          <Text style={{ fontSize: 15 }}>Đóng góp ý kiến</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="warning-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-            color={"#B6991C"}
-          />
-          <Text style={{ fontSize: 15 }}>Báo cáo sự cố</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            name="settings-outline"
-            size={25}
-            style={{ marginRight: 10 }}
-          />
-          <Text style={{ fontSize: 15 }}>Cài đặt</Text>
-          <Ionicons
-            name="chevron-forward-outline"
-            size={25}
-            style={{ position: "absolute", right: 0 }}
-            color={"#CBCCCC"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            marginTop: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#E7E7E7",
-            padding: 10,
-            borderRadius: 6,
-          }}
-          onPress={() => {
-            Platform.OS === "ios"
-              ? this.onPressIOS()
-              : Platform.OS === "android"
-              ? this.onPressAndroid()
-              : this.setState({ modalVisible: true });
-          }}
-        >
-          <Text style={{ fontSize: 15 }}>Đăng xuất</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            this.setState({ modalVisible: !this.state.modalVisible });
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                Bạn có chắc chắn muốn đăng xuất không?
-              </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Pressable
-                  style={[styles.button, styles.buttonOpen]}
-                  onPress={() => {
-                    this.goToScreen();
-                    this.clearAll();
-                  }}
-                >
-                  <Text style={styles.textStyle}>Có</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() =>
-                    this.setState({ modalVisible: !this.state.modalVisible })
-                  }
-                >
-                  <Text style={styles.textStyle}>Không</Text>
-                </Pressable>
-              </View>
+  return (
+    <Animated.View
+      style={{
+        padding: 15,
+        backgroundColor: "white",
+        height: "100%",
+        transform: [{ translateX: translateX }],
+        opacity: opacity,
+      }}
+    >
+      <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>
+        <UserAvatar username={username} style={styles.avatar} />
+        <View style={{ marginLeft: 12 }}>
+          <Text style={{ fontSize: 20 }}>{name}</Text>
+          <Text style={{ color: "#7F7F7F" }}>Xem trang cá nhân của bạn</Text>
+        </View>
+      </TouchableOpacity>
+      <Divider style={{ marginTop: 13 }} />
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="images-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"orange"}
+        />
+        <Text style={{ fontSize: 15 }}>Ảnh và video</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="gift-outline"
+          color={"#FD6E6C"}
+          size={25}
+          style={{ marginRight: 10 }}
+        />
+        <Text style={{ fontSize: 15 }}>Sinh nhật sắp tới</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="people-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#1EA82B"}
+        />
+        <Text style={{ fontSize: 15 }}>Hồ sơ thành viên</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="location-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#E02C99"}
+        />
+        <Text style={{ fontSize: 15 }}>Bạn bè quanh đây</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("MusicScreen");
+        }}
+      >
+        <Ionicons
+          name="musical-notes-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#24BBB9"}
+        />
+        <Text style={{ fontSize: 15 }}>Nghe nhạc cùng nhau</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("Testing");
+        }}
+      >
+        <Ionicons
+          name="chatbox-ellipses-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#206AFE"}
+        />
+        <Text style={{ fontSize: 15 }}>Đóng góp ý kiến</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="warning-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#B6991C"}
+        />
+        <Text style={{ fontSize: 15 }}>Báo cáo sự cố</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Ionicons
+          name="settings-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+        />
+        <Text style={{ fontSize: 15 }}>Cài đặt</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#E7E7E7",
+          padding: 10,
+          borderRadius: 6,
+        }}
+        onPress={() => {
+          Platform.OS === "ios"
+            ? onPressIOS()
+            : Platform.OS === "android"
+            ? onPressAndroid()
+            : setState({ modalVisible: true });
+        }}
+      >
+        <Text style={{ fontSize: 15 }}>Đăng xuất</Text>
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setState({ modalVisible: !modalVisible });
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Bạn có chắc chắn muốn đăng xuất không?
+            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Pressable
+                style={[styles.button, styles.buttonOpen]}
+                onPress={() => {
+                  goToScreen();
+                  clearAll();
+                }}
+              >
+                <Text style={styles.textStyle}>Có</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setState({ modalVisible: !modalVisible })}
+              >
+                <Text style={styles.textStyle}>Không</Text>
+              </Pressable>
             </View>
           </View>
-        </Modal>
-      </View>
-    );
-  }
+        </View>
+      </Modal>
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({

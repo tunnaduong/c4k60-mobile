@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
   CardStyleInterpolators,
+  HeaderStyleInterpolators,
 } from "@react-navigation/stack";
 import axios from "axios";
 import moment from "moment";
@@ -47,6 +48,10 @@ import SignupScreen from "./app/screens/SignupScreen";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import SearchScreen from "./app/screens/SearchScreen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import { BlurView } from "expo-blur";
+import { enableFreeze } from "react-native-screens";
+
+enableFreeze(true);
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -726,92 +731,168 @@ function App() {
     );
   };
 
-  const SameHeader = ({ title, icon, action, havingBorder, havingIcon }) => {
-    return (
-      <>
-        <View
-          style={
-            havingBorder
-              ? {
-                  width: "100%",
-                  height: statusBarHeight + 45,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  backgroundColor: "white",
-                  borderBottomWidth: 0.2,
-                  borderColor: "rgba(0,0,0,0.2)",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 0,
-                  },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 2,
-                  elevation: 7,
-                }
-              : {
-                  width: "100%",
-                  height: statusBarHeight + 45,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  backgroundColor: "white",
-                }
-          }
-        >
-          {havingIcon ? (
-            <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-              <View
+  const SameHeader = ({
+    title,
+    icon,
+    action,
+    havingBorder,
+    havingIcon,
+    havingBackground,
+  }) => {
+    if (havingBackground) {
+      return (
+        <>
+          <ImageBackground
+            source={require("./app/assets/headerBg.png")}
+            style={{
+              width: "100%",
+              paddingTop: 8,
+              height: statusBarHeight + 55,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            {havingIcon ? (
+              <TouchableOpacity style={{ marginTop: statusBarHeight }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                    marginTop: 1.8,
+                  }}
+                >
+                  <Image
+                    style={{ width: 100, height: 35 }}
+                    source={require("./app/assets/logo.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <Text
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
-                  marginTop: 1.8,
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  marginTop: statusBarHeight,
+                  marginLeft: 15,
                 }}
               >
-                <Image
-                  style={{ width: 100, height: 35 }}
-                  source={require("./app/assets/logo.png")}
-                  resizeMode="contain"
-                />
+                {title}
+              </Text>
+            )}
+            <TouchableOpacity
+              onPress={action}
+              style={{ marginTop: statusBarHeight }}
+            >
+              <View
+                style={{
+                  marginRight: 13,
+                  backgroundColor: "rgba(255,255,255,0.25)",
+                  padding: 5,
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  borderRadius: 100,
+                  marginBottom: 5,
+                }}
+              >
+                <Ionicons name={icon} size={23} color={"white"} />
               </View>
             </TouchableOpacity>
-          ) : (
-            <Text
-              style={{
-                fontSize: 25,
-                fontWeight: "bold",
-                textAlign: "left",
-                marginTop: statusBarHeight,
-                marginLeft: 15,
-              }}
-            >
-              {title}
-            </Text>
-          )}
-          <TouchableOpacity
-            onPress={action}
-            style={{ marginTop: statusBarHeight }}
+          </ImageBackground>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <View
+            style={
+              havingBorder
+                ? {
+                    width: "100%",
+                    paddingTop: 8,
+                    height: statusBarHeight + 55,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    backgroundColor: "white",
+                    borderBottomWidth: 0.2,
+                    borderColor: "rgba(0,0,0,0.2)",
+                    shadowColor: "#000",
+                    shadowOffset: {
+                      width: 0,
+                      height: 0,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 2,
+                    elevation: 7,
+                  }
+                : {
+                    width: "100%",
+                    paddingTop: 8,
+                    height: statusBarHeight + 55,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    backgroundColor: "white",
+                  }
+            }
           >
-            <View
-              style={{
-                marginRight: 13,
-                backgroundColor: "rgba(0,0,0,0.10)",
-                padding: 5,
-                paddingLeft: 6,
-                paddingRight: 6,
-                borderRadius: 100,
-                marginBottom: 5,
-              }}
+            {havingIcon ? (
+              <TouchableOpacity style={{ marginTop: statusBarHeight }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                    marginTop: 1.8,
+                  }}
+                >
+                  <Image
+                    style={{ width: 100, height: 35 }}
+                    source={require("./app/assets/logo.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  marginTop: statusBarHeight,
+                  marginLeft: 15,
+                }}
+              >
+                {title}
+              </Text>
+            )}
+            <TouchableOpacity
+              onPress={action}
+              style={{ marginTop: statusBarHeight }}
             >
-              <Ionicons name={icon} size={23} color={"black"} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </>
-    );
+              <View
+                style={{
+                  marginRight: 13,
+                  backgroundColor: "rgba(0,0,0,0.10)",
+                  padding: 5,
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  borderRadius: 100,
+                  marginBottom: 5,
+                }}
+              >
+                <Ionicons name={icon} size={23} color={"black"} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </>
+      );
+    }
   };
 
   const HomeScreenNew = ({ navigation }) => {
+    const [currentScreen, setCurrentScreen] = React.useState("HomeScreen");
     const Tab = createBottomTabNavigator();
     return (
       <Tab.Navigator
@@ -834,85 +915,68 @@ function App() {
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
+          tabBarButton: (props) => (
+            <Pressable
+              {...props}
+              onPress={(e) => {
+                if (route.params.currentScreen == currentScreen) {
+                  return;
+                } else {
+                  // console.log(currentScreen);
+                  navigation.navigate(route.name, {
+                    previous_screen: currentScreen,
+                  });
+                  setCurrentScreen(route.params.currentScreen);
+                }
+                // console.log(route.params.currentScreen);
+              }}
+            />
+          ),
+          tabBarStyle: {
+            borderTopColor: "#B3B3B3",
+            // backgroundColor: "transparent",
+            // position: "absolute",
+            position: "absolute",
+          },
+          tabBarLabelStyle: {
+            fontWeight: "500",
+          },
+          tabBarBackground: () => (
+            <BlurView tint="light" intensity={1000} style={{ flex: 1 }} />
+          ),
         })}
       >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
+          initialParams={{
+            currentScreen: "HomeScreen",
+          }}
           options={{
-            title: () => {
-              return null;
-            },
+            title: "Trang chủ",
+            // tab screen fade transition
             headerShown: true,
             headerBackButtonMenuEnabled: false,
             header: () => {
               return (
-                <>
-                  <ImageBackground
-                    source={require("./app/assets/headerBg.png")}
-                    style={{
-                      width: "100%",
-                      height: statusBarHeight + 45,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginLeft: 10,
-                          marginTop: 1.8,
-                        }}
-                      >
-                        <Image
-                          style={{ width: 100, height: 35 }}
-                          source={require("./app/assets/logo.png")}
-                          resizeMode="contain"
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("SearchScreen");
-                      }}
-                      style={{ marginTop: statusBarHeight }}
-                    >
-                      <View
-                        style={{
-                          marginRight: 13,
-                          backgroundColor: "rgba(255,255,255,0.20)",
-                          padding: 5,
-                          paddingLeft: 6,
-                          paddingRight: 6,
-                          borderRadius: 100,
-                          marginBottom: 5,
-                        }}
-                      >
-                        <Ionicons name="search" size={23} color={"white"} />
-                      </View>
-                    </TouchableOpacity>
-                  </ImageBackground>
-                </>
+                <SameHeader
+                  icon="search"
+                  action={() => navigation.navigate("SearchScreen")}
+                  havingIcon
+                  havingBackground
+                />
               );
-            },
-            headerStyle: {
-              shadowColor: "transparent",
-              borderBottomWidth: 0,
             },
           }}
         />
         <Tab.Screen
           name="Newsfeed"
           component={NewsfeedScreen}
+          initialParams={{
+            currentScreen: "NewsfeedScreen",
+          }}
           options={{
-            headerTitle: () => {
-              return null;
-            },
-            tabBarLabel: () => {
-              return null;
-            },
+            title: "Bảng tin",
             headerShown: true,
             header: () => {
               return (
@@ -929,10 +993,11 @@ function App() {
         <Tab.Screen
           name="Chat"
           component={ChatScreen}
+          initialParams={{
+            currentScreen: "ChatScreen",
+          }}
           options={{
-            title: () => {
-              return null;
-            },
+            title: "Chat",
             headerShown: true,
             headerTitleAlign: "left",
             header: () => {
@@ -950,11 +1015,12 @@ function App() {
         />
         <Tab.Screen
           name="Notifications"
+          initialParams={{
+            currentScreen: "NotiScreen",
+          }}
           component={NotificationScreen}
           options={{
-            title: () => {
-              return null;
-            },
+            title: "Thông báo",
             headerShown: true,
             headerTitleAlign: "left",
             header: () => {
@@ -970,11 +1036,12 @@ function App() {
         />
         <Tab.Screen
           name="Menu"
+          initialParams={{
+            currentScreen: "MenuScreen",
+          }}
           component={MenuScreen}
           options={{
-            title: () => {
-              return null;
-            },
+            title: "Menu",
             headerShown: true,
             headerTitleAlign: "left",
             header: () => {
@@ -1000,6 +1067,7 @@ function App() {
           options={{
             title: "Đang tải...",
             headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
           }}
           name="Loading"
           component={LoadingScreen}
@@ -1008,19 +1076,26 @@ function App() {
           options={{
             title: "Chào mừng đến với C4K60",
             headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
           }}
           name="Welcome"
           component={WelcomeScreen}
         />
         <Stack.Screen
-          options={{ title: "Đăng nhập vào C4K60", headerShown: false }}
+          options={{
+            title: "Đăng nhập vào C4K60",
+            headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          }}
           name="Login"
           component={LoginScreen}
         />
         <Stack.Screen
           options={{
             title: "Đăng ký tài khoản C4K60",
-            headerBackTitle: "Quay lại",
+            headerShown: true,
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+            headerStyleInterpolator: HeaderStyleInterpolators.forSlideUp,
           }}
           name="SignUp"
           component={SignupScreen}
@@ -1030,6 +1105,7 @@ function App() {
             title: "Trang chính",
             headerShown: false,
             gestureEnabled: false,
+            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
           }}
           name="MainScreen"
           component={HomeScreenNew}
@@ -1045,7 +1121,9 @@ function App() {
         />
         <Stack.Screen
           options={{
-            headerBackTitle: "",
+            headerBackTitle: () => {
+              return null;
+            },
             title: "Nghe nhạc cùng nhau",
             headerShown: true,
           }}
