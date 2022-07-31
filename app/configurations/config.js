@@ -3,6 +3,6 @@ export default config = {
   // baseBackendServerURL: "192.168.1.114",
   // baseBackendServerURL: "192.168.1.153",
   // backendServerPort: 6969,
-  baseBackendServerURL: "c4k60-backend-server.herokuapp.com",
-  backendServerPort: 80,
+  baseBackendServerURL: "103.81.85.224",
+  backendServerPort: 10069,
 };
