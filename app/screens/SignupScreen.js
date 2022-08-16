@@ -17,6 +17,11 @@ library.add(fab, faFacebook);
 function SignupScreen({ navigation }) {
   return (
     <SafeAreaView>
+      <View>
+        <Text className="text-center font-medium text-lg mt-1">
+          Đăng ký tài khoản C4K60
+        </Text>
+      </View>
       <TouchableOpacity
         style={{
           backgroundColor: "#828180",
@@ -49,7 +54,7 @@ function SignupScreen({ navigation }) {
           />
         </View>
       </TouchableOpacity>
-      <View style={{ top: 50 }}>
+      <View>
         <Text style={{ margin: 15, fontSize: 20 }}>
           Thông tin đăng nhập của cả lớp và GVCN đã được gửi trong nhóm kín
           C4K60 - CBH. Nếu bạn không thấy thông tin đăng nhập của mình hoặc

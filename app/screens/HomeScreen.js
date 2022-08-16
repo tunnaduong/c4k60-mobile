@@ -45,13 +45,17 @@ export default function HomeScreen({ navigation, route }) {
 
   const isFocused = useIsFocused();
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     Toast.hide();
     getData();
     animatedValue1.setValue(0);
     animatedValue2.setValue(1);
     animatedValue3.setValue(30);
   }, []);
+
+  useEffect(() => {
+    animatedValue3.setValue(30);
+  });
 
   useEffect(() => {
     isFocused &&

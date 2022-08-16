@@ -36,75 +36,67 @@ export default class LoginScreen extends Component {
   }
 
   InsertRecord = async () => {
-    Platform.OS === "web"
-      ? true
-      : Toast.showLoading("Đang đăng nhập...", {
-          mask: true,
-          maskColor: "rgba(0, 0, 0, 0.3)",
-        });
-    setTimeout(() => {
-      Platform.OS === "web" ? true : Toast.hide();
-      var Username = this.state.username;
-      var Password = this.state.password;
+    Toast.showLoading("Đang đăng nhập...", {
+      mask: true,
+      maskColor: "rgba(0, 0, 0, 0.3)",
+    });
+    Platform.OS === "web" ? true : Toast.hide();
+    var Username = this.state.username;
+    var Password = this.state.password;
 
-      if (Username.length == 0 || Password.length == 0) {
-        Platform.OS === "ios" || Platform.OS === "android"
-          ? Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!")
-          : alert("Vui lòng điền đầy đủ thông tin vào các trường!");
-      } else {
-        var APIURL = "https://c4k60.com/api/login.php";
+    if (Username.length == 0 || Password.length == 0) {
+      Platform.OS === "ios" || Platform.OS === "android"
+        ? Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!")
+        : alert("Vui lòng điền đầy đủ thông tin vào các trường!");
+    } else {
+      var APIURL = "https://c4k60.com/api/login.php";
 
-        var headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        };
+      var headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      };
 
-        var Data = {
-          username: Username,
-          password: Password,
-        };
+      var Data = {
+        username: Username,
+        password: Password,
+      };
 
-        fetch(APIURL, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(Data),
+      fetch(APIURL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((Response) => Response.json())
+        .then((Response) => {
+          if (Response[0].Message == "Thành công!") {
+            const NameOfUser = Response[0].Name;
+            const UserAvatar = Response[0].Avatar;
+            this.setState({ name: NameOfUser, avatar: UserAvatar });
+            this.setData();
+            this.props.navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "MainScreen" }],
+              })
+            );
+          } else {
+            Platform.OS === "ios" || Platform.OS === "android"
+              ? Alert.alert(Response[0].Message)
+              : alert(Response[0].Message);
+          }
         })
-          .then((Response) => Response.json())
-          .then((Response) => {
-            if (Response[0].Message == "Thành công!") {
-              const NameOfUser = Response[0].Name;
-              const UserAvatar = Response[0].Avatar;
-              this.setState({ name: NameOfUser, avatar: UserAvatar });
-              this.setData();
-              Platform.OS === "web"
-                ? true
-                : Toast.showSuccess("Đăng nhập thành công!");
-              setTimeout(() => {
-                this.props.navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "MainScreen" }],
-                  })
-                );
-              }, 800);
-            } else {
-              Platform.OS === "ios" || Platform.OS === "android"
-                ? Alert.alert(Response[0].Message)
-                : alert(Response[0].Message);
-            }
-          })
-          .catch((error) => {
-            console.error("Lỗi " + error);
-            Toast.show("Không có kết nối!", {
-              position: 0,
-              imgSource: require("../assets/warning.png"),
-              imgStyle: { width: 50, height: 50, margin: 12 },
-              mask: true,
-              maskColor: "rgba(0, 0, 0, 0.3)",
-            });
-          });
-      }
-    }, 800);
+        .catch((error) => {
+          console.error("Lỗi " + error);
+          Alert.alert("Lỗi: " + error);
+          // Toast.show("Không có kết nối!", {
+          //   position: 0,
+          //   imgSource: require("../assets/warning.png"),
+          //   imgStyle: { width: 50, height: 50, margin: 12 },
+          //   mask: true,
+          //   maskColor: "rgba(0, 0, 0, 0.3)",
+          // });
+        });
+    }
   };
 
   setData = async () => {
@@ -147,97 +139,99 @@ export default class LoginScreen extends Component {
 
   render() {
     return (
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        scrollEnabled={Platform.OS === "ios" ? false : true}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          activeOpacity={Platform.OS === "ios" ? 0.5 : null}
-          onPress={() => {
-            this.props.navigation.goBack();
-          }}
+      <>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={Platform.OS === "ios" ? false : true}
         >
-          <View>
-            <Ionicons
-              name="chevron-back-outline"
-              color="white"
-              size={35}
-              style={{ top: 1, left: 2 }}
-            />
-          </View>
-        </TouchableOpacity>
-        <View style={{ alignItems: "center" }}>
-          <Image
-            source={require("../assets/logo.png")}
-            resizeMode="stretch"
-            style={styles.logo}
-          />
-        </View>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <View style={styles.usernameContainer}>
-            <FontAwesomeIcon icon={faUser} size={16} />
-            <TextInput
-              onSubmitEditing={(event) => this.InsertRecord()}
-              multiline={false}
-              placeholderTextColor="#404040"
-              style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
-              onChangeText={(username) => this.setState({ username })}
-              placeholder="Tên đăng nhập"
-              autoCapitalize="none"
-              value={this.state.username}
-            />
-          </View>
-          <View style={styles.passwordContainer}>
-            <FontAwesomeIcon icon={faLock} size={16} />
-            <TextInput
-              onSubmitEditing={(event) => this.InsertRecord()}
-              multiline={false}
-              secureTextEntry={this.state.secureTextEntry ? true : false}
-              placeholderTextColor="#404040"
-              style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
-              onChangeText={(password) => this.setState({ password })}
-              placeholder="Mật khẩu"
-              autoCapitalize="none"
-            />
-          </View>
           <TouchableOpacity
-            style={styles.loginButton}
-            activeOpacity={Platform.OS === "ios" ? 0.3 : null}
+            style={styles.backButton}
+            activeOpacity={Platform.OS === "ios" ? 0.5 : null}
             onPress={() => {
-              this.InsertRecord();
-              Keyboard.dismiss();
+              this.props.navigation.goBack();
             }}
           >
             <View>
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 18,
-                  fontWeight: "bold",
-                }}
-              >
-                ĐĂNG NHẬP
-              </Text>
+              <Ionicons
+                name="chevron-back-outline"
+                color="white"
+                size={35}
+                style={{ top: 1, left: 2 }}
+              />
             </View>
           </TouchableOpacity>
-          <View style={{ marginTop: 260 }}>
-            <Pressable
+          <View style={{ alignItems: "center" }}>
+            <Image
+              source={require("../assets/logo.png")}
+              resizeMode="stretch"
+              style={styles.logo}
+            />
+          </View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View style={styles.usernameContainer}>
+              <FontAwesomeIcon icon={faUser} size={16} />
+              <TextInput
+                onSubmitEditing={(event) => this.InsertRecord()}
+                multiline={false}
+                placeholderTextColor="#404040"
+                style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
+                onChangeText={(username) => this.setState({ username })}
+                placeholder="Tên đăng nhập"
+                autoCapitalize="none"
+                value={this.state.username}
+              />
+            </View>
+            <View style={styles.passwordContainer}>
+              <FontAwesomeIcon icon={faLock} size={16} />
+              <TextInput
+                onSubmitEditing={(event) => this.InsertRecord()}
+                multiline={false}
+                secureTextEntry={this.state.secureTextEntry ? true : false}
+                placeholderTextColor="#404040"
+                style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
+                onChangeText={(password) => this.setState({ password })}
+                placeholder="Mật khẩu"
+                autoCapitalize="none"
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.loginButton}
+              activeOpacity={Platform.OS === "ios" ? 0.3 : null}
               onPress={() => {
-                this.props.navigation.navigate("SignUp");
+                this.InsertRecord();
+                Keyboard.dismiss();
               }}
             >
-              <Text style={styles.signUpButton}>Đăng ký</Text>
-            </Pressable>
+              <View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  ĐĂNG NHẬP
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View style={{ marginTop: 260 }}>
+              <Pressable
+                onPress={() => {
+                  this.props.navigation.navigate("SignUp");
+                }}
+              >
+                <Text style={styles.signUpButton}>Đăng ký</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </>
     );
   }
 }

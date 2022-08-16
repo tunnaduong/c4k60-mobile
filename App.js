@@ -1,12 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  CardStyleInterpolators,
-  HeaderStyleInterpolators,
-} from "@react-navigation/stack";
+import { CardStyleInterpolators } from "@react-navigation/stack";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
@@ -50,6 +47,7 @@ import SearchScreen from "./app/screens/SearchScreen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { BlurView } from "expo-blur";
 import { enableFreeze } from "react-native-screens";
+import { TailwindProvider } from "tailwindcss-react-native";
 
 enableFreeze(true);
 
@@ -66,7 +64,7 @@ LogBox.ignoreLogs([
   "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in %s.%s a useEffect cleanup function",
 ]);
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const statusBarHeight =
   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
@@ -1062,98 +1060,97 @@ function App() {
   StatusBar.setBarStyle("dark-content", true);
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{
-            title: "Đang tải...",
-            headerShown: false,
-            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
-          }}
-          name="Loading"
-          component={LoadingScreen}
-        />
-        <Stack.Screen
-          options={{
-            title: "Chào mừng đến với C4K60",
-            headerShown: false,
-            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
-          }}
-          name="Welcome"
-          component={WelcomeScreen}
-        />
-        <Stack.Screen
-          options={{
-            title: "Đăng nhập vào C4K60",
-            headerShown: false,
-            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-          }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <Stack.Screen
-          options={{
-            title: "Đăng ký tài khoản C4K60",
-            headerShown: true,
-            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-            headerStyleInterpolator: HeaderStyleInterpolators.forSlideUp,
-          }}
-          name="SignUp"
-          component={SignupScreen}
-        />
-        <Stack.Screen
-          options={{
-            title: "Trang chính",
-            headerShown: false,
-            gestureEnabled: false,
-            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
-          }}
-          name="MainScreen"
-          component={HomeScreenNew}
-        />
-        <Stack.Screen
-          options={{
-            headerBackTitle: "",
-            title: "Thông báo lớp",
-            headerShown: true,
-          }}
-          name="NotiScreen"
-          component={NotiScreen}
-        />
-        <Stack.Screen
-          options={{
-            headerBackTitle: () => {
-              return null;
-            },
-            title: "Nghe nhạc cùng nhau",
-            headerShown: true,
-          }}
-          name="MusicScreen"
-          component={Music}
-        />
-        <Stack.Screen
-          options={{
-            headerBackTitle: "",
-            title: "Testing 123",
-            headerShown: true,
-          }}
-          name="Testing"
-          component={TestingComponent}
-        />
-        <Stack.Screen
-          options={{
-            title: "Tìm kiếm",
-            headerShown: false,
-            gestureEnabled: false,
-            cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
-            transitionSpec: {
-              open: configAni,
-              close: configAni,
-            },
-          }}
-          name="SearchScreen"
-          component={SearchScreen}
-        />
-      </Stack.Navigator>
+      <TailwindProvider>
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{
+              title: "Đang tải...",
+              headerShown: false,
+              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+            }}
+            name="Loading"
+            component={LoadingScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Chào mừng đến với C4K60",
+              headerShown: false,
+              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+            }}
+            name="Welcome"
+            component={WelcomeScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Đăng nhập vào C4K60",
+              headerShown: false,
+              presentation: "fullScreenModal",
+            }}
+            name="Login"
+            component={LoginScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Đăng ký tài khoản C4K60",
+              headerShown: false,
+              presentation: "fullScreenModal",
+            }}
+            name="SignUp"
+            component={SignupScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Trang chính",
+              headerShown: false,
+              gestureEnabled: false,
+              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+            }}
+            name="MainScreen"
+            component={HomeScreenNew}
+          />
+          <Stack.Screen
+            options={{
+              headerBackTitle: "",
+              title: "Thông báo lớp",
+              headerShown: true,
+            }}
+            name="NotiScreen"
+            component={NotiScreen}
+          />
+          <Stack.Screen
+            options={{
+              headerBackTitle: () => null,
+              title: "Nghe nhạc cùng nhau",
+              headerShown: true,
+            }}
+            name="MusicScreen"
+            component={Music}
+          />
+          <Stack.Screen
+            options={{
+              headerBackTitle: "",
+              title: "Testing 123",
+              headerShown: true,
+            }}
+            name="Testing"
+            component={TestingComponent}
+          />
+          <Stack.Screen
+            options={{
+              title: "Tìm kiếm",
+              headerShown: false,
+              gestureEnabled: false,
+              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+              transitionSpec: {
+                open: configAni,
+                close: configAni,
+              },
+            }}
+            name="SearchScreen"
+            component={SearchScreen}
+          />
+        </Stack.Navigator>
+      </TailwindProvider>
     </NavigationContainer>
   );
 }

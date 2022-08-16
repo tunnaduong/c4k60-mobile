@@ -35,14 +35,7 @@ class WelcomeScreen extends React.Component {
         <TouchableOpacity
           activeOpacity={Platform.OS === "ios" ? 0.4 : null}
           style={styles.loginButton}
-          onPress={() =>
-            this.props.navigation.dispatch(
-              CommonActions.reset({
-                index: 1,
-                routes: [{ name: "Welcome" }, { name: "Login" }],
-              })
-            )
-          }
+          onPress={() => this.props.navigation.navigate("Login")}
         >
           <Text style={styles.loginText}>Đăng nhập</Text>
         </TouchableOpacity>
