@@ -1119,7 +1119,7 @@ function App() {
           />
           <Stack.Screen
             options={{
-              headerBackTitle: () => null,
+              headerBackTitle: "",
               title: "Nghe nhạc cùng nhau",
               headerShown: true,
             }}
