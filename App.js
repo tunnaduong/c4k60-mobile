@@ -943,27 +943,51 @@ function App() {
           />
           <Stack.Screen
             options={{
-              headerBackTitle: "",
               title: "Thông báo lớp",
-              headerShown: true,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Thông báo lớp"
+                  />
+                );
+              },
             }}
             name="NotiScreen"
             component={NotiScreen}
           />
           <Stack.Screen
             options={{
-              headerBackTitle: "",
               title: "Nghe nhạc cùng nhau",
-              headerShown: true,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Nghe nhạc cùng nhau"
+                  />
+                );
+              },
             }}
             name="MusicScreen"
             component={Music}
           />
           <Stack.Screen
             options={{
-              headerBackTitle: "",
               title: "Testing 123",
-              headerShown: true,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Màn hình test, chưa có gì cả hihi"
+                  />
+                );
+              },
             }}
             name="Testing"
             component={TestingComponent}

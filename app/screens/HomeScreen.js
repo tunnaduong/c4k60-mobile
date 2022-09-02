@@ -523,7 +523,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
             </View>
             <View>
               {/* render changes */}
-              <Text className="font-medium text-[16px]">Phiên bản 4.0</Text>
+              <Text className="text-[16px]">Phiên bản 4.0</Text>
               <Text className="font-light text-[14px] mt-1">
                 Ngày phát hành: 03/09/2022
               </Text>

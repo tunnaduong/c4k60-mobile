@@ -9,7 +9,7 @@ const menuData = [
     title: "Sinh nhật sắp tới",
     iconName: "gift",
     bgColor: ["#9E0000", "#F86767"],
-    route: "Testing",
+    route: "IncomingBirthday",
   },
   {
     title: "Hồ sơ thành viên",
