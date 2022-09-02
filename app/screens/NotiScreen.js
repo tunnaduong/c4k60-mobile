@@ -21,6 +21,7 @@ import UserAvatar from "../components/UserAvatar";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImageView from "react-native-image-viewing";
+import axios from "axios";
 
 export class NotiImage extends Component {
   constructor(props) {
@@ -75,6 +76,7 @@ export default class NotiScreen extends Component {
       visible: false,
       imageIndex: 0,
     };
+
     this.getData();
     this.AddItemsToArray(this.props.route.params.id);
   }
@@ -100,20 +102,17 @@ export default class NotiScreen extends Component {
     }
   };
 
-  AddItemsToArray = (id) => {
-    fetch("https://c4k60.com/api/getNotifImages.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.map((n) => this.addImage(n.uri));
-      });
-  };
+  async AddItemsToArray(id) {
+    try {
+      const response = await axios.post(
+        "https://c4k60.com/api/getNotifImages.php",
+        JSON.stringify({ id: id })
+      );
+      response.data.map((n) => this.addImage(n.uri));
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   addImage = (uri) => {
     Images.push({

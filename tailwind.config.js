@@ -1,4 +1,4 @@
 // tailwind.config.js
 module.exports = {
-  content: ["./app/**/*.js"],
+  content: ["./app/**/*.js", "./*.js"],
 };
