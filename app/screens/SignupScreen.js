@@ -6,28 +6,26 @@ import {
   View,
   Linking,
   Dimensions,
+  Alert,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
+import { fas, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 library.add(fab, faFacebook);
+library.add(fas, faUserSecret);
 
 function SignupScreen({ navigation }) {
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView className="bg-white">
+      <View className="border-b-[1px] border-gray-300 pb-3 bg-white">
         <Text className="text-center font-medium text-lg mt-1">
           Đăng ký tài khoản C4K60
         </Text>
       </View>
       <TouchableOpacity
         style={{
-          backgroundColor: "#828180",
-          width: 40,
-          height: 40,
-          borderRadius: 35,
           position: "absolute",
           left: 15,
           top:
@@ -40,7 +38,6 @@ function SignupScreen({ navigation }) {
               : 30,
           zIndex: 99,
         }}
-        activeOpacity={Platform.OS === "ios" ? 0.5 : null}
         onPress={() => {
           navigation.goBack();
         }}
@@ -48,18 +45,23 @@ function SignupScreen({ navigation }) {
         <View>
           <Ionicons
             name="chevron-back-outline"
-            color="white"
+            color="black"
             size={35}
-            style={{ top: 1, left: 2 }}
+            style={{ top: 1, left: -7 }}
           />
         </View>
       </TouchableOpacity>
-      <View>
-        <Text style={{ margin: 15, fontSize: 20 }}>
-          Thông tin đăng nhập của cả lớp và GVCN đã được gửi trong nhóm kín
-          C4K60 - CBH. Nếu bạn không thấy thông tin đăng nhập của mình hoặc
-          không thể đăng nhập được vui lòng liên hệ với Dương Tùng Anh để tạo
-          mới tài khoản.
+      <View className="bg-gray-100">
+        <Text className="m-4 text-base text-justify">
+          Thông tin đăng nhập của cả lớp và GVCN{" "}
+          <Text className="font-bold">
+            đã được gửi trong nhóm kín C4K60 - CBH
+          </Text>
+          . Nếu bạn không thấy thông tin đăng nhập của mình hoặc không thể đăng
+          nhập được vui lòng{" "}
+          <Text className="font-bold">
+            liên hệ với Dương Tùng Anh để tạo mới tài khoản.
+          </Text>
         </Text>
         <View
           style={{
@@ -111,7 +113,7 @@ function SignupScreen({ navigation }) {
             }}
             activeOpacity="0.5"
             onPress={() => {
-              Linking.openURL("https://m.me/tunnaduong");
+              Linking.openURL("https://m.me/nengoilatung");
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -131,6 +133,40 @@ function SignupScreen({ navigation }) {
                 }}
               >
                 Chat với Dương Tùng Anh
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#7667D6",
+              width: "90%",
+              borderRadius: 50,
+              height: 55,
+              justifyContent: "center",
+              marginTop: 15,
+            }}
+            activeOpacity="0.5"
+            onPress={() => {
+              Alert.alert("Chức năng đang phát triển");
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FontAwesomeIcon
+                icon={["fas", "user-secret"]}
+                size={30}
+                color={"white"}
+                style={{ margin: 15 }}
+              />
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "white",
+                  flex: 0.85,
+                }}
+              >
+                Đăng nhập với tư cách khách
               </Text>
             </View>
           </TouchableOpacity>

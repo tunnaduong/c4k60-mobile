@@ -27,7 +27,7 @@ class LoadingScreen extends React.Component {
           );
           this.props.navigation.navigate("MainScreen");
           Platform.OS === "web" ? true : Toast.hide();
-        }, 800);
+        }, 0);
       } else {
         Platform.OS === "web" ? true : Toast.showLoading("Đang tải...");
         setTimeout(() => {
@@ -38,7 +38,7 @@ class LoadingScreen extends React.Component {
             })
           );
           Platform.OS === "web" ? true : Toast.hide();
-        }, 800);
+        }, 0);
       }
     } catch (e) {
       // error reading value

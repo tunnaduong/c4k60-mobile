@@ -75,13 +75,6 @@ const statusBarHeight =
 function App() {
   const inputText = React.useRef(null);
 
-  const configAni = {
-    animation: "timing",
-    config: {
-      duration: 200,
-    },
-  };
-
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
   const ChatComponent = React.memo(() => {
@@ -1070,12 +1063,12 @@ function App() {
   return (
     <NavigationContainer>
       <TailwindProvider>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ animation: "slide_from_right" }}>
           <Stack.Screen
             options={{
               title: "Đang tải...",
               headerShown: false,
-              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+              animation: "fade",
             }}
             name="Loading"
             component={LoadingScreen}
@@ -1084,7 +1077,7 @@ function App() {
             options={{
               title: "Chào mừng đến với C4K60",
               headerShown: false,
-              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+              animation: "fade",
             }}
             name="Welcome"
             component={WelcomeScreen}
@@ -1112,7 +1105,7 @@ function App() {
               title: "Trang chính",
               headerShown: false,
               gestureEnabled: false,
-              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
+              animation: "none",
             }}
             name="MainScreen"
             component={HomeScreenNew}
@@ -1149,11 +1142,7 @@ function App() {
               title: "Tìm kiếm",
               headerShown: false,
               gestureEnabled: false,
-              cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter,
-              transitionSpec: {
-                open: configAni,
-                close: configAni,
-              },
+              animation: "fade",
             }}
             name="SearchScreen"
             component={SearchScreen}

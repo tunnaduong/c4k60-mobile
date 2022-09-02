@@ -19,7 +19,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-tiny-toast";
 import { CommonActions } from "@react-navigation/native";
-
+import ProgressHUD from "../components/ProgressHUD";
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
@@ -31,23 +31,28 @@ export default class LoginScreen extends Component {
       secureTextEntry: true,
       token: "undefined",
       name: "",
+      loading: false,
+      show: true,
     };
     this.getData();
   }
 
-  InsertRecord = async () => {
-    Toast.showLoading("Đang đăng nhập...", {
-      mask: true,
-      maskColor: "rgba(0, 0, 0, 0.3)",
+  componentWillUnmount() {
+    this.setState({
+      show: false,
     });
+  }
+
+  InsertRecord = async () => {
+    // show loading hud
+    this.setState({ loading: true });
     Platform.OS === "web" ? true : Toast.hide();
     var Username = this.state.username;
     var Password = this.state.password;
 
     if (Username.length == 0 || Password.length == 0) {
-      Platform.OS === "ios" || Platform.OS === "android"
-        ? Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!")
-        : alert("Vui lòng điền đầy đủ thông tin vào các trường!");
+      this.setState({ loading: false });
+      Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!");
     } else {
       var APIURL = "https://c4k60.com/api/login.php";
 
@@ -69,23 +74,32 @@ export default class LoginScreen extends Component {
         .then((Response) => Response.json())
         .then((Response) => {
           if (Response[0].Message == "Thành công!") {
-            const NameOfUser = Response[0].Name;
-            const UserAvatar = Response[0].Avatar;
-            this.setState({ name: NameOfUser, avatar: UserAvatar });
-            this.setData();
-            this.props.navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: "MainScreen" }],
-              })
-            );
+            setTimeout(() => {
+              const NameOfUser = Response[0].Name;
+              const UserAvatar = Response[0].Avatar;
+              this.setState({
+                name: NameOfUser,
+                avatar: UserAvatar,
+              });
+              this.setData();
+              this.setState({ loading: false });
+
+              this.props.navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "MainScreen" }],
+                })
+              );
+            }, 350);
           } else {
-            Platform.OS === "ios" || Platform.OS === "android"
-              ? Alert.alert(Response[0].Message)
-              : alert(Response[0].Message);
+            setTimeout(() => {
+              this.setState({ loading: false });
+              Alert.alert(Response[0].Message);
+            }, 350);
           }
         })
         .catch((error) => {
+          this.setState({ loading: false });
           console.error("Lỗi " + error);
           Alert.alert("Lỗi: " + error);
           // Toast.show("Không có kết nối!", {
@@ -140,6 +154,10 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <>
+        <ProgressHUD
+          loadText="Đang đăng nhập..."
+          visible={this.state.loading}
+        />
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"

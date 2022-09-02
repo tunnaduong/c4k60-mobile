@@ -47,9 +47,12 @@ export default function HomeScreen({ navigation, route }) {
   const prevScreen = route.params.previous_screen;
 
   React.useLayoutEffect(() => {
+    animatedValue1.setValue(0);
+    animatedValue2.setValue(1);
+    animatedValue3.setValue(30);
     Toast.hide();
     refreshHandler();
-  }, []);
+  }, [animatedValue3]);
 
   useEffect(() => {
     clearInterval(inter);
@@ -72,7 +75,10 @@ export default function HomeScreen({ navigation, route }) {
   }, [navigation, name, username]);
 
   useEffect(() => {
-    isFocused && prevScreen != "HomeScreen" && animate();
+    isFocused &&
+      prevScreen != "HomeScreen" &&
+      prevScreen != undefined &&
+      animate();
   }, [route]);
 
   // const responseList = (input) => {
@@ -156,15 +162,17 @@ export default function HomeScreen({ navigation, route }) {
   };
 
   const animate = () => {
-    animatedValue1.setValue(-150);
-    animatedValue2.setValue(0.1);
-    animatedValue3.setValue(0);
-
-    Animated.parallel([
-      createAnimation(animatedValue1, 150, Easing.inout, null, 0),
-      createAnimation(animatedValue2, 200, Easing.inout, null, 1),
-      createAnimation(animatedValue3, 150, Easing.inout, null, 30),
-    ]).start();
+    try {
+      animatedValue1.setValue(-150);
+      animatedValue2.setValue(0.1);
+      animatedValue3.setValue(0);
+    } finally {
+      Animated.parallel([
+        createAnimation(animatedValue1, 150, Easing.inout, null, 0),
+        createAnimation(animatedValue2, 200, Easing.inout, null, 1),
+        createAnimation(animatedValue3, 150, Easing.inout, null, 30),
+      ]).start();
+    }
   };
 
   return (
