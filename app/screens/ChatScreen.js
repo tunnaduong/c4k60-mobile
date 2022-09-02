@@ -30,7 +30,7 @@ export default function ChatScreen({ navigation, route }) {
   }, [route]);
   return (
     <>
-      {/* <Animated.ScrollView
+      <Animated.ScrollView
         style={{
           height: "100%",
           transform: [{ translateX: translateX }],
@@ -41,7 +41,7 @@ export default function ChatScreen({ navigation, route }) {
       >
         <Text style={{ fontSize: 40 }}>Tung Anh</Text>
         <Image source={require("../assets/1.jpeg")}></Image>
-      </Animated.ScrollView> */}
+      </Animated.ScrollView>
     </>
   );
 }

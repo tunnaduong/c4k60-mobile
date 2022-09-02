@@ -30,13 +30,16 @@ import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import createAnimation from "../utils/createAnimation";
 import axios from "axios";
+import { enableFreeze } from "react-native-screens";
+import { CommonActions } from "@react-navigation/native";
 
+enableFreeze(true);
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const statusBarHeight =
   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
-export default function HomeScreen({ navigation, route }) {
+export default function HomeScreen({ navigation, route, setCurrentScreen }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [loadText, setLoadText] = React.useState("");
   const [name, setName] = React.useState("");
@@ -80,6 +83,10 @@ export default function HomeScreen({ navigation, route }) {
       clearInterval(inter);
       console.log("exec ted else");
     }
+
+    return () => {
+      clearInterval(inter);
+    };
   }, [navigation, name, username]);
 
   useEffect(() => {
@@ -357,7 +364,6 @@ export default function HomeScreen({ navigation, route }) {
                 onPress={() => {
                   navigation.navigate("Notifications", {
                     previous_screen: "HomeScreen",
-                    currentScreen: "NotiScreen",
                   });
                 }}
               >

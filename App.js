@@ -48,9 +48,9 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import SearchScreen from "./app/screens/SearchScreen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { BlurView } from "expo-blur";
-import { enableFreeze } from "react-native-screens";
 import { TailwindProvider } from "tailwindcss-react-native";
 import createAnimation from "./app/utils/createAnimation";
+import { enableFreeze } from "react-native-screens";
 
 enableFreeze(true);
 
@@ -805,7 +805,7 @@ function App() {
       );
     } else {
       return (
-        <Animated.View style={{ opacity: animatedOpacity }}>
+        <View>
           <View
             style={
               havingBorder
@@ -839,12 +839,13 @@ function App() {
           >
             {havingIcon ? (
               <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-                <View
+                <Animated.View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                     marginLeft: 10,
                     marginTop: 1.8,
+                    opacity: animatedOpacity,
                   }}
                 >
                   <Image
@@ -852,26 +853,27 @@ function App() {
                     source={require("./app/assets/logo.png")}
                     resizeMode="contain"
                   />
-                </View>
+                </Animated.View>
               </TouchableOpacity>
             ) : (
-              <Text
+              <Animated.Text
                 style={{
                   fontSize: 25,
                   fontWeight: "bold",
                   textAlign: "left",
                   marginTop: statusBarHeight,
                   marginLeft: 15,
+                  opacity: animatedOpacity,
                 }}
               >
                 {title}
-              </Text>
+              </Animated.Text>
             )}
             <TouchableOpacity
               onPress={action}
               style={{ marginTop: statusBarHeight }}
             >
-              <View
+              <Animated.View
                 style={{
                   marginRight: 13,
                   backgroundColor: "rgba(0,0,0,0.10)",
@@ -880,13 +882,14 @@ function App() {
                   paddingRight: 6,
                   borderRadius: 100,
                   marginBottom: 5,
+                  opacity: animatedOpacity,
                 }}
               >
                 <Ionicons name={icon} size={23} color={"black"} />
-              </View>
+              </Animated.View>
             </TouchableOpacity>
           </View>
-        </Animated.View>
+        </View>
       );
     }
   };
@@ -894,6 +897,7 @@ function App() {
   const HomeScreenNew = ({ navigation }) => {
     const [currentScreen, setCurrentScreen] = React.useState("HomeScreen");
     const Tab = createBottomTabNavigator();
+
     return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -919,19 +923,14 @@ function App() {
             <Pressable
               {...props}
               onPress={(e) => {
-                console.log(
-                  currentScreen + " vs " + route.params.currentScreen
-                );
                 if (route.params.currentScreen == currentScreen) {
                   return;
                 } else {
-                  // console.log(currentScreen);
                   navigation.navigate(route.name, {
                     previous_screen: currentScreen,
                   });
                   setCurrentScreen(route.params.currentScreen);
                 }
-                // console.log(route.params.currentScreen);
               }}
             />
           ),
