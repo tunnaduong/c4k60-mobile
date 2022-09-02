@@ -919,6 +919,9 @@ function App() {
             <Pressable
               {...props}
               onPress={(e) => {
+                console.log(
+                  currentScreen + " vs " + route.params.currentScreen
+                );
                 if (route.params.currentScreen == currentScreen) {
                   return;
                 } else {

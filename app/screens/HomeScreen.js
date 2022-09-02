@@ -13,6 +13,8 @@ import {
   Dimensions,
   Animated,
   Easing,
+  FlatList,
+  SafeAreaView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-tiny-toast";
@@ -27,6 +29,7 @@ import { TouchableRipple } from "react-native-paper";
 import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import createAnimation from "../utils/createAnimation";
+import axios from "axios";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -38,6 +41,8 @@ export default function HomeScreen({ navigation, route }) {
   const [loadText, setLoadText] = React.useState("");
   const [name, setName] = React.useState("");
   const [username, setUsername] = React.useState("");
+  const [notificationData, setNotificationData] = React.useState([]);
+  const [birthdayData, setBirthdayData] = React.useState([]);
 
   const animatedValue1 = new Animated.Value(0);
   const animatedValue2 = new Animated.Value(0.1);
@@ -51,8 +56,11 @@ export default function HomeScreen({ navigation, route }) {
     animatedValue2.setValue(1);
     animatedValue3.setValue(30);
     Toast.hide();
-    refreshHandler();
   }, [animatedValue3]);
+
+  useEffect(() => {
+    refreshHandler();
+  }, []);
 
   useEffect(() => {
     clearInterval(inter);
@@ -81,53 +89,11 @@ export default function HomeScreen({ navigation, route }) {
       animate();
   }, [route]);
 
-  // const responseList = (input) => {
-  //   fetch("https://c4k60.com/api/getNotification.php", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ input: input }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((responseJson) => {
-  //       this.setState({
-  //         notifications: responseJson.results,
-  //         notiCount: responseJson.total,
-  //         otherNotifications: responseJson.otherNotifications,
-  //         hideMore: responseJson.hideMore,
-  //       });
-  //       this.setData();
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
-
-  // getBirthday(input) {
-  //   fetch("https://c4k60.com/api/getBirthday.php", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ input: input }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((responseJson) => {
-  //       this.setState({
-  //         birthday: responseJson,
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
-
   const refreshHandler = () => {
     getGreetingTime();
     getData();
+    getNotification();
+    getBirthday();
   };
 
   const getData = async () => {
@@ -175,6 +141,20 @@ export default function HomeScreen({ navigation, route }) {
     }
   };
 
+  const getNotification = async (input) => {
+    const response = await axios.get(
+      "https://api.c4k60.com/v1.0/notification/list?show=" + input
+    );
+    setNotificationData(response.data);
+  };
+
+  const getBirthday = async () => {
+    const response = await axios.get(
+      "https://api.c4k60.com/v1.0/users/birthday"
+    );
+    setBirthdayData(response.data);
+  };
+
   return (
     <>
       <View
@@ -209,6 +189,7 @@ export default function HomeScreen({ navigation, route }) {
           </ImageBackground>
         </Animated.View>
         <Animated.ScrollView
+          contentContainerStyle={{ paddingBottom: 95 }}
           style={{
             zIndex: 1,
             height: "100%",
@@ -240,6 +221,7 @@ export default function HomeScreen({ navigation, route }) {
             style={{
               backgroundColor: "white",
             }}
+            className="shadow-sm"
           >
             <TouchableRipple
               rippleColor="rgba(0, 0, 0, .2)"
@@ -304,6 +286,7 @@ export default function HomeScreen({ navigation, route }) {
               justifyContent: "space-between",
               marginTop: 15,
             }}
+            className="shadow-sm"
           >
             {menuData.map((item, index) => {
               return (
@@ -359,6 +342,89 @@ export default function HomeScreen({ navigation, route }) {
                 </TouchableRipple>
               );
             })}
+          </View>
+          <View className="mt-4 bg-white flex-1 p-5  shadow-sm">
+            <View className="flex-row items-center justify-between mb-2">
+              <View className="flex-row items-center">
+                <Text className="font-medium text-xl">Thông báo lớp</Text>
+                <View className="bg-red-400 h-5 p-1 rounded-full ml-2 justify-center items-center">
+                  <Text className="text-[10px] text-white font-bold">
+                    1 mới
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Notifications", {
+                    previous_screen: "HomeScreen",
+                    currentScreen: "NotiScreen",
+                  });
+                }}
+              >
+                <View className="flex-row items-center">
+                  <Text className="text-gray-500">Xem tất cả</Text>
+                  <Ionicons
+                    name="arrow-forward-outline"
+                    size={18}
+                    color={"gray"}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* render notifications */}
+            {notificationData.results?.map((item, index) => (
+              <View key={index}>
+                <View className="flex-row items-center">
+                  <Text className="text-gray-500 w-[75px]">
+                    {moment(item.date).format("L")}
+                  </Text>
+                  <TouchableOpacity className="py-[3px]">
+                    <Text className="text-blue-500 text-[16px] ml-1">
+                      {item.title}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+          <View className="mt-4 bg-white flex-1 p-5 shadow-sm">
+            <View className="flex-row items-center mb-2 justify-between">
+              <Text className="font-medium text-xl">Sinh nhật sắp tới</Text>
+              <TouchableOpacity>
+                <View className="flex-row items-center">
+                  <Text className="text-gray-500">Xem tất cả</Text>
+                  <Ionicons
+                    name="arrow-forward-outline"
+                    size={18}
+                    color={"gray"}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* render birthdays */}
+            {birthdayData?.map((item, index) =>
+              item.daysleft == 0 ? (
+                <View key={index}>
+                  <Text className="font-bold text-[14.3px] text-justify leading-5">
+                    🎉 Hôm nay là sinh nhật của {item.name}. Đừng quên gửi lời
+                    chúc mừng sinh nhật tới{" "}
+                    {item.gender == "male" ? "anh ấy!" : "cô ấy!"}
+                  </Text>
+                </View>
+              ) : (
+                <View key={index} className="mt-1">
+                  <Text
+                    className={`text-[14px]`}
+                    numberOfLines={1}
+                    ellipsizeMode={"tail"}
+                  >
+                    {item.daysleft} ngày nữa sinh nhật {item.name} (
+                    {/* splice /2003 from str */}
+                    {item.birthday.slice(0, -5)})
+                  </Text>
+                </View>
+              )
+            )}
           </View>
         </Animated.ScrollView>
       </View>
