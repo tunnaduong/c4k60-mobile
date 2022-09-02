@@ -43,7 +43,7 @@ export default function MenuScreen({ navigation, route }) {
 
   React.useEffect(() => {
     isFocused && prevScreen != "MenuScreen" && fadeIn("right");
-  });
+  }, [route]);
 
   React.useEffect(() => {
     getData();

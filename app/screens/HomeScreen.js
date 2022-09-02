@@ -44,24 +44,35 @@ export default function HomeScreen({ navigation, route }) {
   const animatedValue3 = new Animated.Value(30);
 
   const isFocused = useIsFocused();
+  const prevScreen = route.params.previous_screen;
 
   React.useLayoutEffect(() => {
     Toast.hide();
-    getData();
-    animatedValue1.setValue(0);
-    animatedValue2.setValue(1);
-    animatedValue3.setValue(30);
+    refreshHandler();
   }, []);
 
   useEffect(() => {
-    animatedValue3.setValue(30);
-  });
+    clearInterval(inter);
+
+    const inter = setInterval(() => {
+      refreshHandler();
+      console.log("ref" + Math.random());
+    }, 200);
+
+    if (name == "" || username == "") {
+      inter;
+      console.log("exec ted if");
+      setTimeout(() => {
+        clearInterval(inter);
+      }, 600);
+    } else {
+      clearInterval(inter);
+      console.log("exec ted else");
+    }
+  }, [navigation, name, username]);
 
   useEffect(() => {
-    isFocused &&
-      route.params.previous_screen != "HomeScreen" &&
-      route.params.previous_screen != undefined &&
-      animate();
+    isFocused && prevScreen != "HomeScreen" && animate();
   }, [route]);
 
   // const responseList = (input) => {
@@ -107,6 +118,11 @@ export default function HomeScreen({ navigation, route }) {
   //       console.error(error);
   //     });
   // }
+
+  const refreshHandler = () => {
+    getGreetingTime();
+    getData();
+  };
 
   const getData = async () => {
     const name = await AsyncStorage.getItem("name");
@@ -158,7 +174,14 @@ export default function HomeScreen({ navigation, route }) {
           position: "relative",
         }}
       >
-        <View style={{ position: "absolute", width: "100%", height: 100 }}>
+        <Animated.View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: 100,
+            opacity: animatedValue2,
+          }}
+        >
           <ImageBackground
             source={require("../assets/headerBg.png")}
             style={{
@@ -176,7 +199,7 @@ export default function HomeScreen({ navigation, route }) {
               }}
             ></Animated.View>
           </ImageBackground>
-        </View>
+        </Animated.View>
         <Animated.ScrollView
           style={{
             zIndex: 1,
@@ -193,6 +216,7 @@ export default function HomeScreen({ navigation, route }) {
               onRefresh={() => {
                 setRefreshing(true);
                 setLoadText("Đang tải...");
+                refreshHandler();
                 setTimeout(() => {
                   setRefreshing(false);
                   setLoadText("Kéo để tải lại...");

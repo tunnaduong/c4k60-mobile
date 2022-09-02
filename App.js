@@ -25,6 +25,8 @@ import {
   View,
   AppState,
   ImageBackground,
+  Animated,
+  Easing,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -48,6 +50,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { BlurView } from "expo-blur";
 import { enableFreeze } from "react-native-screens";
 import { TailwindProvider } from "tailwindcss-react-native";
+import createAnimation from "./app/utils/createAnimation";
 
 enableFreeze(true);
 
@@ -737,9 +740,15 @@ function App() {
     havingIcon,
     havingBackground,
   }) => {
+    const animatedOpacity = new Animated.Value(0.1);
+
+    useEffect(() => {
+      createAnimation(animatedOpacity, 200, Easing.inout, null, 1).start();
+    });
+
     if (havingBackground) {
       return (
-        <>
+        <Animated.View style={{ opacity: animatedOpacity }}>
           <ImageBackground
             source={require("./app/assets/headerBg.png")}
             style={{
@@ -799,11 +808,11 @@ function App() {
               </View>
             </TouchableOpacity>
           </ImageBackground>
-        </>
+        </Animated.View>
       );
     } else {
       return (
-        <>
+        <Animated.View style={{ opacity: animatedOpacity }}>
           <View
             style={
               havingBorder
@@ -884,7 +893,7 @@ function App() {
               </View>
             </TouchableOpacity>
           </View>
-        </>
+        </Animated.View>
       );
     }
   };

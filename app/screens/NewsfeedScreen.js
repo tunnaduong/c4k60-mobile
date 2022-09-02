@@ -23,10 +23,10 @@ export default function NewsfeedScreen({ navigation, route }) {
     isFocused && prevScreen != "NewsfeedScreen" && prevScreen == "HomeScreen"
       ? fadeIn("right")
       : fadeIn("left");
-  });
+  }, [route]);
   return (
     <>
-      <Animated.ScrollView
+      {/* <Animated.ScrollView
         style={{
           height: "100%",
           transform: [{ translateX: translateX }],
@@ -37,7 +37,7 @@ export default function NewsfeedScreen({ navigation, route }) {
       >
         <Text style={{ fontSize: 40 }}>Tung Anh</Text>
         <Image source={require("../assets/1.jpeg")}></Image>
-      </Animated.ScrollView>
+      </Animated.ScrollView> */}
     </>
   );
 }
