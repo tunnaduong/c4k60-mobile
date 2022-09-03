@@ -379,6 +379,14 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </TouchableOpacity>
             </View>
             {/* render notifications */}
+            {!notificationData && (
+              <>
+                <Image
+                  source={require("../assets/loading.gif")}
+                  className="h-5 w-16 scale-75 -ml-1.5"
+                />
+              </>
+            )}
             <View className="flex-row">
               <View className="w-0.5 bg-gray-200 h-[3px] absolute left-0 -bottom-4 rounded-sm"></View>
               <View className="w-0.5 bg-gray-300 h-1.5 absolute left-0 -bottom-2 rounded-sm"></View>
@@ -388,7 +396,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                   <View key={index} className="flex-row">
                     <View className="w-1.5 h-1.5 bg-gray-400 rounded-full absolute my-2.5 -mx-3.5"></View>
                     <View className="flex-row items-center">
-                      <Text className="text-gray-500 w-[75px]">
+                      <Text className="text-gray-500 w-[72px] text-xs">
                         {moment(item.date).format("L")}
                       </Text>
                       <TouchableOpacity
@@ -404,7 +412,12 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                           });
                         }}
                       >
-                        <Text className="text-blue-500 text-[16px] ml-1">
+                        <Text
+                          numberOfLines={1}
+                          lineBreakMode={"tail"}
+                          className="text-blue-500 relative text-[16px] truncate ml-1"
+                          style={{ width: screenWidth - 120 }}
+                        >
                           {item.title}
                         </Text>
                       </TouchableOpacity>
@@ -431,6 +444,14 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </TouchableOpacity>
             </View>
             {/* render birthdays */}
+            {!birthdayData && (
+              <>
+                <Image
+                  source={require("../assets/loading.gif")}
+                  className="h-5 w-16 scale-75 -ml-1.5"
+                />
+              </>
+            )}
             {birthdayData?.map((item, index) =>
               item.daysleft == 0 ? (
                 <View key={index}>
@@ -475,12 +496,20 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                 C4K60 Web và C4K60 Mobile có thể đã không được tồn tại mà không
                 có sự hỗ trợ từ các mạnh thường quân sau:
               </Text>
+              {!sponsorsData && (
+                <>
+                  <Image
+                    source={require("../assets/loading.gif")}
+                    className="h-5 w-16 scale-75 -ml-1.5"
+                  />
+                </>
+              )}
               {sponsorsData?.sponsors.map((item, index) => (
                 <View key={index}>
                   <View className="pl-2 text-base flex-row items-center">
                     <Text
                       className="text-[30px] leading-6"
-                      style={{ transform: [{ translateY: 3.5 }] }}
+                      style={{ transform: [{ translateY: 2 }] }}
                     >
                       ·
                     </Text>
@@ -493,14 +522,12 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                         }}
                       >
                         <Text
-                          className={`text-base ${
-                            item.link && "text-blue-500"
-                          }`}
+                          className={`text-sm ${item.link && "text-blue-500"}`}
                         >
                           {item.name}
                         </Text>
                       </TouchableOpacity>
-                      <Text className="text-base"> - {item.donated}</Text>
+                      <Text className="text-sm"> - {item.donated}</Text>
                     </View>
                   </View>
                 </View>

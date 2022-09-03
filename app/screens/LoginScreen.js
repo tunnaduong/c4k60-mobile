@@ -35,6 +35,8 @@ export default class LoginScreen extends Component {
       show: true,
     };
     this.getData();
+    this.usernameRef = React.createRef();
+    this.passwordRef = React.createRef();
   }
 
   componentWillUnmount() {
@@ -113,12 +115,13 @@ export default class LoginScreen extends Component {
     }
   };
 
-  setData = async () => {
+  setData = async (input) => {
     this.setState({ token: "abc123" });
     await AsyncStorage.setItem("username", this.state.username);
     await AsyncStorage.setItem("name", this.state.name);
     await AsyncStorage.setItem("avatar", this.state.avatar);
     await AsyncStorage.setItem("token", "abc123");
+    input == "delete_user" && (await AsyncStorage.removeItem("username"));
   };
 
   getData = async () => {
@@ -203,7 +206,28 @@ export default class LoginScreen extends Component {
                 placeholder="Tên đăng nhập"
                 autoCapitalize="none"
                 value={this.state.username}
+                ref={this.usernameRef}
               />
+              <Pressable
+                onPress={() => {
+                  this.setState({ username: "" });
+                  this.setData("delete_user");
+                }}
+                style={[
+                  this.state.username != "" &&
+                  this.usernameRef.current.isFocused()
+                    ? { display: "flex" }
+                    : { display: "none" },
+                ]}
+              >
+                <View className="aspect-square ml-2 h-[18px] bg-black/20 rounded-full p-[2px] items-center justify-center">
+                  <Ionicons
+                    name="close"
+                    size={15}
+                    color={"rgba(255,255,255,0.85)"}
+                  />
+                </View>
+              </Pressable>
             </View>
             <View style={styles.passwordContainer}>
               <FontAwesomeIcon icon={faLock} size={16} />
@@ -214,9 +238,28 @@ export default class LoginScreen extends Component {
                 placeholderTextColor="#404040"
                 style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
                 onChangeText={(password) => this.setState({ password })}
+                value={this.state.password}
                 placeholder="Mật khẩu"
                 autoCapitalize="none"
+                ref={this.passwordRef}
               />
+              <Pressable
+                onPress={() => this.setState({ password: "" })}
+                style={[
+                  this.state.password != "" &&
+                  this.passwordRef.current.isFocused()
+                    ? { display: "flex" }
+                    : { display: "none" },
+                ]}
+              >
+                <View className="aspect-square ml-2 h-[18px] bg-black/20 rounded-full p-[2px] items-center justify-center">
+                  <Ionicons
+                    name="close"
+                    size={15}
+                    color={"rgba(255,255,255,0.85)"}
+                  />
+                </View>
+              </Pressable>
             </View>
             <TouchableOpacity
               style={styles.loginButton}
