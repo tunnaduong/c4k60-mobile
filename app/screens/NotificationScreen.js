@@ -60,6 +60,9 @@ export default function NotificationScreen({ navigation, route }) {
         fadeIn("left");
       }
     }
+    setTimeout(() => {
+      setFilter("all");
+    }, 50);
   }, [route]);
   return (
     <>
