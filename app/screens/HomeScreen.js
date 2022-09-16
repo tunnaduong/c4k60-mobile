@@ -379,7 +379,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </TouchableOpacity>
             </View>
             {/* render notifications */}
-            {!notificationData && (
+            {notificationData == "" && (
               <>
                 <Image
                   source={require("../assets/loading.gif")}
@@ -444,7 +444,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </TouchableOpacity>
             </View>
             {/* render birthdays */}
-            {!birthdayData && (
+            {birthdayData == "" && (
               <>
                 <Image
                   source={require("../assets/loading.gif")}
@@ -496,7 +496,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                 C4K60 Web và C4K60 Mobile có thể đã không được tồn tại mà không
                 có sự hỗ trợ từ các mạnh thường quân sau:
               </Text>
-              {!sponsorsData && (
+              {sponsorsData == "" && (
                 <>
                   <Image
                     source={require("../assets/loading.gif")}
