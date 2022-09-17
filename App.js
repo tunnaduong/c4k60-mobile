@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { CardStyleInterpolators } from "@react-navigation/stack";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
@@ -23,10 +22,6 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   View,
-  AppState,
-  ImageBackground,
-  Animated,
-  Easing,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -52,6 +47,12 @@ import { enableFreeze } from "react-native-screens";
 import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import * as RootNavigation from "./app/utils/RootNavigation";
+import * as Font from "expo-font";
+
+const useFonts = async () =>
+  await Font.loadAsync({
+    Ionicons: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf"),
+  });
 
 enableFreeze(true);
 
@@ -71,6 +72,13 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
+  React.useState(() => {
+    const LoadFonts = async () => {
+      await useFonts();
+    };
+    LoadFonts();
+  }, []);
+
   const inputText = React.useRef(null);
 
   const TestingComponent = () => <Text>Tung Anh</Text>;

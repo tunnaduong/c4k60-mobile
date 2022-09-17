@@ -1,8 +1,8 @@
 import React from "react";
-import { Platform, View } from "react-native";
+import { View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-tiny-toast";
 import { CommonActions } from "@react-navigation/native";
+import ProgressHUD from "../components/ProgressHUD";
 
 class LoadingScreen extends React.Component {
   constructor(props) {
@@ -17,28 +17,20 @@ class LoadingScreen extends React.Component {
     try {
       const value = await AsyncStorage.getItem("token");
       if (value !== null && value === "abc123") {
-        Platform.OS === "web" ? true : Toast.showLoading("Đang tải...");
-        setTimeout(() => {
-          this.props.navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "MainScreen" }],
-            })
-          );
-          this.props.navigation.navigate("MainScreen");
-          Platform.OS === "web" ? true : Toast.hide();
-        }, 0);
+        this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "MainScreen" }],
+          })
+        );
+        this.props.navigation.navigate("MainScreen");
       } else {
-        Platform.OS === "web" ? true : Toast.showLoading("Đang tải...");
-        setTimeout(() => {
-          this.props.navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "Welcome" }],
-            })
-          );
-          Platform.OS === "web" ? true : Toast.hide();
-        }, 0);
+        this.props.navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Welcome" }],
+          })
+        );
       }
     } catch (e) {
       // error reading value
@@ -46,7 +38,11 @@ class LoadingScreen extends React.Component {
   };
 
   render() {
-    return <View style={{ flex: 1, backgroundColor: "#fff" }}></View>;
+    return (
+      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+        <ProgressHUD loadText="Đang tải..." visible={true} />
+      </View>
+    );
   }
 }
 

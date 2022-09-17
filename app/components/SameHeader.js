@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Dimensions,
   Platform,
+  StatusBar,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getStatusBarHeight } from "react-native-status-bar-height";

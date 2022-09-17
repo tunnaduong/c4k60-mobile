@@ -1,24 +1,19 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  TouchableHighlight,
   RefreshControl,
   ImageBackground,
   Image,
   StatusBar,
-  ScrollView,
   Dimensions,
   Animated,
   Easing,
-  FlatList,
-  SafeAreaView,
   Linking,
 } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Toast from "react-native-tiny-toast";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -59,7 +54,6 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
     animatedValue1.setValue(0);
     animatedValue2.setValue(1);
     animatedValue3.setValue(30);
-    Toast.hide();
   }, [animatedValue3]);
 
   useEffect(() => {
@@ -192,6 +186,8 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                 height: 50,
                 borderTopLeftRadius: animatedValue3,
                 borderTopRightRadius: animatedValue3,
+                elevation: 10,
+                zIndex: 99,
               }}
             ></Animated.View>
           </ImageBackground>

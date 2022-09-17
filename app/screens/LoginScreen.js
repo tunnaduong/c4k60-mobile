@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from "react-native-tiny-toast";
 import { CommonActions } from "@react-navigation/native";
 import ProgressHUD from "../components/ProgressHUD";
 export default class LoginScreen extends Component {
@@ -48,7 +47,6 @@ export default class LoginScreen extends Component {
   InsertRecord = async () => {
     // show loading hud
     this.setState({ loading: true });
-    Platform.OS === "web" ? true : Toast.hide();
     var Username = this.state.username;
     var Password = this.state.password;
 
@@ -104,13 +102,6 @@ export default class LoginScreen extends Component {
           this.setState({ loading: false });
           console.error("Lỗi " + error);
           Alert.alert("Lỗi: " + error);
-          // Toast.show("Không có kết nối!", {
-          //   position: 0,
-          //   imgSource: require("../assets/warning.png"),
-          //   imgStyle: { width: 50, height: 50, margin: 12 },
-          //   mask: true,
-          //   maskColor: "rgba(0, 0, 0, 0.3)",
-          // });
         });
     }
   };
