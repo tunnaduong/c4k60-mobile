@@ -40,7 +40,11 @@ class LoadingScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
-        <ProgressHUD loadText="Đang tải..." visible={true} />
+        <ProgressHUD
+          loadText="Đang tải..."
+          visible={true}
+          noBackground={true}
+        />
       </View>
     );
   }
