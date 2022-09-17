@@ -47,12 +47,6 @@ import { enableFreeze } from "react-native-screens";
 import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import * as RootNavigation from "./app/utils/RootNavigation";
-import * as Font from "expo-font";
-
-const useFonts = async () =>
-  await Font.loadAsync({
-    Ionicons: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf"),
-  });
 
 enableFreeze(true);
 
@@ -72,13 +66,6 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
-  React.useState(() => {
-    const LoadFonts = async () => {
-      await useFonts();
-    };
-    LoadFonts();
-  }, []);
-
   const inputText = React.useRef(null);
 
   const TestingComponent = () => <Text>Tung Anh</Text>;

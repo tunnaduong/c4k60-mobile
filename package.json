@@ -34,7 +34,6 @@
     "expo-cached-image": "^45.1.1",
     "expo-cli": "^6.0.5",
     "expo-dev-client": "~0.8.6",
-    "expo-font": "~10.0.4",
     "expo-linear-gradient": "~11.0.3",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
