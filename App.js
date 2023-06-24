@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+// import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import moment from "moment";
@@ -43,12 +44,9 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import SearchScreen from "./app/screens/SearchScreen";
 import { BlurView } from "expo-blur";
 import { TailwindProvider } from "tailwindcss-react-native";
-import { enableFreeze } from "react-native-screens";
 import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import * as RootNavigation from "./app/utils/RootNavigation";
-
-enableFreeze(true);
 
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
@@ -164,8 +162,9 @@ function App() {
                   flexDirection: "row",
                 }}
               >
+                {console.log(item.thumbnail.split("user:")[1])}
                 <UserAvatar
-                  username={item.thumbnail.split("user:")[1]}
+                  username={{ uri: item.thumbnail.split("user:")[1] }}
                   style={{
                     width: 20,
                     height: 20,
@@ -328,6 +327,96 @@ function App() {
   const Music = (props) => {
     const [data, setData] = React.useState("");
     // const [torf, setTrueOrFalse] = React.useState(false);
+
+    const ViewerComponent = () => {
+      return Array.isArray(data.now_watching) ? (
+        data.now_watching.map((row, index) => (
+          <>
+            <List.Item
+              title={row}
+              description={"Bởi: " + row.requested_by}
+              key={row.position}
+              onPress={() => showModal(row.position)}
+              left={() => {
+                return (
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      source={{ uri: row.video_thumbnail }}
+                      style={{ width: 70, height: 40 }}
+                    />
+                  </View>
+                );
+              }}
+              right={() => {
+                return (
+                  <View
+                    style={{
+                      marginLeft: 10,
+                      marginRight: 10,
+                      display: "flex",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    {data.now_playing_video_info.voting.like_count > 0 && (
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Ionicons
+                          name="thumbs-up"
+                          size={18}
+                          color={"#434343"}
+                        />
+                        <Text style={{ marginLeft: 5 }}>
+                          {data.now_playing_video_info.voting.like_count}
+                        </Text>
+                      </View>
+                    )}
+                    {data.now_playing_video_info.voting.vote_skip > 0 && (
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Ionicons
+                          name="play-skip-forward"
+                          size={18}
+                          color={"#434343"}
+                        />
+                        <Text style={{ marginLeft: 5 }}>
+                          {data.now_playing_video_info.voting.vote_skip}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              }}
+            />
+          </>
+        ))
+      ) : (
+        <View
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 200,
+          }}
+        >
+          <ActivityIndicator size={"large"} color="#636568" />
+          <Text style={{ marginTop: 15 }}>Đang tải...</Text>
+        </View>
+      );
+    };
 
     const QueueComponent = React.memo(() => {
       const [visible, setVisible] = React.useState(false);
@@ -673,7 +762,7 @@ function App() {
                 />
                 <Tab.Screen
                   name="Bạn bè đang xem"
-                  component={TestingComponent}
+                  component={ViewerComponent}
                   options={{
                     tabBarIcon: ({ color }) => (
                       <Ionicons name={"people"} color={color} size={22} />
@@ -771,6 +860,8 @@ function App() {
             <BlurView tint="light" intensity={1000} style={{ flex: 1 }} />
           ),
         })}
+        shifting={true}
+        sceneAnimationEnabled={true}
       >
         <Tab.Screen
           name="Home"

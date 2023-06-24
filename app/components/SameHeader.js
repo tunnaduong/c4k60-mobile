@@ -31,15 +31,16 @@ const SameHeader = ({
   havingBackButton,
   backAction,
 }) => {
-  const animatedOpacity = new Animated.Value(0.1);
+  // const animatedOpacity = new Animated.Value(0.1);
 
-  useEffect(() => {
-    createAnimation(animatedOpacity, 200, Easing.inout, null, 1).start();
-  });
+  // useEffect(() => {
+  //   createAnimation(animatedOpacity, 200, Easing.inout, null, 1).start();
+  // });
 
   if (havingBackground) {
+    // Homepage
     return (
-      <Animated.View style={{ opacity: animatedOpacity }}>
+      <View>
         <ImageBackground
           source={require("../assets/headerBg.png")}
           style={{
@@ -99,56 +100,57 @@ const SameHeader = ({
             </View>
           </TouchableOpacity>
         </ImageBackground>
-      </Animated.View>
+      </View>
     );
   } else if (defaultStyle) {
+    // Default bar
     return (
       <View className="bg-white">
         <SafeAreaView>
           <View
             className={`${
               havingBorder && "border-b-[1px] border-gray-300"
-            } pb-3 pt-1.5 bg-white`}
+            } pb-3 pt-1.5 bg-white flex flex-row`}
           >
-            <Text className="text-center font-medium text-lg mt-1">
+            {havingBackButton && (
+              <>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    width: 40,
+                    height: 40,
+                    borderRadius: 35,
+                    marginLeft: 10,
+                    marginTop: 3,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "absolute",
+                    zIndex: 999,
+                  }}
+                  onPress={
+                    !backAction ? () => RootNavigation.goBack() : backAction
+                  }
+                >
+                  <View>
+                    <Ionicons
+                      name="chevron-back-outline"
+                      color="black"
+                      size={30}
+                      style={{ top: 1, left: -7 }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
+            <Text className="text-center font-medium text-lg mt-1 flex-1">
               {title}
             </Text>
           </View>
-          {havingBackButton && (
-            <>
-              <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  left: 15,
-                  top:
-                    Platform.OS === "ios"
-                      ? Dimensions.get("screen").height > 667
-                        ? 54
-                        : 30
-                      : Platform.OS === "web"
-                      ? 15
-                      : 30,
-                  zIndex: 99,
-                }}
-                onPress={
-                  !backAction ? () => RootNavigation.goBack() : backAction
-                }
-              >
-                <View>
-                  <Ionicons
-                    name="chevron-back-outline"
-                    color="black"
-                    size={30}
-                    style={{ top: 1, left: -7 }}
-                  />
-                </View>
-              </TouchableOpacity>
-            </>
-          )}
         </SafeAreaView>
       </View>
     );
   } else {
+    // Feed
     return (
       <View>
         <View
@@ -184,13 +186,13 @@ const SameHeader = ({
         >
           {havingIcon ? (
             <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-              <Animated.View
+              <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   marginLeft: 10,
                   marginTop: 1.8,
-                  opacity: animatedOpacity,
+                  // opacity: animatedOpacity,
                 }}
               >
                 <Image
@@ -198,27 +200,27 @@ const SameHeader = ({
                   source={require("../assets/logo.png")}
                   resizeMode="contain"
                 />
-              </Animated.View>
+              </View>
             </TouchableOpacity>
           ) : (
-            <Animated.Text
+            <Text
               style={{
                 fontSize: 25,
                 fontWeight: "bold",
                 textAlign: "left",
                 marginTop: statusBarHeight,
                 marginLeft: 15,
-                opacity: animatedOpacity,
+                // opacity: animatedOpacity,
               }}
             >
               {title}
-            </Animated.Text>
+            </Text>
           )}
           <TouchableOpacity
             onPress={action}
             style={{ marginTop: statusBarHeight }}
           >
-            <Animated.View
+            <View
               style={{
                 marginRight: 13,
                 backgroundColor: "rgba(0,0,0,0.10)",
@@ -227,11 +229,11 @@ const SameHeader = ({
                 paddingRight: 6,
                 borderRadius: 100,
                 marginBottom: 5,
-                opacity: animatedOpacity,
+                // opacity: animatedOpacity,
               }}
             >
               <Ionicons name={icon} size={23} color={"black"} />
-            </Animated.View>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

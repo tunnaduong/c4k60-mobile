@@ -27,23 +27,23 @@ const screenHeight = Dimensions.get("window").height;
 
 export default function NotificationScreen({ navigation, route }) {
   const isFocused = useIsFocused();
-  const translateX = new Animated.Value(0);
-  const opacity = new Animated.Value(0);
+  // const translateX = new Animated.Value(0);
+  // const opacity = new Animated.Value(0);
   const prevScreen = route.params.previous_screen;
   const [refreshing, setRefreshing] = React.useState(false);
   const [filter, setFilter] = React.useState("all");
   const [notifications, setNotifications] = React.useState([{}, {}, {}]);
   const [skeleton, setSkeleton] = React.useState(false);
 
-  const fadeIn = (from) => {
-    translateX.setValue(from == "right" ? 150 : -150);
-    opacity.setValue(0.1);
+  // const fadeIn = (from) => {
+  //   translateX.setValue(from == "right" ? 150 : -150);
+  //   // opacity.setValue(0.1);
 
-    Animated.parallel([
-      createAnimation(translateX, 150, Easing.inout, null, 0),
-      createAnimation(opacity, 200, Easing.inout, null, 1),
-    ]).start();
-  };
+  //   Animated.parallel([
+  //     createAnimation(translateX, 150, Easing.inout, null, 0),
+  //     // createAnimation(opacity, 200, Easing.inout, null, 1),
+  //   ]).start();
+  // };
 
   React.useState(() => {
     setSkeleton(true);
@@ -52,22 +52,22 @@ export default function NotificationScreen({ navigation, route }) {
     }, 1500);
   }, []);
 
-  React.useEffect(() => {
-    if (isFocused && prevScreen != "NotiScreen") {
-      if (
-        prevScreen == "HomeScreen" ||
-        prevScreen == "NewsfeedScreen" ||
-        prevScreen == "ChatScreen"
-      ) {
-        fadeIn("right");
-      } else {
-        fadeIn("left");
-      }
-    }
-    setTimeout(() => {
-      setFilter("all");
-    }, 200);
-  }, [route]);
+  // React.useEffect(() => {
+  //   if (isFocused && prevScreen != "NotiScreen") {
+  //     if (
+  //       prevScreen == "HomeScreen" ||
+  //       prevScreen == "NewsfeedScreen" ||
+  //       prevScreen == "ChatScreen"
+  //     ) {
+  //       fadeIn("right");
+  //     } else {
+  //       fadeIn("left");
+  //     }
+  //   }
+  //   setTimeout(() => {
+  //     setFilter("all");
+  //   }, 200);
+  // }, [route]);
 
   let A = [];
   let B = [
@@ -148,8 +148,8 @@ export default function NotificationScreen({ navigation, route }) {
       <Animated.SectionList
         style={{
           height: "100%",
-          transform: [{ translateX: translateX }],
-          opacity: opacity,
+          // transform: [{ translateX: translateX }],
+          // opacity: opacity,
           backgroundColor: "white",
           flex: 1,
         }}

@@ -17,6 +17,7 @@ import {
   Easing,
   Animated,
   ScrollView,
+  AppState,
 } from "react-native";
 import UserAvatar from "../components/UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
@@ -102,6 +103,29 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
   }, [currentLiveData]);
 
   const fadeAnim = useRef(new Animated.Value(0.65)).current;
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App has come to the foreground!");
+        setPlaying(true);
+      }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+      console.log("AppState", appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const renderYoutube = () => {
     return (

@@ -43,18 +43,18 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
 
-  const animatedValue1 = new Animated.Value(0);
-  const animatedValue2 = new Animated.Value(0.1);
-  const animatedValue3 = new Animated.Value(30);
+  // const animatedValue1 = new Animated.Value(0);
+  // const animatedValue2 = new Animated.Value(0.1);
+  // const animatedValue3 = new Animated.Value(30);
 
   const isFocused = useIsFocused();
   const prevScreen = route.params.previous_screen;
 
-  React.useLayoutEffect(() => {
-    animatedValue1.setValue(0);
-    animatedValue2.setValue(1);
-    animatedValue3.setValue(30);
-  }, [animatedValue3]);
+  // React.useLayoutEffect(() => {
+  //   animatedValue1.setValue(0);
+  //   // animatedValue2.setValue(1);
+  //   animatedValue3.setValue(30);
+  // }, [animatedValue3]);
 
   useEffect(() => {
     refreshHandler();
@@ -84,12 +84,12 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
     };
   }, [navigation, name, username]);
 
-  useEffect(() => {
-    isFocused &&
-      prevScreen != "HomeScreen" &&
-      prevScreen != undefined &&
-      animate();
-  }, [route]);
+  // useEffect(() => {
+  //   isFocused &&
+  //     prevScreen != "HomeScreen" &&
+  //     prevScreen != undefined &&
+  //     // animate();
+  // }, [route]);
 
   const refreshHandler = () => {
     getGreetingTime();
@@ -129,19 +129,19 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
     return g;
   };
 
-  const animate = () => {
-    try {
-      animatedValue1.setValue(-150);
-      animatedValue2.setValue(0.1);
-      animatedValue3.setValue(0);
-    } finally {
-      Animated.parallel([
-        createAnimation(animatedValue1, 150, Easing.inout, null, 0),
-        createAnimation(animatedValue2, 200, Easing.inout, null, 1),
-        createAnimation(animatedValue3, 150, Easing.inout, null, 30),
-      ]).start();
-    }
-  };
+  // const animate = () => {
+  //   try {
+  //     animatedValue1.setValue(-150);
+  //     // animatedValue2.setValue(0.1);
+  //     animatedValue3.setValue(0);
+  //   } finally {
+  //     Animated.parallel([
+  //       createAnimation(animatedValue1, 150, Easing.inout, null, 0),
+  //       // createAnimation(animatedValue2, 200, Easing.inout, null, 1),
+  //       createAnimation(animatedValue3, 150, Easing.inout, null, 30),
+  //     ]).start();
+  //   }
+  // };
 
   const getNotification = async (input) => {
     const response = await axios.get(
@@ -169,7 +169,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
             position: "absolute",
             width: "100%",
             height: 100,
-            opacity: animatedValue2,
+            // opacity: animatedValue2,
           }}
         >
           <ImageBackground
@@ -184,8 +184,8 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               style={{
                 backgroundColor: "#F2F2F2",
                 height: 50,
-                borderTopLeftRadius: animatedValue3,
-                borderTopRightRadius: animatedValue3,
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30,
                 elevation: 10,
                 zIndex: 99,
               }}
@@ -199,8 +199,8 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
             height: "100%",
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
-            transform: [{ translateX: animatedValue1 }],
-            opacity: animatedValue2,
+            // transform: [{ translateX: animatedValue1 }],
+            // opacity: animatedValue2,
           }}
           refreshControl={
             <RefreshControl

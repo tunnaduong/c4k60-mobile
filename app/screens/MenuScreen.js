@@ -25,19 +25,19 @@ export default function MenuScreen({ navigation, route }) {
   const [username, setUsername] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const translateX = new Animated.Value(0);
-  const opacity = new Animated.Value(0);
+  // const translateX = new Animated.Value(0);
+  // const opacity = new Animated.Value(0);
 
   const isFocused = useIsFocused();
   const prevScreen = route.params.previous_screen;
 
   const fadeIn = (from) => {
-    translateX.setValue(from == "right" ? 150 : -150);
-    opacity.setValue(0.1);
+    // translateX.setValue(from == "right" ? 150 : -150);
+    // opacity.setValue(0.1);
 
     Animated.parallel([
-      createAnimation(translateX, 150, Easing.inout, null, 0),
-      createAnimation(opacity, 200, Easing.inout, null, 1),
+      // createAnimation(translateX, 150, Easing.inout, null, 0),
+      // createAnimation(opacity, 200, Easing.inout, null, 1),
     ]).start();
   };
 
@@ -122,8 +122,8 @@ export default function MenuScreen({ navigation, route }) {
         padding: 15,
         backgroundColor: "white",
         height: "100%",
-        transform: [{ translateX: translateX }],
-        opacity: opacity,
+        // transform: [{ translateX: translateX }],
+        // opacity: opacity,
       }}
     >
       <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>

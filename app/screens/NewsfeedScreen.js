@@ -5,25 +5,25 @@ import createAnimation from "../utils/createAnimation";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const isFocused = useIsFocused();
-  const translateX = new Animated.Value(0);
-  const opacity = new Animated.Value(0);
+  // const translateX = new Animated.Value(0);
+  // const opacity = new Animated.Value(0);
   const prevScreen = route.params.previous_screen;
 
-  const fadeIn = (from) => {
-    translateX.setValue(from == "right" ? 150 : -150);
-    opacity.setValue(0.1);
+  // const fadeIn = (from) => {
+  //   translateX.setValue(from == "right" ? 150 : -150);
+  //   // opacity.setValue(0.1);
 
-    Animated.parallel([
-      createAnimation(translateX, 150, Easing.inout, null, 0),
-      createAnimation(opacity, 200, Easing.inout, null, 1),
-    ]).start();
-  };
+  //   Animated.parallel([
+  //     // createAnimation(translateX, 150, Easing.inout, null, 0),
+  //     // createAnimation(opacity, 200, Easing.inout, null, 1),
+  //   ]).start();
+  // };
 
-  React.useEffect(() => {
-    isFocused && prevScreen != "NewsfeedScreen" && prevScreen == "HomeScreen"
-      ? fadeIn("right")
-      : fadeIn("left");
-  }, [route]);
+  // React.useEffect(() => {
+  //   isFocused && prevScreen != "NewsfeedScreen" && prevScreen == "HomeScreen"
+  //     ? fadeIn("right")
+  //     : fadeIn("left");
+  // }, [route]);
   return (
     <>
       {/* <Animated.ScrollView
