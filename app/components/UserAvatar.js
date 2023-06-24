@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { Image, View } from "react-native";
 
-const UserAvatar = React.memo(function UserAvatar({ username, style }) {
+const UserAvatar = ({ username, style }) => {
   const [url, setUrl] = React.useState(null);
   const [showDefault, setDefault] = React.useState(true);
 
@@ -16,7 +16,10 @@ const UserAvatar = React.memo(function UserAvatar({ username, style }) {
       );
       setUrl(response.data.avatar);
       setDefault(false);
-    } catch (err) {}
+      // console.log("asdkasd", response.data.avatar);
+    } catch (err) {
+      // console.log("errrrr", err);
+    }
   };
   getAvatar();
 
@@ -36,6 +39,6 @@ const UserAvatar = React.memo(function UserAvatar({ username, style }) {
       </View>
     </>
   );
-});
+};
 
 export default UserAvatar;

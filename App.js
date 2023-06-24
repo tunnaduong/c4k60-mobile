@@ -142,57 +142,58 @@ function App() {
       return chatData.map((item) => {
         if (item.msg_type == "user_join") {
           return (
-            <View
-              style={{
-                alignItems: "center",
-                marginTop: 10,
-                marginBottom: 10,
-              }}
-              key={item.id}
-            >
+            <>
               <View
                 style={{
-                  backgroundColor: "white",
-                  padding: 6.5,
-                  borderRadius: 30,
-                  overflow: "hidden",
-                  borderWidth: 0.5,
-                  borderStyle: "solid",
-                  borderColor: "gray",
-                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginBottom: 10,
                 }}
+                key={item.id}
               >
-                {console.log(item.thumbnail.split("user:")[1])}
-                <UserAvatar
-                  username={{ uri: item.thumbnail.split("user:")[1] }}
+                <View
                   style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 15,
-                    marginRight: 5,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontWeight: "500",
-                    fontSize: 12,
-                    alignSelf: "center",
+                    backgroundColor: "white",
+                    padding: 6.5,
+                    borderRadius: 30,
+                    overflow: "hidden",
+                    borderWidth: 0.5,
+                    borderStyle: "solid",
+                    borderColor: "gray",
+                    flexDirection: "row",
                   }}
                 >
-                  {item.msg}
-                </Text>
-                <Text
-                  style={{
-                    fontWeight: "300",
-                    fontSize: 12,
-                    alignSelf: "center",
-                  }}
-                >
-                  {" "}
-                  đã tham gia!
-                </Text>
+                  <UserAvatar
+                    username={item.thumbnail.split("user:")[1]}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 15,
+                      marginRight: 5,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: "500",
+                      fontSize: 12,
+                      alignSelf: "center",
+                    }}
+                  >
+                    {item.msg}
+                  </Text>
+                  <Text
+                    style={{
+                      fontWeight: "300",
+                      fontSize: 12,
+                      alignSelf: "center",
+                    }}
+                  >
+                    {" "}
+                    đã tham gia!
+                  </Text>
+                </View>
               </View>
-            </View>
+            </>
           );
         } else if (item.msg_type == "chat") {
           return (
