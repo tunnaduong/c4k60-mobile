@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   LogBox,
   Platform,
@@ -369,47 +370,60 @@ function App() {
     );
   });
 
-  const Music = (props) => {
-    const [data, setData] = React.useState("");
+  async function getSuggestQueries(query) {
+    const response = await axios.request({
+      method: "GET",
+      url: `http://suggestqueries.google.com/complete/search?q=${query}&client=firefox`,
+      responseType: "arraybuffer",
+      responseEncoding: "binary",
+    });
+    const decoder = new TextDecoder("ISO-8859-1");
+    let html = decoder.decode(response.data);
+    return html;
+  }
 
-    async function getSuggestQueries(query) {
-      const response = await axios.request({
-        method: "GET",
-        url: `http://suggestqueries.google.com/complete/search?q=${query}&client=firefox`,
-        responseType: "arraybuffer",
-        responseEncoding: "binary",
+  async function getSearchResults(query) {
+    try {
+      const key = "AIzaSyAKLubflIVrPOTU6KOIpkWqGXdWTp7dEEI";
+      const response = await axios.get(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=15&key=${key}&q=${query}`
+      );
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const SearchComponent = () => {
+    const [search, setSearch] = React.useState("");
+    const [sugg, setSuggest] = React.useState([]);
+    const [res, setResult] = React.useState([]);
+
+    const suggest = () => {
+      getSuggestQueries(search).then((data) => {
+        setSuggest(JSON.parse(data)[1]);
       });
-      const decoder = new TextDecoder("ISO-8859-1");
-      let html = decoder.decode(response.data);
-      return html;
-    }
+    };
 
-    async function getSearchResults(query) {
-      try {
-        const response = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=15&key=${key}&q=${query}`
-        );
-        return response.data;
-      } catch (err) {
-        console.log(err);
-      }
-    }
+    const result = () => {
+      getSearchResults(search).then((data) => {
+        // console.log("dataasdasd", data);
+        setResult(data.items);
+        // data.items.map((vid) => {});
+      });
+    };
 
-    const SearchComponent = () => {
-      const [search, setSearch] = React.useState("");
-      const [sugg, setSuggest] = React.useState([]);
+    useEffect(() => {
+      suggest();
+    }, [search]);
 
-      const suggest = () => {
-        getSuggestQueries(search).then((data) => {
-          setSuggest(JSON.parse(data)[1]);
-        });
-      };
-
-      useEffect(() => {
-        suggest();
-      }, [search]);
-
-      return (
+    return (
+      <Pressable
+        onPress={() => {
+          Keyboard.dismiss();
+          setSuggest([]);
+        }}
+      >
         <KeyboardAvoidingView style={{ height: "100%" }}>
           <ScrollView style={{ height: "100%" }}>
             <View style={{ flex: 1, padding: 10 }}>
@@ -442,6 +456,10 @@ function App() {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
+                  onPress={() => {
+                    result();
+                    setSuggest([]);
+                  }}
                 >
                   <Text
                     style={{
@@ -463,16 +481,53 @@ function App() {
                       padding: 5,
                       paddingLeft: 10,
                     }}
+                    onPress={() => setSearch(val)}
                   >
                     <Text style={{ fontSize: 16 }}>{val}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             </View>
+            {res.map((vid) => {
+              // console.log(vid.snippet.thumbnails.default.url);
+              return (
+                <>
+                  <List.Item
+                    title={vid.snippet.title}
+                    description={vid.snippet.channelTitle}
+                    key={vid.etag}
+                    onPress={() => {}}
+                    left={() => {
+                      return (
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 10,
+                          }}
+                        >
+                          <Image
+                            source={{
+                              uri: vid.snippet.thumbnails.default.url,
+                            }}
+                            style={{ width: 70, height: 40 }}
+                          ></Image>
+                        </View>
+                      );
+                    }}
+                  />
+                </>
+              );
+            })}
           </ScrollView>
         </KeyboardAvoidingView>
-      );
-    };
+      </Pressable>
+    );
+  };
+
+  const Music = (props) => {
+    const [data, setData] = React.useState("");
 
     const ViewerComponent = () => {
       return (
