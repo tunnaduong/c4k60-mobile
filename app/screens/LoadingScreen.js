@@ -9,6 +9,7 @@ class LoadingScreen extends React.Component {
     super(props);
     this.state = {
       token: "",
+      loading: false,
     };
     this.getData();
   }
@@ -42,7 +43,7 @@ class LoadingScreen extends React.Component {
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
         <ProgressHUD
           loadText="Đang tải..."
-          visible={true}
+          visible={false}
           noBackground={true}
         />
       </View>

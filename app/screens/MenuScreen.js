@@ -25,26 +25,6 @@ export default function MenuScreen({ navigation, route }) {
   const [username, setUsername] = React.useState("");
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  // const translateX = new Animated.Value(0);
-  // const opacity = new Animated.Value(0);
-
-  const isFocused = useIsFocused();
-  const prevScreen = route.params.previous_screen;
-
-  const fadeIn = (from) => {
-    // translateX.setValue(from == "right" ? 150 : -150);
-    // opacity.setValue(0.1);
-
-    Animated.parallel([
-      // createAnimation(translateX, 150, Easing.inout, null, 0),
-      // createAnimation(opacity, 200, Easing.inout, null, 1),
-    ]).start();
-  };
-
-  React.useEffect(() => {
-    isFocused && prevScreen != "MenuScreen" && fadeIn("right");
-  }, [route]);
-
   React.useEffect(() => {
     getData();
   }, []);
