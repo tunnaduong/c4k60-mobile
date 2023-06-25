@@ -74,18 +74,18 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
       socket.emit("conn", myGlobalObj.username);
     });
     socket.on("refresh", () => {
-      console.log("Received refresh signal from server! Now restarting...");
+      // console.log("Received refresh signal from server! Now restarting...");
       getData();
       syncWithServer();
     });
     socket.on("play", () => {
-      console.log("Received play signal from server! Now playing video...");
+      // console.log("Received play signal from server! Now playing video...");
       setPlaying(true);
     });
     socket.on("views", () => {
-      console.log(
-        "Received reload views count signal from server! Now reloading views count..."
-      );
+      // console.log(
+      //   "Received reload views count signal from server! Now reloading views count..."
+      // );
       getData();
     });
     watchingAnimation();

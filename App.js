@@ -48,6 +48,12 @@ import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import * as RootNavigation from "./app/utils/RootNavigation";
 
+const TextEncodingPolyfill = require("text-encoding");
+Object.assign(global, {
+  TextEncoder: TextEncodingPolyfill.TextEncoder,
+  TextDecoder: TextEncodingPolyfill.TextDecoder,
+});
+
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
   config.baseBackendServerURL + ":" + config.backendServerPort;
@@ -55,6 +61,8 @@ const baseBackendServerURL =
 LogBox.ignoreLogs([
   "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
   "JSON Parse error: Unrecognized token '<'",
+  "Possible Unhandled Promise Rejection",
+  "Error evaluating injected",
 ]);
 
 LogBox.ignoreLogs([
@@ -75,18 +83,54 @@ function App() {
       const username = await AsyncStorage.getItem("username");
       if (username !== null) {
         setUsername(username);
+        console.log("sdsd", username);
+      } else {
+        console.log("no usrname");
       }
     };
 
     const [chatData, setChatData] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
     const [currentInputText, setCurrentInputText] = React.useState("");
+    const [userFullname, setUserFullname] = React.useState("");
 
     const scrollViewRef = useRef();
+
+    const UserFullname = async () => {
+      try {
+        console.log("---->", usrname);
+        const response = await axios.post("https://api.c4k60.com/v1.0/users/", {
+          username: usrname,
+        });
+        setUserFullname(response.data.info.full_name);
+        return response.data.info.full_name;
+      } catch (err) {
+        console.log("errhhihih", err);
+      }
+    };
+
+    const insertJoining = async () => {
+      const response = await axios.post(
+        "https://api.c4k60.com/v1.0/radio/chatlogs/",
+        {
+          by: "System",
+          msg_type: "user_join",
+          message: userFullname,
+          thumbnail: "user:" + usrname,
+        }
+      );
+      return response.data;
+    };
+
     useEffect(() => {
       getData();
       getChatLogs();
-    }, []);
+      UserFullname();
+    }, [usrname, userFullname]);
+
+    useEffect(() => {
+      insertJoining();
+    }, [usrname, userFullname]);
 
     const getChatLogs = async () => {
       const response = await axios.get(
@@ -327,95 +371,161 @@ function App() {
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
-    // const [torf, setTrueOrFalse] = React.useState(false);
+
+    async function getSuggestQueries(query) {
+      const response = await axios.request({
+        method: "GET",
+        url: `http://suggestqueries.google.com/complete/search?q=${query}&client=firefox`,
+        responseType: "arraybuffer",
+        responseEncoding: "binary",
+      });
+      const decoder = new TextDecoder("ISO-8859-1");
+      let html = decoder.decode(response.data);
+      return html;
+    }
+
+    async function getSearchResults(query) {
+      try {
+        const response = await axios.get(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=15&key=${key}&q=${query}`
+        );
+        return response.data;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    const SearchComponent = () => {
+      const [search, setSearch] = React.useState("");
+      const [sugg, setSuggest] = React.useState([]);
+
+      const suggest = () => {
+        getSuggestQueries(search).then((data) => {
+          setSuggest(JSON.parse(data)[1]);
+        });
+      };
+
+      useEffect(() => {
+        suggest();
+      }, [search]);
+
+      return (
+        <KeyboardAvoidingView style={{ height: "100%" }}>
+          <ScrollView style={{ height: "100%" }}>
+            <View style={{ flex: 1, padding: 10 }}>
+              <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    borderBottomRightRadius: 0,
+                    borderTopRightRadius: 0,
+                    borderColor: "rgba(0,0,0,0.2)",
+                    backgroundColor: "white",
+                    padding: 10,
+                    flex: 1,
+                  }}
+                >
+                  <TextInput
+                    style={{ fontSize: 16 }}
+                    onChangeText={(text) => setSearch(text)}
+                    value={search}
+                    placeholder="Gõ một từ để xem gợi ý..."
+                  ></TextInput>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "blue",
+                    width: 100,
+                    borderTopRightRadius: 10,
+                    borderBottomRightRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontWeight: "500",
+                      fontSize: 16,
+                    }}
+                  >
+                    Tìm kiếm
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                {sugg.map((val, id) => (
+                  <TouchableOpacity
+                    key={id}
+                    style={{
+                      backgroundColor: "white",
+                      padding: 5,
+                      paddingLeft: 10,
+                    }}
+                  >
+                    <Text style={{ fontSize: 16 }}>{val}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      );
+    };
 
     const ViewerComponent = () => {
-      return Array.isArray(data.now_watching) ? (
-        data.now_watching.map((row, index) => (
-          <>
-            <List.Item
-              title={row}
-              description={"Bởi: " + row.requested_by}
-              key={row.position}
-              onPress={() => showModal(row.position)}
-              left={() => {
-                return (
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
+      return (
+        <KeyboardAvoidingView style={{ height: "100%" }}>
+          <ScrollView style={{ height: "100%" }}>
+            {Array.isArray(data.now_watching) ? (
+              data.now_watching.map((row, index) => (
+                <>
+                  <List.Item
+                    title={<UserFullName username={row} />}
+                    description={"Đang xem"}
+                    key={index}
+                    onPress={() => {}}
+                    left={() => {
+                      return (
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 10,
+                          }}
+                        >
+                          <UserAvatar
+                            username={row}
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: 100,
+                              marginRight: 10,
+                            }}
+                          />
+                        </View>
+                      );
                     }}
-                  >
-                    <Image
-                      source={{ uri: row.video_thumbnail }}
-                      style={{ width: 70, height: 40 }}
-                    />
-                  </View>
-                );
-              }}
-              right={() => {
-                return (
-                  <View
-                    style={{
-                      marginLeft: 10,
-                      marginRight: 10,
-                      display: "flex",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    {data.now_playing_video_info.voting.like_count > 0 && (
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                        }}
-                      >
-                        <Ionicons
-                          name="thumbs-up"
-                          size={18}
-                          color={"#434343"}
-                        />
-                        <Text style={{ marginLeft: 5 }}>
-                          {data.now_playing_video_info.voting.like_count}
-                        </Text>
-                      </View>
-                    )}
-                    {data.now_playing_video_info.voting.vote_skip > 0 && (
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                        }}
-                      >
-                        <Ionicons
-                          name="play-skip-forward"
-                          size={18}
-                          color={"#434343"}
-                        />
-                        <Text style={{ marginLeft: 5 }}>
-                          {data.now_playing_video_info.voting.vote_skip}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                );
-              }}
-            />
-          </>
-        ))
-      ) : (
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: 200,
-          }}
-        >
-          <ActivityIndicator size={"large"} color="#636568" />
-          <Text style={{ marginTop: 15 }}>Đang tải...</Text>
-        </View>
+                  />
+                </>
+              ))
+            ) : (
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 200,
+                }}
+              >
+                <ActivityIndicator size={"large"} color="#636568" />
+                <Text style={{ marginTop: 15 }}>Đang tải...</Text>
+              </View>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
       );
     };
 
@@ -772,7 +882,7 @@ function App() {
                 />
                 <Tab.Screen
                   name="Tìm bài hát"
-                  component={TestingComponent}
+                  component={SearchComponent}
                   options={{
                     tabBarIcon: ({ color }) => (
                       <Ionicons name={"search"} color={color} size={22} />
