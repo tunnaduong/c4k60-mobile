@@ -2,7 +2,7 @@
   "expo": {
     "name": "C4K60",
     "slug": "C4K60",
-    "version": "1.0.0",
+    "version": "0.4.8",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -16,6 +16,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.c4k60.mobile"
@@ -29,6 +30,11 @@
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8d221465-1a07-4fc1-ae31-dc5d4ddb434b"
+      }
     }
   }
 }

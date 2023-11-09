@@ -81,7 +81,7 @@ static void InitializeFlipper(UIApplication *application) {
     #if defined(EX_DEV_LAUNCHER_ENABLED)
   return [[EXDevLauncherController sharedInstance] sourceUrl];
   #else
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@".expo/.virtual-metro-entry" fallbackResource:nil];
   #endif
  #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
