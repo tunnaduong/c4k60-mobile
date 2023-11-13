@@ -495,7 +495,7 @@ function App() {
                   <List.Item
                     title={vid.snippet.title}
                     description={vid.snippet.channelTitle}
-                    key={vid.etag}
+                    key={vid.snippet.title}
                     onPress={() => {}}
                     left={() => {
                       return (
@@ -673,7 +673,7 @@ function App() {
                         <List.Item
                           title={row.video_title}
                           description={"Bởi: " + row.requested_by}
-                          key={row.position}
+                          key={row.video_title}
                           onPress={() => showModal(row.position)}
                           left={() => {
                             return (
@@ -769,7 +769,7 @@ function App() {
                         <List.Item
                           title={row.video_title}
                           description={"Bởi: " + row.requested_by}
-                          key={row.position}
+                          key={row.video_title}
                           onPress={() => showModal(row.position)}
                           left={() => {
                             return (

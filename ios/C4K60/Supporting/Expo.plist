@@ -8,9 +8,9 @@
     <true/>
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
-    <key>EXUpdatesSDKVersion</key>
-    <string>49.0.0</string>
+    <key>EXUpdatesRuntimeVersion</key>
+    <string>1.0.0</string>
     <key>EXUpdatesURL</key>
-    <string>https://exp.host/@tunnaduong/C4K60</string>
+    <string>https://u.expo.dev/8d221465-1a07-4fc1-ae31-dc5d4ddb434b</string>
   </dict>
 </plist>

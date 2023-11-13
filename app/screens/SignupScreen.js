@@ -4,19 +4,38 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Linking,
   Dimensions,
-  Alert,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { fas, faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from "@react-navigation/native";
+
 library.add(fab, faFacebook);
 library.add(fas, faUserSecret);
 
 function SignupScreen({ navigation }) {
+  const openURL = async (link) => {
+    return await WebBrowser.openBrowserAsync(link);
+  };
+
+  const guestMode = async () => {
+    await AsyncStorage.setItem("name", "Khách truy cập");
+    await AsyncStorage.setItem("username", "guest");
+    await AsyncStorage.setItem("avatar", "default");
+    await AsyncStorage.setItem("token", "abc123");
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "MainScreen" }],
+      })
+    );
+  };
+
   return (
     <SafeAreaView className="bg-white">
       <View className="border-b-[1px] border-gray-300 pb-3 bg-white">
@@ -79,7 +98,7 @@ function SignupScreen({ navigation }) {
             }}
             activeOpacity="0.5"
             onPress={() => {
-              Linking.openURL("https://facebook.com/groups/c4k60");
+              openURL("https://facebook.com/groups/c4k60");
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -113,7 +132,7 @@ function SignupScreen({ navigation }) {
             }}
             activeOpacity="0.5"
             onPress={() => {
-              Linking.openURL("https://m.me/nengoilatung");
+              openURL("https://m.me/tunna.duong");
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -146,9 +165,7 @@ function SignupScreen({ navigation }) {
               marginTop: 15,
             }}
             activeOpacity="0.5"
-            onPress={() => {
-              Alert.alert("Chức năng đang phát triển");
-            }}
+            onPress={guestMode}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <FontAwesomeIcon

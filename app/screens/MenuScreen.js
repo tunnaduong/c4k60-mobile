@@ -9,16 +9,12 @@ import {
   Text,
   Pressable,
   View,
-  Animated,
-  Easing,
-  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { CommonActions, useIsFocused } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import UserAvatar from "../components/UserAvatar";
-import createAnimation from "../utils/createAnimation";
 
 export default function MenuScreen({ navigation, route }) {
   const [name, setName] = React.useState("");
@@ -97,7 +93,7 @@ export default function MenuScreen({ navigation, route }) {
     );
 
   return (
-    <Animated.View
+    <View
       style={{
         padding: 15,
         backgroundColor: "white",
@@ -341,7 +337,7 @@ export default function MenuScreen({ navigation, route }) {
           </View>
         </View>
       </Modal>
-    </Animated.View>
+    </View>
   );
 }
 

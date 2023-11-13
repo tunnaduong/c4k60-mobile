@@ -2,7 +2,7 @@
   "expo": {
     "name": "C4K60",
     "slug": "C4K60",
-    "version": "0.4.8",
+    "version": "0.5.1s",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -11,14 +11,12 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/8d221465-1a07-4fc1-ae31-dc5d4ddb434b"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "jsEngine": "hermes",
+    "assetBundlePatterns": ["**/*"],
+    "jsEngine": "jsc",
     "ios": {
-      "supportsTablet": true,
       "bundleIdentifier": "com.c4k60.mobile"
     },
     "android": {
@@ -35,6 +33,7 @@
       "eas": {
         "projectId": "8d221465-1a07-4fc1-ae31-dc5d4ddb434b"
       }
-    }
+    },
+    "runtimeVersion": "1.0.0"
   }
 }

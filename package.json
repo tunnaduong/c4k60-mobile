@@ -1,6 +1,6 @@
 {
   "name": "ck",
-  "version": "1.0.0",
+  "version": "0.5.1",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
@@ -21,7 +21,6 @@
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/blur": "^3.6.0",
-    "@react-native-community/viewpager": "5.0.11",
     "@react-native-masked-view/masked-view": "0.2.9",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/material-bottom-tabs": "^6.2.16",
@@ -44,6 +43,7 @@
     "expo-splash-screen": "~0.20.4",
     "expo-status-bar": "~1.6.0",
     "expo-updates": "~0.18.8",
+    "expo-web-browser": "~12.3.2",
     "jetifier": "^2.0.0",
     "moment": "^2.29.1",
     "patch-package": "^6.4.7",
