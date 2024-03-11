@@ -137,6 +137,9 @@ export default function MenuScreen({ navigation, route }) {
           flexDirection: "row",
           alignItems: "center",
         }}
+        onPress={() => {
+          navigation.navigate("IncomingBirthday");
+        }}
       >
         <Ionicons
           name="gift-outline"

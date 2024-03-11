@@ -7,9 +7,12 @@ const UserFullName = React.memo(function UserFullName({ username, style }) {
 
   const getName = async () => {
     try {
-      const response = await axios.post("https://api.c4k60.com/v1.0/users/", {
-        username: username,
-      });
+      const response = await axios.post(
+        "https://c4k60.tunnaduong.com/api/v1.0/users/",
+        {
+          username: username,
+        }
+      );
       setName(response.data.info.full_name);
     } catch (err) {}
   };

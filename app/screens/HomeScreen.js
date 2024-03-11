@@ -9,9 +9,9 @@ import {
   Image,
   StatusBar,
   Dimensions,
-  Animated,
-  Easing,
   Linking,
+  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
@@ -43,19 +43,6 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
 
-  // const animatedValue1 = new Animated.Value(0);
-  // const animatedValue2 = new Animated.Value(0.1);
-  // const animatedValue3 = new Animated.Value(30);
-
-  const isFocused = useIsFocused();
-  const prevScreen = route.params.previous_screen;
-
-  // React.useLayoutEffect(() => {
-  //   animatedValue1.setValue(0);
-  //   // animatedValue2.setValue(1);
-  //   animatedValue3.setValue(30);
-  // }, [animatedValue3]);
-
   useEffect(() => {
     refreshHandler();
   }, []);
@@ -83,13 +70,6 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
       clearInterval(inter);
     };
   }, [navigation, name, username]);
-
-  // useEffect(() => {
-  //   isFocused &&
-  //     prevScreen != "HomeScreen" &&
-  //     prevScreen != undefined &&
-  //     // animate();
-  // }, [route]);
 
   const refreshHandler = () => {
     getGreetingTime();
@@ -135,7 +115,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
   //     // animatedValue2.setValue(0.1);
   //     animatedValue3.setValue(0);
   //   } finally {
-  //     Animated.parallel([
+  //     parallel([
   //       createAnimation(animatedValue1, 150, Easing.inout, null, 0),
   //       // createAnimation(animatedValue2, 200, Easing.inout, null, 1),
   //       createAnimation(animatedValue3, 150, Easing.inout, null, 30),
@@ -145,26 +125,26 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
 
   const getNotification = async (input) => {
     const response = await axios.get(
-      "https://api.c4k60.com/v1.0/notification/list?show=" + input
+      "https://c4k60.tunnaduong.com/api/v1.0/notification/list?show=" + input
     );
     setNotificationData(response.data);
   };
 
   const getBirthday = async () => {
     const response = await axios.get(
-      "https://api.c4k60.com/v1.0/users/birthday"
+      "https://c4k60.tunnaduong.com/api/v1.0/users/birthday"
     );
     setBirthdayData(response.data);
   };
 
   return (
-    <>
+    <SafeAreaView>
       <View
         style={{
           position: "relative",
         }}
       >
-        <Animated.View
+        <View
           style={{
             position: "absolute",
             width: "100%",
@@ -180,7 +160,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               zIndex: -1,
             }}
           >
-            <Animated.View
+            <View
               style={{
                 backgroundColor: "#F2F2F2",
                 height: 50,
@@ -189,10 +169,10 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
                 elevation: 10,
                 zIndex: 99,
               }}
-            ></Animated.View>
+            ></View>
           </ImageBackground>
-        </Animated.View>
-        <Animated.ScrollView
+        </View>
+        <ScrollView
           contentContainerStyle={{ paddingBottom: 95 }}
           style={{
             zIndex: 1,
@@ -572,9 +552,9 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </View>
             </View>
           </View>
-        </Animated.ScrollView>
+        </ScrollView>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 

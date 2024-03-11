@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 // import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import moment from "moment";
@@ -100,9 +101,12 @@ function App() {
     const UserFullname = async () => {
       try {
         console.log("---->", usrname);
-        const response = await axios.post("https://api.c4k60.com/v1.0/users/", {
-          username: usrname,
-        });
+        const response = await axios.post(
+          "https://c4k60.tunnaduong.com/api/v1.0/users/",
+          {
+            username: usrname,
+          }
+        );
         setUserFullname(response.data.info.full_name);
         return response.data.info.full_name;
       } catch (err) {
@@ -112,7 +116,7 @@ function App() {
 
     const insertJoining = async () => {
       const response = await axios.post(
-        "https://api.c4k60.com/v1.0/radio/chatlogs/",
+        "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs/",
         {
           by: "System",
           msg_type: "user_join",
@@ -135,7 +139,7 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://api.c4k60.com/v1.0/radio/chatlogs"
+        "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs"
       );
       setChatData(response.data.items);
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
@@ -149,7 +153,7 @@ function App() {
       if (message == "") return;
       try {
         const response = await axios.post(
-          "https://api.c4k60.com/v1.0/radio/chatlogs/",
+          "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs/",
           {
             by: created_by,
             msg_type: msg_type,

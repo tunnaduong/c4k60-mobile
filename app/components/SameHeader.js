@@ -5,20 +5,13 @@ import {
   TouchableOpacity,
   View,
   ImageBackground,
-  Animated,
-  Easing,
   SafeAreaView,
-  Dimensions,
-  Platform,
-  StatusBar,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import createAnimation from "../utils/createAnimation";
 import * as RootNavigation from "../utils/RootNavigation";
+import Constants from "expo-constants";
 
-const statusBarHeight =
-  Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
+const statusBarHeight = Constants.statusBarHeight;
 
 const SameHeader = ({
   title,
@@ -46,59 +39,64 @@ const SameHeader = ({
           style={{
             width: "100%",
             paddingTop: 8,
-            height: statusBarHeight + 55,
+            height: statusBarHeight * 2,
             flexDirection: "row",
             justifyContent: "space-between",
           }}
         >
           {havingIcon ? (
-            <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-              <View
+            <SafeAreaView>
+              <TouchableOpacity>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                    marginTop: 1.8,
+                  }}
+                >
+                  <Image
+                    style={{ width: 100, height: 35 }}
+                    source={require("../assets/logo.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            </SafeAreaView>
+          ) : (
+            <SafeAreaView>
+              <Text
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
-                  marginTop: 1.8,
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  marginLeft: 15,
                 }}
               >
-                <Image
-                  style={{ width: 100, height: 35 }}
-                  source={require("../assets/logo.png")}
-                  resizeMode="contain"
-                />
+                {title}
+              </Text>
+            </SafeAreaView>
+          )}
+          <SafeAreaView>
+            <TouchableOpacity
+              onPress={action}
+              // style={{ marginTop: statusBarHeight }}
+            >
+              <View
+                style={{
+                  marginRight: 13,
+                  backgroundColor: "rgba(255,255,255,0.25)",
+                  padding: 5,
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  borderRadius: 100,
+                  marginBottom: 5,
+                }}
+              >
+                <Ionicons name={icon} size={23} color={"white"} />
               </View>
             </TouchableOpacity>
-          ) : (
-            <Text
-              style={{
-                fontSize: 25,
-                fontWeight: "bold",
-                textAlign: "left",
-                marginTop: statusBarHeight,
-                marginLeft: 15,
-              }}
-            >
-              {title}
-            </Text>
-          )}
-          <TouchableOpacity
-            onPress={action}
-            style={{ marginTop: statusBarHeight }}
-          >
-            <View
-              style={{
-                marginRight: 13,
-                backgroundColor: "rgba(255,255,255,0.25)",
-                padding: 5,
-                paddingLeft: 6,
-                paddingRight: 6,
-                borderRadius: 100,
-                marginBottom: 5,
-              }}
-            >
-              <Ionicons name={icon} size={23} color={"white"} />
-            </View>
-          </TouchableOpacity>
+          </SafeAreaView>
         </ImageBackground>
       </View>
     );
@@ -159,7 +157,7 @@ const SameHeader = ({
               ? {
                   width: "100%",
                   paddingTop: 8,
-                  height: statusBarHeight + 55,
+                  height: statusBarHeight * 2,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   backgroundColor: "white",
@@ -177,7 +175,7 @@ const SameHeader = ({
               : {
                   width: "100%",
                   paddingTop: 8,
-                  height: statusBarHeight + 55,
+                  height: statusBarHeight * 2,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   backgroundColor: "white",
@@ -185,23 +183,27 @@ const SameHeader = ({
           }
         >
           {havingIcon ? (
-            <TouchableOpacity style={{ marginTop: statusBarHeight }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
-                  marginTop: 1.8,
-                  // opacity: animatedOpacity,
-                }}
+            <SafeAreaView>
+              <TouchableOpacity
+              //  style={{ marginTop: statusBarHeight }}
               >
-                <Image
-                  style={{ width: 100, height: 35 }}
-                  source={require("../assets/logo.png")}
-                  resizeMode="contain"
-                />
-              </View>
-            </TouchableOpacity>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                    marginTop: 1.8,
+                    // opacity: animatedOpacity,
+                  }}
+                >
+                  <Image
+                    style={{ width: 100, height: 35 }}
+                    source={require("../assets/logo.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            </SafeAreaView>
           ) : (
             <Text
               style={{
@@ -216,25 +218,27 @@ const SameHeader = ({
               {title}
             </Text>
           )}
-          <TouchableOpacity
-            onPress={action}
-            style={{ marginTop: statusBarHeight }}
-          >
-            <View
-              style={{
-                marginRight: 13,
-                backgroundColor: "rgba(0,0,0,0.10)",
-                padding: 5,
-                paddingLeft: 6,
-                paddingRight: 6,
-                borderRadius: 100,
-                marginBottom: 5,
-                // opacity: animatedOpacity,
-              }}
+          <SafeAreaView>
+            <TouchableOpacity
+              onPress={action}
+              // style={{ marginTop: statusBarHeight }}
             >
-              <Ionicons name={icon} size={23} color={"black"} />
-            </View>
-          </TouchableOpacity>
+              <View
+                style={{
+                  marginRight: 13,
+                  backgroundColor: "rgba(0,0,0,0.10)",
+                  padding: 5,
+                  paddingLeft: 6,
+                  paddingRight: 6,
+                  borderRadius: 100,
+                  marginBottom: 5,
+                  // opacity: animatedOpacity,
+                }}
+              >
+                <Ionicons name={icon} size={23} color={"black"} />
+              </View>
+            </TouchableOpacity>
+          </SafeAreaView>
         </View>
       </View>
     );

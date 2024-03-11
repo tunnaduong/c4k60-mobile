@@ -39,13 +39,7 @@ class WelcomeScreen extends React.Component {
         >
           <Text style={styles.loginText}>Đăng nhập</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={Platform.OS === "ios" ? 0.6 : null}
-          style={styles.signupButton}
-          onPress={() => this.props.navigation.navigate("SignUp")}
-        >
-          <Text style={styles.signupText}>Đăng ký</Text>
-        </TouchableOpacity>
+
         <View style={styles.underButtons}></View>
       </ImageBackground>
     );
@@ -82,30 +76,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     elevation: 10,
     position: "absolute",
-    bottom:
-      Platform.OS === "ios"
-        ? Dimensions.get("screen").height > 667
-          ? 85
-          : 70
-        : 70,
+    bottom: 0,
     width: "100%",
-    height: 70,
+    height: 90,
     backgroundColor: "#F5E100",
-    flex: 0,
-    justifyContent: "center",
-  },
-  signupButton: {
-    zIndex: 9,
-    elevation: 9,
-    position: "absolute",
-    width: "100%",
-    height:
-      Platform.OS === "ios"
-        ? Dimensions.get("screen").height > 667
-          ? 85
-          : 70
-        : 70,
-    backgroundColor: "#FF416E",
     flex: 0,
     justifyContent: "center",
   },
@@ -113,12 +87,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
     elevation: 0,
     width: "100%",
-    height:
-      Platform.OS === "ios"
-        ? Dimensions.get("screen").height > 667
-          ? 155
-          : 140
-        : 140,
+    height: 90,
     backgroundColor: "#E9E9E9",
   },
   loginText: {

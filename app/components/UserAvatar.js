@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
+import { Image } from "expo-image";
 
 const UserAvatar = ({ username, style }) => {
   const [url, setUrl] = React.useState(null);
@@ -9,7 +10,7 @@ const UserAvatar = ({ username, style }) => {
   const getAvatar = async () => {
     try {
       const response = await axios.post(
-        "https://api.c4k60.com/v1.0/users/avatar/",
+        "https://c4k60.tunnaduong.com/api/v1.0/users/avatar/",
         {
           username: username,
         }
@@ -32,7 +33,7 @@ const UserAvatar = ({ username, style }) => {
               ? require("../assets/gray_load.png")
               : url == "default_avatar"
               ? require("../assets/userdefault.jpeg")
-              : { uri: url }
+              : url
           }
           style={style}
         ></Image>
