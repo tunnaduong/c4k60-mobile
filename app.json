@@ -18,7 +18,7 @@
     "jsEngine": "jsc",
     "ios": {
       "buildNumber": "2",
-      "supportsTablet": "false",
+      "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile"
     },
     "android": {
