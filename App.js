@@ -48,7 +48,10 @@ import { BlurView } from "expo-blur";
 import { TailwindProvider } from "tailwindcss-react-native";
 import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
+import GalleryScreen from "./app/screens/Gallery/GalleryScreen";
+import PhotosScreen from "./app/screens/Gallery/PhotosScreen";
 import * as RootNavigation from "./app/utils/RootNavigation";
+import VideoScreen from "./app/screens/Gallery/VideoScreen";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1247,6 +1250,57 @@ function App() {
             }}
             name="Testing"
             component={TestingComponent}
+          />
+          <Stack.Screen
+            options={{
+              title: "Thư viện ảnh",
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Thư viện ảnh"
+                  />
+                );
+              },
+            }}
+            name="GalleryScreen"
+            component={GalleryScreen}
+          />
+          <Stack.Screen
+            options={({ route }) => ({
+              title: route.params.name,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={route.params.name}
+                  />
+                );
+              },
+            })}
+            name="PhotosScreen"
+            component={PhotosScreen}
+          />
+          <Stack.Screen
+            options={({ route }) => ({
+              title: route.params.name,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={route.params.name}
+                  />
+                );
+              },
+            })}
+            name="VideoScreen"
+            component={VideoScreen}
           />
           <Stack.Screen
             options={{

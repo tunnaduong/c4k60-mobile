@@ -3,7 +3,7 @@ const menuData = [
     title: "Thư viện ảnh",
     iconName: "images",
     bgColor: ["#C9A00D", "#F4DE19"],
-    route: "Testing",
+    route: "GalleryScreen",
   },
   {
     title: "Sinh nhật sắp tới",
