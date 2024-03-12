@@ -5,7 +5,7 @@ import { List } from "react-native-paper";
 import axios from "axios";
 import UserAvatar from "../../components/UserAvatar";
 
-export default function StudentProfile() {
+export default function StudentProfile({ navigation }) {
   const [memberList, setMemberList] = React.useState(null);
 
   React.useEffect(() => {
@@ -45,7 +45,12 @@ export default function StudentProfile() {
           <List.Item
             key={index}
             title={item.name}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.navigate("ProfileDetail", {
+                name: item.name,
+                username: item.username,
+              });
+            }}
             description={item.address}
             left={() => (
               <UserAvatar

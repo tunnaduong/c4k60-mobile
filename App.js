@@ -53,6 +53,7 @@ import PhotosScreen from "./app/screens/Gallery/PhotosScreen";
 import StudentProfile from "./app/screens/Profile/StudentProfile";
 import * as RootNavigation from "./app/utils/RootNavigation";
 import VideoScreen from "./app/screens/Gallery/VideoScreen";
+import ProfileDetail from "./app/screens/Profile/ProfileDetail";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1319,6 +1320,23 @@ function App() {
             })}
             name="StudentProfile"
             component={StudentProfile}
+          />
+          <Stack.Screen
+            options={({ route }) => ({
+              title: route.params.name,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={route.params.name}
+                  />
+                );
+              },
+            })}
+            name="ProfileDetail"
+            component={ProfileDetail}
           />
           <Stack.Screen
             options={{
