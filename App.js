@@ -50,6 +50,7 @@ import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import GalleryScreen from "./app/screens/Gallery/GalleryScreen";
 import PhotosScreen from "./app/screens/Gallery/PhotosScreen";
+import StudentProfile from "./app/screens/StudentProfile";
 import * as RootNavigation from "./app/utils/RootNavigation";
 import VideoScreen from "./app/screens/Gallery/VideoScreen";
 
@@ -1301,6 +1302,23 @@ function App() {
             })}
             name="VideoScreen"
             component={VideoScreen}
+          />
+          <Stack.Screen
+            options={() => ({
+              title: "Hồ sơ thành viên",
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={"Hồ sơ thành viên lớp"}
+                  />
+                );
+              },
+            })}
+            name="StudentProfile"
+            component={StudentProfile}
           />
           <Stack.Screen
             options={{

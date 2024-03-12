@@ -164,6 +164,9 @@ export default function MenuScreen({ navigation, route }) {
           flexDirection: "row",
           alignItems: "center",
         }}
+        onPress={() => {
+          navigation.navigate("StudentProfile");
+        }}
       >
         <Ionicons
           name="people-outline"
@@ -184,6 +187,9 @@ export default function MenuScreen({ navigation, route }) {
           marginTop: 15,
           flexDirection: "row",
           alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("Testing");
         }}
       >
         <Ionicons
@@ -254,6 +260,9 @@ export default function MenuScreen({ navigation, route }) {
           flexDirection: "row",
           alignItems: "center",
         }}
+        onPress={() => {
+          navigation.navigate("Testing");
+        }}
       >
         <Ionicons
           name="warning-outline"
@@ -274,6 +283,9 @@ export default function MenuScreen({ navigation, route }) {
           marginTop: 15,
           flexDirection: "row",
           alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("Testing");
         }}
       >
         <Ionicons
