@@ -5,7 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-  TouchableHighlight,
+  Linking,
 } from "react-native";
 import { Image } from "expo-image";
 import axios from "axios";
@@ -151,7 +151,9 @@ export default function ProfileDetail({ route }) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                Linking.openURL("tel:" + profile.phone_number);
+              }}
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -179,6 +181,9 @@ export default function ProfileDetail({ route }) {
                     justifyContent: "center",
                     flex: 1,
                   }}
+                  onPress={() => {
+                    Linking.openURL(profile.fb_link);
+                  }}
                 >
                   <Ionicons name="logo-facebook" size={20}></Ionicons>
                   <Text style={{ fontSize: 18, marginLeft: 5 }}>Facebook</Text>
@@ -195,6 +200,9 @@ export default function ProfileDetail({ route }) {
                     alignItems: "center",
                     justifyContent: "center",
                     flex: 1,
+                  }}
+                  onPress={() => {
+                    Linking.openURL(profile.ig_link);
                   }}
                 >
                   <Ionicons name="logo-instagram" size={20}></Ionicons>

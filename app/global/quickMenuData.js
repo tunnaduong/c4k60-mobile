@@ -33,7 +33,7 @@ const menuData = [
     title: "Lịch",
     iconName: "calendar",
     bgColor: ["#9B0041", "#F84A9D"],
-    route: "Testing",
+    route: "CalendarScreen",
   },
 ];
 

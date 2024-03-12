@@ -102,7 +102,15 @@ export default function MenuScreen({ navigation, route }) {
         // opacity: opacity,
       }}
     >
-      <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }}>
+      <TouchableOpacity
+        style={{ flexDirection: "row", alignItems: "center" }}
+        onPress={() => {
+          navigation.navigate("ProfileDetail", {
+            name: name,
+            username: username,
+          });
+        }}
+      >
         <UserAvatar username={username} style={styles.avatar} />
         <View style={{ marginLeft: 12 }}>
           <Text style={{ fontSize: 20 }}>{name}</Text>
@@ -223,6 +231,30 @@ export default function MenuScreen({ navigation, route }) {
           color={"#24BBB9"}
         />
         <Text style={{ fontSize: 15 }}>Nghe nhạc cùng nhau</Text>
+        <Ionicons
+          name="chevron-forward-outline"
+          size={25}
+          style={{ position: "absolute", right: 0 }}
+          color={"#CBCCCC"}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          marginTop: 15,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("MusicScreen");
+        }}
+      >
+        <Ionicons
+          name="calendar-outline"
+          size={25}
+          style={{ marginRight: 10 }}
+          color={"#9B0041"}
+        />
+        <Text style={{ fontSize: 15 }}>Lịch & Sự kiện</Text>
         <Ionicons
           name="chevron-forward-outline"
           size={25}
