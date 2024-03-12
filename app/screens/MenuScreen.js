@@ -188,6 +188,9 @@ export default function MenuScreen({ navigation, route }) {
           flexDirection: "row",
           alignItems: "center",
         }}
+        onPress={() => {
+          navigation.navigate("Testing");
+        }}
       >
         <Ionicons
           name="location-outline"
@@ -257,6 +260,9 @@ export default function MenuScreen({ navigation, route }) {
           flexDirection: "row",
           alignItems: "center",
         }}
+        onPress={() => {
+          navigation.navigate("Testing");
+        }}
       >
         <Ionicons
           name="warning-outline"
@@ -277,6 +283,9 @@ export default function MenuScreen({ navigation, route }) {
           marginTop: 15,
           flexDirection: "row",
           alignItems: "center",
+        }}
+        onPress={() => {
+          navigation.navigate("Testing");
         }}
       >
         <Ionicons

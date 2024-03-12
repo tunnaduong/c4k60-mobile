@@ -23,19 +23,15 @@ import menuData from "../global/quickMenuData";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableRipple } from "react-native-paper";
 import { useEffect } from "react";
-import { useIsFocused } from "@react-navigation/native";
-import createAnimation from "../utils/createAnimation";
 import axios from "axios";
-import { enableFreeze } from "react-native-screens";
 import sponsorsData from "../global/sponsorsData";
 
-enableFreeze(true);
 const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+// const screenHeight = Dimensions.get("window").height;
 
-const statusBarHeight =
-  Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
-export default function HomeScreen({ navigation, route, setCurrentScreen }) {
+// const statusBarHeight =
+//   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
+export default function HomeScreen({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [loadText, setLoadText] = React.useState("");
   const [name, setName] = React.useState("");
@@ -339,9 +335,7 @@ export default function HomeScreen({ navigation, route, setCurrentScreen }) {
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Notifications", {
-                    previous_screen: "HomeScreen",
-                  });
+                  navigation.navigate("Notifications");
                 }}
               >
                 <View className="flex-row items-center">
