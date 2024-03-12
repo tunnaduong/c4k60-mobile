@@ -167,7 +167,6 @@ export default function VideoScreen() {
                       padding: 2,
                     }}
                     activeOpacity={0.6}
-<<<<<<< HEAD
                     onPress={() => {
                       setVideoUrl(
                         "https://c4k60.tunnaduong.com/anhvavideo/" + item.path
@@ -176,8 +175,6 @@ export default function VideoScreen() {
                       setCaption(item.caption);
                       setType("html5");
                     }}
-=======
->>>>>>> parent of 7defb22 (OK)
                   >
                     <Image
                       source={

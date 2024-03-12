@@ -53,7 +53,6 @@ import PhotosScreen from "./app/screens/Gallery/PhotosScreen";
 import StudentProfile from "./app/screens/StudentProfile";
 import * as RootNavigation from "./app/utils/RootNavigation";
 import VideoScreen from "./app/screens/Gallery/VideoScreen";
-import StudentProfile from "./app/screens/StudentProfile";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1318,23 +1317,6 @@ function App() {
                 );
               },
             })}
-            name="StudentProfile"
-            component={StudentProfile}
-          />
-          <Stack.Screen
-            options={{
-              title: "Hồ sơ thành viên",
-              header: () => {
-                return (
-                  <SameHeader
-                    defaultStyle
-                    havingBorder
-                    havingBackButton
-                    title="Hồ sơ thành viên lớp"
-                  />
-                );
-              },
-            }}
             name="StudentProfile"
             component={StudentProfile}
           />
