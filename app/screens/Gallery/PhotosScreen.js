@@ -11,7 +11,6 @@ import axios from "axios";
 import { Image } from "expo-image";
 import ImageView from "react-native-image-viewing";
 import ImageFooter from "../../components/ImageFooter";
-import ImageHeader from "../../components/ImageHeader";
 
 export default function PhotosScreen({ navigation, route }) {
   const [photos, setPhotos] = React.useState(null);

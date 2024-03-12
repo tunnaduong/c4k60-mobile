@@ -15,7 +15,7 @@ const menuData = [
     title: "Hồ sơ thành viên",
     iconName: "people",
     bgColor: ["#3AB700", "#74EB3D"],
-    route: "Testing",
+    route: "StudentProfile",
   },
   {
     title: "Bạn bè gần đây",

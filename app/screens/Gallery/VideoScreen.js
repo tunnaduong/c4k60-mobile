@@ -264,6 +264,7 @@ export default function VideoScreen() {
                       );
                       setVisible(true);
                       setCaption(item.caption);
+                      setType("html5");
                     }}
                   >
                     <Image

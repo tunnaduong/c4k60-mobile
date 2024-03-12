@@ -14,7 +14,7 @@ export default function GalleryScreen({ navigation }) {
 
   React.useEffect(() => {
     getGallery();
-  }, [gallery]);
+  }, []);
 
   const getGallery = async () => {
     try {
