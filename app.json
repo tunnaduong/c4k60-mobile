@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "C4K60",
-    "slug": "C4K60",
+    "slug": "c4k60",
     "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
@@ -12,13 +12,13 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/8d221465-1a07-4fc1-ae31-dc5d4ddb434b"
+      "url": "https://u.expo.dev/9b22d593-3b19-4bb5-b393-a3a92e28aa21"
     },
     "assetBundlePatterns": ["**/*"],
     "jsEngine": "jsc",
     "ios": {
       "buildNumber": "2",
-      "supportsTablet": "false",
+      "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile"
     },
     "android": {
@@ -33,9 +33,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "8d221465-1a07-4fc1-ae31-dc5d4ddb434b"
+        "projectId": "9b22d593-3b19-4bb5-b393-a3a92e28aa21"
       }
     },
-    "runtimeVersion": "1.0.0"
+    "runtimeVersion": "1.0.0",
+    "owner": "tunnaduong"
   }
 }
