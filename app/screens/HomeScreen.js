@@ -206,7 +206,11 @@ export default function HomeScreen({ navigation }) {
             <TouchableRipple
               rippleColor="rgba(0, 0, 0, .2)"
               onPress={() => {
-                null;
+                navigation.navigate("ProfileDetail", {
+                  name: name,
+                  username: username,
+                  editable: true,
+                });
               }}
             >
               <View
