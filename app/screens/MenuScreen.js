@@ -245,7 +245,7 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("MusicScreen");
+          navigation.navigate("CalendarScreen");
         }}
       >
         <Ionicons
