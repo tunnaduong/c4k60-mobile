@@ -50,7 +50,7 @@ import IncomingBirthday from "./app/screens/IncomingBirthday";
 import SameHeader from "./app/components/SameHeader";
 import GalleryScreen from "./app/screens/Gallery/GalleryScreen";
 import PhotosScreen from "./app/screens/Gallery/PhotosScreen";
-import StudentProfile from "./app/screens/StudentProfile";
+import StudentProfile from "./app/screens/Profile/StudentProfile";
 import * as RootNavigation from "./app/utils/RootNavigation";
 import VideoScreen from "./app/screens/Gallery/VideoScreen";
 

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Image } from "expo-image";
-import { Video, ResizeMode } from "expo-av";
+import { Video } from "expo-av";
 import Modal from "react-native-modal";
 import YoutubePlayer from "react-native-youtube-iframe";
 
@@ -27,6 +27,8 @@ const VideoPopup = ({
           onBackdropPress={onRequestClose}
           isVisible={visible}
           backdropOpacity={1}
+          animationIn={"fadeIn"}
+          animationOut={"fadeOut"}
         >
           <TouchableOpacity style={styles.closeButton} onPress={onRequestClose}>
             <Text style={styles.closeText}>✕</Text>
@@ -58,6 +60,8 @@ const VideoPopup = ({
             onBackdropPress={onRequestClose}
             isVisible={visible}
             backdropOpacity={1}
+            animationIn={"fadeIn"}
+            animationOut={"fadeOut"}
           >
             <TouchableOpacity
               style={styles.closeButton}
