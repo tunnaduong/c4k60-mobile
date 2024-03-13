@@ -1034,7 +1034,13 @@ function App() {
             fontWeight: "500",
           },
           tabBarBackground: () => (
-            <BlurView tint="light" intensity={1000} style={{ flex: 1 }} />
+            <>
+              {Platform.OS === "ios" ? (
+                <BlurView tint="light" intensity={1000} style={{ flex: 1 }} />
+              ) : (
+                <View style={{ flex: 1, backgroundColor: "white" }}></View>
+              )}
+            </>
           ),
         })}
         shifting={true}
