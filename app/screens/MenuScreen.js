@@ -108,6 +108,7 @@ export default function MenuScreen({ navigation, route }) {
           navigation.navigate("ProfileDetail", {
             name: name,
             username: username,
+            editable: true,
           });
         }}
       >

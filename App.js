@@ -54,7 +54,8 @@ import StudentProfile from "./app/screens/Profile/StudentProfile";
 import * as RootNavigation from "./app/utils/RootNavigation";
 import VideoScreen from "./app/screens/Gallery/VideoScreen";
 import ProfileDetail from "./app/screens/Profile/ProfileDetail";
-import CalendarScreen from "./app/screens/CalendarScreen";
+import CalendarScreen from "./app/screens/Calendar/CalendarScreen";
+import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1355,6 +1356,23 @@ function App() {
             })}
             name="CalendarScreen"
             component={CalendarScreen}
+          />
+          <Stack.Screen
+            options={() => ({
+              title: "Lịch",
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={"Lịch & Sự kiện"}
+                  />
+                );
+              },
+            })}
+            name="CalendarDetail"
+            component={CalendarDetail}
           />
           <Stack.Screen
             options={{

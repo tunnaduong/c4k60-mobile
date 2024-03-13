@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-native-events-calendar/src/EventCalendar.js b/node_modules/react-native-events-calendar/src/EventCalendar.js
+index 4b27dc2..7efa4ea 100644
+--- a/node_modules/react-native-events-calendar/src/EventCalendar.js
++++ b/node_modules/react-native-events-calendar/src/EventCalendar.js
+@@ -79,7 +79,8 @@ export default class EventCalendar extends React.Component {
+       virtualizedListProps,
+       events,
+       initDate,
+-      formatHeader
++      formatHeader,
++      onTitlePress
+     } = this.props
+     return (
+       <View style={[this.styles.container, { width }]}>
+@@ -87,7 +88,9 @@ export default class EventCalendar extends React.Component {
+           <TouchableOpacity onPress={() => this._goToPage(this.state.index - 1)}>
+             <Image source={require('./back.png')} style={this.styles.arrow} />
+           </TouchableOpacity>
+-          <Text style={this.styles.headerText}>{this.state.date.format(formatHeader || 'DD MMMM YYYY')}</Text>
++          <TouchableOpacity onPress={onTitlePress}>
++            <Text style={this.styles.headerText}>{this.state.date.format(formatHeader || 'DD MMMM YYYY')}</Text>
++          </TouchableOpacity>
+           <TouchableOpacity onPress={() => this._goToPage(this.state.index + 1)}>
+             <Image source={require('./forward.png')} style={this.styles.arrow} />
+           </TouchableOpacity>
