@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Image,
   Text,
@@ -6,6 +6,7 @@ import {
   View,
   ImageBackground,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as RootNavigation from "../utils/RootNavigation";
@@ -38,8 +39,11 @@ const SameHeader = ({
           source={require("../assets/headerBg.png")}
           style={{
             width: "100%",
-            paddingTop: 8,
-            height: statusBarHeight * 2,
+            paddingTop: statusBarHeight,
+            height:
+              Platform.OS == "android"
+                ? statusBarHeight * 3
+                : statusBarHeight * 2,
             flexDirection: "row",
             justifyContent: "space-between",
           }}
@@ -103,7 +107,10 @@ const SameHeader = ({
   } else if (defaultStyle) {
     // Default bar
     return (
-      <View className="bg-white">
+      <View
+        className="bg-white"
+        style={Platform.OS === "android" && { marginTop: statusBarHeight }}
+      >
         <SafeAreaView>
           <View
             className={`${
@@ -156,8 +163,11 @@ const SameHeader = ({
             havingBorder
               ? {
                   width: "100%",
-                  paddingTop: 8,
-                  height: statusBarHeight * 2,
+                  paddingTop: statusBarHeight,
+                  height:
+                    Platform.OS == "android"
+                      ? statusBarHeight * 3
+                      : statusBarHeight * 2,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   backgroundColor: "white",
@@ -174,8 +184,11 @@ const SameHeader = ({
                 }
               : {
                   width: "100%",
-                  paddingTop: 8,
-                  height: statusBarHeight * 2,
+                  paddingTop: statusBarHeight,
+                  height:
+                    Platform.OS == "android"
+                      ? statusBarHeight * 3
+                      : statusBarHeight * 2,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   backgroundColor: "white",
@@ -206,14 +219,16 @@ const SameHeader = ({
             </SafeAreaView>
           ) : (
             <Text
-              style={{
-                fontSize: 25,
-                fontWeight: "bold",
-                textAlign: "left",
-                marginTop: statusBarHeight,
-                marginLeft: 15,
-                // opacity: animatedOpacity,
-              }}
+              style={[
+                {
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  marginLeft: 15,
+                  // opacity: animatedOpacity,
+                },
+                Platform.OS === "ios" && { marginTop: statusBarHeight },
+              ]}
             >
               {title}
             </Text>

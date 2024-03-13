@@ -91,7 +91,7 @@ export default function CalendarScreen({ navigation }) {
                   }}
                 >
                   <Text style={styles.textDate}>
-                    {new Date(item.start).toLocaleDateString()}
+                    {moment(item.start, "YYYY-MM-DD").format("DD/MM/YYYY")}
                   </Text>
                   <Text style={styles.eventText}>{item.title}</Text>
                 </TouchableOpacity>
