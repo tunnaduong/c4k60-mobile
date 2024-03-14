@@ -14,18 +14,22 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/9b22d593-3b19-4bb5-b393-a3a92e28aa21"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "jsEngine": "jsc",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.c4k60.mobile"
+      "bundleIdentifier": "com.c4k60.mobile",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.c4k60.mobile"
+      "package": "com.c4k60.mobile",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
