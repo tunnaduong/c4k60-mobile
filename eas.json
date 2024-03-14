@@ -10,14 +10,20 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
-      }
+      },
+      "autoIncrement": true
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "autoIncrement": true
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   }
 }

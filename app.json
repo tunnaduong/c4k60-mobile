@@ -2,7 +2,7 @@
   "expo": {
     "name": "C4K60",
     "slug": "c4k60",
-    "version": "0.5.1",
+    "version": "0.7.4",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -17,7 +17,6 @@
     "assetBundlePatterns": ["**/*"],
     "jsEngine": "jsc",
     "ios": {
-      "buildNumber": "2",
       "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile"
     },
