@@ -46,8 +46,6 @@ export default function NewsfeedScreen({ navigation, route }) {
   };
 
   const fetchNextPage = async () => {
-    console.log("fetching next page");
-
     if (!hasMore || isFirstRender) {
       return;
     }
@@ -70,8 +68,11 @@ export default function NewsfeedScreen({ navigation, route }) {
 
   const ListEndLoader = () => {
     if (hasMore) {
-      // Show loader at the end of list when fetching next page data.
-      return <ActivityIndicator size={"large"} />;
+      return (
+        <View style={{ marginTop: 40 }}>
+          <ActivityIndicator />
+        </View>
+      );
     }
   };
 
@@ -94,10 +95,10 @@ export default function NewsfeedScreen({ navigation, route }) {
           <FlatList
             data={data}
             onEndReached={fetchNextPage}
-            onEndReachedThreshold={0.7}
+            onEndReachedThreshold={0.2}
+            ListFooterComponent={ListEndLoader}
             onContentSizeChange={() => setIsFirstRender(false)}
             contentContainerStyle={{ paddingBottom: 100 }}
-            ListFooterComponent={ListEndLoader}
             renderItem={({ item }) => (
               <FeedPost
                 username={item.username}
