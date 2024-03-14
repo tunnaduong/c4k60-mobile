@@ -219,16 +219,14 @@ const SameHeader = ({
             </SafeAreaView>
           ) : (
             <Text
-              style={[
-                {
-                  fontSize: 25,
-                  fontWeight: "bold",
-                  textAlign: "left",
-                  marginLeft: 15,
-                  // opacity: animatedOpacity,
-                },
-                Platform.OS === "ios" && { marginTop: statusBarHeight },
-              ]}
+              style={{
+                fontSize: 25,
+                fontWeight: "bold",
+                textAlign: "left",
+                marginLeft: 15,
+                marginTop: 5,
+                // opacity: animatedOpacity,
+              }}
             >
               {title}
             </Text>

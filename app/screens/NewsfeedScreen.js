@@ -85,6 +85,7 @@ export default function NewsfeedScreen({ navigation, route }) {
           <FlatList
             data={data}
             onEndReached={fetchNextPage}
+            onEndReachedThreshold={0.7}
             onContentSizeChange={() => setIsFirstRender(false)}
             contentContainerStyle={{ paddingBottom: 100 }}
             renderItem={({ item }) => (
