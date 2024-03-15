@@ -21,7 +21,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile",
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +29,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.c4k60.mobile",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
