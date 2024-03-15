@@ -198,7 +198,7 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("Testing");
+          navigation.navigate("FriendNearby");
         }}
       >
         <Ionicons
@@ -207,7 +207,7 @@ export default function MenuScreen({ navigation, route }) {
           style={{ marginRight: 10 }}
           color={"#E02C99"}
         />
-        <Text style={{ fontSize: 15 }}>Bạn bè quanh đây</Text>
+        <Text style={{ fontSize: 15 }}>Bạn bè gần đây</Text>
         <Ionicons
           name="chevron-forward-outline"
           size={25}
@@ -270,7 +270,9 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("Testing");
+          navigation.navigate("Testing", {
+            title: "Đóng góp ý kiến",
+          });
         }}
       >
         <Ionicons
@@ -294,7 +296,9 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("Testing");
+          navigation.navigate("Testing", {
+            title: "Báo cáo sự cố",
+          });
         }}
       >
         <Ionicons
@@ -318,7 +322,9 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("Testing");
+          navigation.navigate("Testing", {
+            title: "Cài đặt",
+          });
         }}
       >
         <Ionicons

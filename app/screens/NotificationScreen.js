@@ -75,7 +75,7 @@ export default function NotificationScreen({ navigation, route }) {
       id: 18,
       title: "Nhắc đi họp lớp chiều mùng 3/9",
       content:
-        "Hmm hello anh em :))) để test thử khả năng truyền tải thông báo lớp qua app của tui thì nay tui nhắc luôn mn chiều hôm nay (03/09/2022) lúc 3h anh em tập trung tại cổng trường để đi cafe tại Monolic nkaaaa 😘",
+        "Hmm hello anh em :))) để thử nghiệm thử khả năng truyền tải thông báo lớp qua app của tui thì nay tui nhắc luôn mn chiều hôm nay (03/09/2022) lúc 3h anh em tập trung tại cổng trường để đi cafe tại Monolic nkaaaa 😘",
       createdBy: "Dương Tùng Anh",
       image: [
         {

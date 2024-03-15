@@ -21,7 +21,7 @@ const menuData = [
     title: "Bạn bè gần đây",
     iconName: "location",
     bgColor: ["#9B008C", "#ED2BDA"],
-    route: "Testing",
+    route: "FriendNearby",
   },
   {
     title: "Nghe nhạc cùng nhau",

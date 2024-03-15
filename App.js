@@ -56,6 +56,7 @@ import VideoScreen from "./app/screens/Gallery/VideoScreen";
 import ProfileDetail from "./app/screens/Profile/ProfileDetail";
 import CalendarScreen from "./app/screens/Calendar/CalendarScreen";
 import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
+import FriendNearby from "./app/screens/FriendNearby";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1083,7 +1084,7 @@ function App() {
                 <SameHeader
                   icon="search"
                   action={() => navigation.navigate("SearchScreen")}
-                  havingBorder
+                  // havingBorder
                   havingIcon
                 />
               );
@@ -1245,19 +1246,19 @@ function App() {
             component={Music}
           />
           <Stack.Screen
-            options={{
-              title: "Testing 123",
+            options={({ route }) => ({
+              title: route.params.title,
               header: () => {
                 return (
                   <SameHeader
                     defaultStyle
                     havingBorder
                     havingBackButton
-                    title="Màn hình test, chưa có gì cả hihi"
+                    title={route.params.title}
                   />
                 );
               },
-            }}
+            })}
             name="Testing"
             component={TestingComponent}
           />
@@ -1379,6 +1380,23 @@ function App() {
             })}
             name="CalendarDetail"
             component={CalendarDetail}
+          />
+          <Stack.Screen
+            options={() => ({
+              title: "Bạn bè gần đây",
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={"Bạn bè gần đây"}
+                  />
+                );
+              },
+            })}
+            name="FriendNearby"
+            component={FriendNearby}
           />
           <Stack.Screen
             options={{
