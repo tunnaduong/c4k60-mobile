@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions, Alert } from "react-native";
-import MapView, { Marker, AnimatedRegion } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 const screen = Dimensions.get("window");
 import * as Location from "expo-location";
 
@@ -20,7 +20,7 @@ export default function FriendNearby() {
         return;
       }
 
-      let location = await Location.getLastKnownPositionAsync({});
+      let location = await Location.getLastKnownPositionAsync();
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
     })();

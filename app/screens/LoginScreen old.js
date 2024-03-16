@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,128 +8,160 @@ import {
   TextInput,
   Alert,
   Platform,
+  ScrollView,
   Pressable,
   Dimensions,
   Keyboard,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
-import axios from "axios";
 import ProgressHUD from "../components/ProgressHUD";
+export default class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      password: "",
+      avatar: "",
+      check_textInputChange: false,
+      secureTextEntry: true,
+      token: "undefined",
+      name: "",
+      loading: false,
+      show: true,
+    };
+    this.getData();
+    this.usernameRef = React.createRef();
+    this.passwordRef = React.createRef();
+  }
 
-export default function LoginScreen({ navigation }) {
-  const [loading, setLoading] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const usernameRef = React.useRef();
-  const passwordRef = React.useRef();
-  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
-  //   const [show, setShow] = React.useState(true);
-  const [token, setToken] = React.useState("undefined");
-  const [name, setName] = React.useState("");
-  const [avatar, setAvatar] = React.useState("");
+  componentWillUnmount() {
+    this.setState({
+      show: false,
+    });
+  }
 
-  React.useEffect(() => {
-    getData();
-  }, []);
+  InsertRecord = async () => {
+    // show loading hud
+    this.setState({ loading: true });
+    var Username = this.state.username;
+    var Password = this.state.password;
 
-  const handleLogin = async () => {
-    if (username.length == 0 || password.length == 0) {
+    if (Username.length == 0 || Password.length == 0) {
+      this.setState({ loading: false });
       Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!");
     } else {
-      setLoading(true);
-      try {
-        if (username == "tunganh" && password == "1") {
-          setName("Dương Tùng Anh");
-          setAvatar("https://c4k60.tunnaduong.com/hoso/tunganh.jpg");
-          //   setData();
-          setToken("abc123");
-          await AsyncStorage.setItem("username", "tunganh");
-          await AsyncStorage.setItem("name", "Dương Tùng Anh");
-          await AsyncStorage.setItem("avatar", avatar);
-          await AsyncStorage.setItem("token", "abc123");
-          setLoading(false);
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "MainScreen" }],
-            })
-          );
-        }
-        const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/login.php",
-          {
-            username: username,
-            password: password,
-          }
-        );
-        // console.log(response.data);
+      var APIURL = "https://c4k60.tunnaduong.com/api/login.php";
 
-        if (response.data[0].Message == "Thành công!") {
-          setTimeout(async () => {
-            setName(response.data[0].Name);
-            setAvatar(response.data[0].Avatar);
-            // setData();
-            setToken("abc123");
-            await AsyncStorage.setItem("username", response.data[0].Username);
-            await AsyncStorage.setItem("name", response.data[0].Name);
-            await AsyncStorage.setItem("avatar", response.data[0].Avatar);
-            await AsyncStorage.setItem("token", "abc123");
-            setLoading(false);
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: "MainScreen" }],
-              })
-            );
-          }, 350);
-        } else {
-          setLoading(false);
-          Alert.alert("Tên đăng nhập hoặc mật khẩu không đúng!");
-        }
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-        Alert.alert("Tên đăng nhập hoặc mật khẩu không đúng!");
-      }
+      var headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      };
+
+      var Data = {
+        username: Username,
+        password: Password,
+      };
+
+      fetch(APIURL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(Data),
+      })
+        .then((Response) => Response.json())
+        .then((Response) => {
+          if (Response[0].Message == "Thành công!") {
+            setTimeout(() => {
+              const NameOfUser = Response[0].Name;
+              const UserAvatar = Response[0].Avatar;
+              this.setState({
+                name: NameOfUser,
+                avatar: UserAvatar,
+              });
+              this.setData();
+              this.setState({ loading: false });
+
+              this.props.navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "MainScreen" }],
+                })
+              );
+            }, 350);
+          } else {
+            setTimeout(() => {
+              this.setState({ loading: false });
+              Alert.alert(Response[0].Message);
+            }, 350);
+          }
+        })
+        .catch((error) => {
+          this.setState({ loading: false });
+          console.error("Lỗi " + error);
+          Alert.alert("Lỗi: " + error);
+        });
     }
   };
 
-  const setData = async (input) => {
+  setData = async (input) => {
+    this.setState({ token: "abc123" });
+    await AsyncStorage.setItem("username", this.state.username);
+    await AsyncStorage.setItem("name", this.state.name);
+    await AsyncStorage.setItem("avatar", this.state.avatar);
+    await AsyncStorage.setItem("token", "abc123");
     input == "delete_user" && (await AsyncStorage.removeItem("username"));
   };
 
-  const getData = async () => {
+  getData = async () => {
     try {
       const value = await AsyncStorage.getItem("token");
       const username = await AsyncStorage.getItem("username");
       if (value !== null) {
         // value previously stored
-        setToken(value);
+        this.setState({ token: value });
       }
       if (username !== null) {
         // value previously stored
-        setUsername(username);
+        this.setState({ username });
       }
     } catch (e) {
       // error reading value
     }
   };
 
-  return (
-    <>
-      <ProgressHUD loadText="Đang đăng nhập..." visible={loading} />
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <>
+  updateSecureTextEntry() {
+    this.setState({
+      ...this.state,
+      secureTextEntry: !this.state.secureTextEntry,
+    });
+  }
+
+  handleKeyDown(e) {
+    if (e.nativeEvent.key == "Enter") {
+      InsertRecord();
+    }
+  }
+
+  render() {
+    return (
+      <>
+        <ProgressHUD
+          loadText="Đang đăng nhập..."
+          visible={this.state.loading}
+        />
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={Platform.OS === "ios" ? false : true}
+        >
           <TouchableOpacity
             style={styles.backButton}
             activeOpacity={Platform.OS === "ios" ? 0.5 : null}
             onPress={() => {
-              navigation.goBack();
+              this.props.navigation.goBack();
             }}
           >
             <View>
@@ -157,23 +189,24 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.usernameContainer}>
               <FontAwesomeIcon icon={faUser} size={16} />
               <TextInput
-                onSubmitEditing={() => handleLogin()}
+                onSubmitEditing={(event) => this.InsertRecord()}
                 multiline={false}
                 placeholderTextColor="#404040"
                 style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
-                onChangeText={(username) => setUsername(username)}
+                onChangeText={(username) => this.setState({ username })}
                 placeholder="Tên đăng nhập"
                 autoCapitalize="none"
-                value={username}
-                ref={usernameRef}
+                value={this.state.username}
+                ref={this.usernameRef}
               />
               <Pressable
                 onPress={() => {
-                  setUsername("");
-                  setData("delete_user");
+                  this.setState({ username: "" });
+                  this.setData("delete_user");
                 }}
                 style={[
-                  username != "" && usernameRef.current?.isFocused()
+                  this.state.username != "" &&
+                  this.usernameRef.current.isFocused()
                     ? { display: "flex" }
                     : { display: "none" },
                 ]}
@@ -190,21 +223,22 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.passwordContainer}>
               <FontAwesomeIcon icon={faLock} size={16} />
               <TextInput
-                onSubmitEditing={() => handleLogin()}
+                onSubmitEditing={(event) => this.InsertRecord()}
                 multiline={false}
-                secureTextEntry={secureTextEntry ? true : false}
+                secureTextEntry={this.state.secureTextEntry ? true : false}
                 placeholderTextColor="#404040"
                 style={{ flex: 1, fontSize: 16, marginLeft: 10 }}
-                onChangeText={(password) => setPassword(password)}
-                value={password}
+                onChangeText={(password) => this.setState({ password })}
+                value={this.state.password}
                 placeholder="Mật khẩu"
                 autoCapitalize="none"
-                ref={passwordRef}
+                ref={this.passwordRef}
               />
               <Pressable
-                onPress={() => setPassword("")}
+                onPress={() => this.setState({ password: "" })}
                 style={[
-                  password != "" && passwordRef.current?.isFocused()
+                  this.state.password != "" &&
+                  this.passwordRef.current.isFocused()
                     ? { display: "flex" }
                     : { display: "none" },
                 ]}
@@ -222,7 +256,7 @@ export default function LoginScreen({ navigation }) {
               style={styles.loginButton}
               activeOpacity={Platform.OS === "ios" ? 0.3 : null}
               onPress={() => {
-                handleLogin();
+                this.InsertRecord();
                 Keyboard.dismiss();
               }}
             >
@@ -239,10 +273,10 @@ export default function LoginScreen({ navigation }) {
               </View>
             </TouchableOpacity>
           </View>
-        </>
-      </TouchableWithoutFeedback>
-    </>
-  );
+        </ScrollView>
+      </>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

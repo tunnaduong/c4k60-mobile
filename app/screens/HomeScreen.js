@@ -77,6 +77,7 @@ export default function HomeScreen({ navigation }) {
   const getData = async () => {
     const name = await AsyncStorage.getItem("name");
     const username = await AsyncStorage.getItem("username");
+    console.log("okayyy", name, username);
     if (name !== null && username !== null) {
       setName(name);
       setUsername(username);
