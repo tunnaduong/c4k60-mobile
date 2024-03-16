@@ -25,6 +25,7 @@ import { TouchableRipple } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
 import sponsorsData from "../global/sponsorsData";
+import updateLastActivity from "../utils/updateLastActivity";
 
 const screenWidth = Dimensions.get("window").width;
 // const screenHeight = Dimensions.get("window").height;
@@ -62,6 +63,7 @@ export default function HomeScreen({ navigation }) {
       console.log("exec ted else");
     }
 
+    updateLastActivity(username);
     return () => {
       clearInterval(inter);
     };
@@ -72,6 +74,7 @@ export default function HomeScreen({ navigation }) {
     getData();
     getNotification();
     getBirthday();
+    updateLastActivity(username);
   };
 
   const getData = async () => {
@@ -105,20 +108,6 @@ export default function HomeScreen({ navigation }) {
 
     return g;
   };
-
-  // const animate = () => {
-  //   try {
-  //     animatedValue1.setValue(-150);
-  //     // animatedValue2.setValue(0.1);
-  //     animatedValue3.setValue(0);
-  //   } finally {
-  //     parallel([
-  //       createAnimation(animatedValue1, 150, Easing.inout, null, 0),
-  //       // createAnimation(animatedValue2, 200, Easing.inout, null, 1),
-  //       createAnimation(animatedValue3, 150, Easing.inout, null, 30),
-  //     ]).start();
-  //   }
-  // };
 
   const getNotification = async (input) => {
     const response = await axios.get(

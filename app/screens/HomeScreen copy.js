@@ -13,7 +13,7 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import NewsfeedScreen from "./NewsfeedScreen";
 import MenuScreen from "./MenuScreen";
-import ChatScreen from "./ChatScreen";
+import ChatScreen from "./Chat/ChatScreen";
 import NotificationScreen from "./NotificationScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast from "react-native-tiny-toast";

@@ -32,7 +32,7 @@ import CommentChat from "./app/components/CommentChat";
 import UserAvatar from "./app/components/UserAvatar";
 import UserFullName from "./app/components/UserFullName";
 import config from "./app/configurations/config";
-import ChatScreen from "./app/screens/ChatScreen";
+import ChatScreen from "./app/screens/Chat/ChatScreen";
 import HomeScreen from "./app/screens/HomeScreen";
 import LoadingScreen from "./app/screens/LoadingScreen";
 import LoginScreen from "./app/screens/LoginScreen";
