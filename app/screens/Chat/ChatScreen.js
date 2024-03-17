@@ -1,5 +1,11 @@
 import React from "react";
-import { View, ScrollView, Text, RefreshControl } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  RefreshControl,
+  Pressable,
+} from "react-native";
 import { Image } from "expo-image";
 import { TouchableRipple } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -101,6 +107,30 @@ export default function ChatScreen({ navigation, route }) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         >
+          <View style={{ alignItems: "center", gap: 5, width: 65 }}>
+            <UserAvatar
+              username={username}
+              style={{ width: 68, height: 68, borderRadius: 35 }}
+            />
+            <View
+              style={{
+                backgroundColor: "#00BF00",
+                height: 18,
+                width: 18,
+                borderRadius: 10,
+                borderColor: "white",
+                borderWidth: 3,
+                position: "absolute",
+                bottom: 23,
+                right: 0,
+              }}
+            ></View>
+            <UserFullName
+              username={username}
+              numberOfLines={1}
+              type="last_name"
+            />
+          </View>
           {onlineUsers
             .filter((user) => {
               var date = new Date();
@@ -108,9 +138,19 @@ export default function ChatScreen({ navigation, route }) {
               return date - new Date(user.last_activity) < check;
             })
             .map((user, index) => {
+              if (user.username === username) return;
+
               return (
-                <View
+                <Pressable
                   key={index}
+                  onPress={() => {
+                    if (user.username === username) return;
+                    navigation.navigate("ChatRoom", {
+                      username: user.username,
+                      name: user.name,
+                      type: "private",
+                    });
+                  }}
                   style={{ alignItems: "center", gap: 5, width: 65 }}
                 >
                   <UserAvatar
@@ -135,13 +175,18 @@ export default function ChatScreen({ navigation, route }) {
                     numberOfLines={1}
                     type="last_name"
                   />
-                </View>
+                </Pressable>
               );
             })}
         </ScrollView>
         <TouchableRipple
           rippleColor="rgba(0, 0, 0, .2)"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("ChatRoom", {
+              type: "group",
+              name: "Ngưng Bích Buildings :)))))",
+            });
+          }}
           style={{
             padding: 15,
             flexDirection: "row",

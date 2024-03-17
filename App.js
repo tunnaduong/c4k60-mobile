@@ -57,6 +57,7 @@ import ProfileDetail from "./app/screens/Profile/ProfileDetail";
 import CalendarScreen from "./app/screens/Calendar/CalendarScreen";
 import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
+import ChatRoom from "./app/screens/Chat/ChatRoom";
 
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
@@ -1397,6 +1398,23 @@ function App() {
             })}
             name="FriendNearby"
             component={FriendNearby}
+          />
+          <Stack.Screen
+            options={({ route }) => ({
+              title: route.params.name,
+              header: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title={route.params.name}
+                  />
+                );
+              },
+            })}
+            name="ChatRoom"
+            component={ChatRoom}
           />
           <Stack.Screen
             options={{
