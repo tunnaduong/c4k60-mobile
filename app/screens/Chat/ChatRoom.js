@@ -56,8 +56,15 @@ export default function ChatRoom({ route, navigation }) {
 
   const getMessages = async () => {
     try {
+      ws.onmessage = (e) => {
+        const message = JSON.parse(e.data);
+        setMessages((prev) => [...prev, message.data]);
+      };
+      const user_to =
+        route.params.type == "group" ? "class_group" : route.params.username;
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/"
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/?user_to=" +
+          user_to
       );
       setMessages(response.data);
     } catch (error) {
