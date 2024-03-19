@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import UserAvatar from "../components/UserAvatar";
 import moment from "moment";
@@ -35,56 +35,22 @@ const screenWidth = Dimensions.get("window").width;
 export default function HomeScreen({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [loadText, setLoadText] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [username, setUsername] = React.useState("");
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
 
+  const name = storage.getString("name");
+  const username = storage.getString("username");
+
   useEffect(() => {
     refreshHandler();
-  }, []);
-
-  useEffect(() => {
-    clearInterval(inter);
-
-    const inter = setInterval(() => {
-      refreshHandler();
-      console.log("ref" + Math.random());
-    }, 200);
-
-    if (name == "" || username == "") {
-      inter;
-      console.log("exec ted if");
-      setTimeout(() => {
-        clearInterval(inter);
-      }, 600);
-    } else {
-      clearInterval(inter);
-      console.log("exec ted else");
-    }
-
     updateLastActivity(username);
-    return () => {
-      clearInterval(inter);
-    };
-  }, [navigation, name, username]);
+  }, []);
 
   const refreshHandler = () => {
     getGreetingTime();
-    getData();
     getNotification();
     getBirthday();
     updateLastActivity(username);
-  };
-
-  const getData = async () => {
-    const name = await AsyncStorage.getItem("name");
-    const username = await AsyncStorage.getItem("username");
-    console.log("okayyy", name, username);
-    if (name !== null && username !== null) {
-      setName(name);
-      setUsername(username);
-    }
   };
 
   const getGreetingTime = (m) => {

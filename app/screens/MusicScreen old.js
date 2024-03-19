@@ -18,7 +18,7 @@ import UserAvatar from "../components/UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import io from "socket.io-client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 //Platform.OS === "ios"
@@ -90,8 +90,8 @@ export default class MusicScreen extends React.Component {
   };
 
   getData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    const name = await AsyncStorage.getItem("name");
+    const username = storage.getString("username");
+    const name = storage.getString("name");
     if (username !== null && name !== null) {
       this.setState({ username: username, nameofuser: name });
     }

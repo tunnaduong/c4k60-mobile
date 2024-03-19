@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { CommonActions } from "@react-navigation/native";
 import ProgressHUD from "../components/ProgressHUD";
 
@@ -16,7 +16,7 @@ class LoadingScreen extends React.Component {
 
   getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("token");
+      const value = storage.getString("token");
       if (value !== null && value === "abc123") {
         this.props.navigation.dispatch(
           CommonActions.reset({

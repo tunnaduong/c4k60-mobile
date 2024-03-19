@@ -22,7 +22,7 @@ import {
 import UserAvatar from "../components/UserAvatar";
 import YoutubePlayer from "react-native-youtube-iframe";
 import io from "socket.io-client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import { ProgressBar, Colors } from "react-native-paper";
@@ -56,22 +56,14 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
   );
   const [msgBtn, _setMsgBtn] = useState("Tải lại");
   const player = useRef();
-
-  const fetchStorage = async () => {
-    const username = await AsyncStorage.getItem("username");
-    if (username) {
-      myGlobalObj.username = username;
-    }
-    return username;
-  };
+  const username = storage.getString("username");
 
   useEffect(() => {
-    fetchStorage();
     const socket = io("ws://" + baseBackendServerURL + "/");
     socket.connect();
     socket.on("connect", () => {
-      console.log(myGlobalObj.username + " connected to socket server");
-      socket.emit("conn", myGlobalObj.username);
+      console.log(username + " connected to socket server");
+      socket.emit("conn", username);
     });
     socket.on("refresh", () => {
       // console.log("Received refresh signal from server! Now restarting...");
@@ -92,7 +84,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
     getData();
     syncWithServer();
     return () => {
-      socket.emit("discon", myGlobalObj.username);
+      socket.emit("discon", username);
       setPlaying(false);
       console.log("User exited");
     };
@@ -268,8 +260,8 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
           player.current
             .getDuration()
             .then((duration) => {
-              // myGlobalObj.progress = currentTime / duration;
-              // console.log("Progress: " + myGlobalObj.progress);
+              // progress = currentTime / duration;
+              // console.log("Progress: " + progress);
               setProgress(currentTime / duration);
             })
             .catch((err) => console.log(err));

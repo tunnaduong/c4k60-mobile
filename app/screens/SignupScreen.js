@@ -12,7 +12,7 @@ import { fab, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { fas, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import * as WebBrowser from "expo-web-browser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { CommonActions } from "@react-navigation/native";
 
 library.add(fab, faFacebook);

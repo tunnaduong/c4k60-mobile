@@ -10,29 +10,16 @@ import {
   Pressable,
   View,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { Divider } from "react-native-elements/dist/divider/Divider";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { CommonActions } from "@react-navigation/native";
 import UserAvatar from "../components/UserAvatar";
 
 export default function MenuScreen({ navigation, route }) {
-  const [name, setName] = React.useState("");
-  const [username, setUsername] = React.useState("");
+  const name = storage.getString("name");
+  const username = storage.getString("username");
   const [modalVisible, setModalVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    const name = await AsyncStorage.getItem("name");
-    const username = await AsyncStorage.getItem("username");
-    if (name !== null && username !== null) {
-      setName(name);
-      setUsername(username);
-    }
-  };
 
   const goToScreen = () => {
     clearAll();
@@ -43,11 +30,11 @@ export default function MenuScreen({ navigation, route }) {
       })
     );
   };
-  const clearAll = async () => {
+  const clearAll = () => {
     try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("name");
-      await AsyncStorage.removeItem("avatar");
+      storage.delete("token");
+      storage.delete("name");
+      storage.delete("avatar");
     } catch (e) {
       // clear error
     }

@@ -6,31 +6,21 @@ import {
   RefreshControl,
   FlatList,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import UserAvatar from "../components/UserAvatar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FeedPost from "../components/FeedPost";
 import axios from "axios";
 
 export default function NewsfeedScreen({ navigation, route }) {
-  // get username from asyncstorage
-  const [username, setUsername] = React.useState(null);
   const [refreshing, setRefreshing] = React.useState(false);
   const [data, setData] = React.useState(null);
   const [page, setPage] = React.useState(2);
   const [hasMore, setHasMore] = React.useState(true);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
+  const username = storage.getString("username");
 
   React.useEffect(() => {
-    const getUsername = async () => {
-      try {
-        const username = await AsyncStorage.getItem("username");
-        setUsername(username);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getUsername();
     fetchNewsfeed();
   }, []);
 

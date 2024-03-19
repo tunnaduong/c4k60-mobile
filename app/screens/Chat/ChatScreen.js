@@ -5,19 +5,51 @@ import {
   Text,
   RefreshControl,
   Pressable,
+  Platform,
 } from "react-native";
 import { Image } from "expo-image";
 import { TouchableRipple } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../../global/storage";
 import axios from "axios";
 import updateLastActivity from "../../utils/updateLastActivity";
 import UserAvatar from "../../components/UserAvatar";
 import UserFullName from "../../components/UserFullName";
+import LastChat from "../../components/LastChat";
 
 export default function ChatScreen({ navigation, route }) {
+  const ws = route.params.ws;
   const [onlineUsers, setOnlineUsers] = React.useState([]);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [username, setUsername] = React.useState("");
+  const [conversation, setConversation] = React.useState([]);
+  const username = storage.getString("username");
+  // React.useEffect(() => {
+  //   console.log(">> in useEffect ", Math.random());
+  //   getConversation();
+  // });
+
+  React.useEffect(() => {
+    getOnlineUsers();
+    getConversation();
+    updateLastActivity(username);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getConversation();
+      //Put your Data loading function here instead of my loadData()
+    });
+    getConversation();
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const getConversation = async () => {
+    try {
+      const response = await axios.get(
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/home/?username=" + username
+      );
+      setConversation(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getOnlineUsers = async () => {
     try {
@@ -30,27 +62,16 @@ export default function ChatScreen({ navigation, route }) {
     }
   };
 
-  const ws = new WebSocket("ws://103.81.85.224:6996");
-
   React.useEffect(() => {
-    getData();
     getOnlineUsers();
-    return () => {
-      console.log("unmount");
-      ws.close();
-    };
+    connectWebsocket();
+    // return () => {
+    //   console.log("unmount");
+    //   ws.close();
+    // };
   }, []);
 
-  const getData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    if (username !== null) {
-      connectWebsocket(username);
-      setUsername(username);
-      updateLastActivity(username);
-    }
-  };
-
-  const connectWebsocket = (username) => {
+  const connectWebsocket = () => {
     ws.onopen = () => {
       console.log("connected");
       ws.send(
@@ -65,6 +86,7 @@ export default function ChatScreen({ navigation, route }) {
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data);
       getOnlineUsers();
+      getConversation();
       console.log(message);
     };
     ws.onerror = (e) => {
@@ -73,6 +95,12 @@ export default function ChatScreen({ navigation, route }) {
     ws.onclose = (e) => {
       console.log("connection closed");
     };
+  };
+
+  const checkTime = (time) => {
+    var date = new Date();
+    var check = 10 * 60 * 1000;
+    return date - new Date(time) < check;
   };
 
   return (
@@ -91,6 +119,7 @@ export default function ChatScreen({ navigation, route }) {
               setTimeout(() => {
                 getOnlineUsers();
                 updateLastActivity(username);
+                getConversation();
                 setRefreshing(false);
               }, 800);
             }}
@@ -146,6 +175,8 @@ export default function ChatScreen({ navigation, route }) {
                   onPress={() => {
                     if (user.username === username) return;
                     navigation.navigate("ChatRoom", {
+                      ws: ws,
+                      user_from: username,
                       username: user.username,
                       name: user.name,
                       type: "private",
@@ -183,6 +214,8 @@ export default function ChatScreen({ navigation, route }) {
           rippleColor="rgba(0, 0, 0, .2)"
           onPress={() => {
             navigation.navigate("ChatRoom", {
+              ws: ws,
+              user_from: username,
               type: "group",
               name: "Ngưng Bích Buildings :)))))",
             });
@@ -195,20 +228,88 @@ export default function ChatScreen({ navigation, route }) {
           }}
         >
           <>
-            <Image
-              source={require("../../assets/chat-nbb.jpeg")}
-              style={{ height: 60, width: 60, borderRadius: 30 }}
-            ></Image>
+            <View>
+              <Image
+                source={require("../../assets/chat-nbb.jpeg")}
+                style={{ height: 60, width: 60, borderRadius: 30 }}
+              ></Image>
+              <View
+                style={{
+                  backgroundColor: "#00BF00",
+                  height: 18,
+                  width: 18,
+                  borderRadius: 10,
+                  borderColor: "white",
+                  borderWidth: 3,
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                }}
+              ></View>
+            </View>
+
             <View style={{ marginLeft: 13 }}>
               <Text style={{ fontSize: 17, fontWeight: "500" }}>
                 Ngưng Bích Buildings :))))))
               </Text>
-              <Text style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}>
-                Bạn: Duma · 2 giờ
-              </Text>
+              <LastChat user_from={username} type={"group"} />
             </View>
           </>
         </TouchableRipple>
+        {conversation.map((item, index) => {
+          return (
+            <TouchableRipple
+              key={index}
+              rippleColor="rgba(0, 0, 0, .2)"
+              onPress={() => {
+                navigation.navigate("ChatRoom", {
+                  ws: ws,
+                  user_from: username,
+                  username: item.username,
+                  name: item.name,
+                  type: "private",
+                });
+              }}
+              style={{
+                padding: 15,
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 10,
+              }}
+            >
+              <>
+                <View>
+                  <Image
+                    source={item.avatar}
+                    style={{ height: 60, width: 60, borderRadius: 30 }}
+                  ></Image>
+                  {checkTime(item.last_activity) && (
+                    <View
+                      style={{
+                        backgroundColor: "#00BF00",
+                        height: 18,
+                        width: 18,
+                        borderRadius: 10,
+                        borderColor: "white",
+                        borderWidth: 3,
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                      }}
+                    ></View>
+                  )}
+                </View>
+
+                <View style={{ marginLeft: 13 }}>
+                  <Text style={{ fontSize: 17, fontWeight: "500" }}>
+                    {item.name}
+                  </Text>
+                  <LastChat user_from={username} user_to={item.username} />
+                </View>
+              </>
+            </TouchableRipple>
+          );
+        })}
       </ScrollView>
     </>
   );

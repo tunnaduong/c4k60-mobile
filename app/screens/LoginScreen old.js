@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { CommonActions } from "@react-navigation/native";
 import ProgressHUD from "../components/ProgressHUD";
 export default class LoginScreen extends Component {
@@ -117,8 +117,8 @@ export default class LoginScreen extends Component {
 
   getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("token");
-      const username = await AsyncStorage.getItem("username");
+      const value = storage.getString("token");
+      const username = storage.getString("username");
       if (value !== null) {
         // value previously stored
         this.setState({ token: value });

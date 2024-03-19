@@ -19,7 +19,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { Badge } from "react-native-elements";
 import UserAvatar from "../components/UserAvatar";
 import { Divider } from "react-native-elements/dist/divider/Divider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import ImageView from "react-native-image-viewing";
 import axios from "axios";
 
@@ -71,14 +71,13 @@ export default class NotiScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
       images: "",
       visible: false,
       imageIndex: 0,
     };
 
-    this.getData();
     this.AddItemsToArray(this.props.route.params.id);
+    this.username = storage.getString("username");
   }
 
   componentDidMount() {
@@ -94,13 +93,6 @@ export default class NotiScreen extends Component {
   componentWillUnmount() {
     this._removeScreen();
   }
-
-  getData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    if (username !== null) {
-      this.setState({ username: username });
-    }
-  };
 
   async AddItemsToArray(id) {
     try {
@@ -242,7 +234,7 @@ export default class NotiScreen extends Component {
                 }}
               >
                 <UserAvatar
-                  username={this.state.username}
+                  username={this.username}
                   style={styles.commentAvatar}
                 />
                 <Pressable

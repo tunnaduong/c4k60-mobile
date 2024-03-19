@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "./app/global/storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -59,6 +59,8 @@ import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
 
+const ws = new WebSocket("ws://103.81.85.224:6996");
+
 const TextEncodingPolyfill = require("text-encoding");
 Object.assign(global, {
   TextEncoder: TextEncodingPolyfill.TextEncoder,
@@ -74,6 +76,7 @@ LogBox.ignoreLogs([
   "JSON Parse error: Unrecognized token '<'",
   "Possible Unhandled Promise Rejection",
   "Error evaluating injected",
+  "Non-serializable values were found in the navigation state",
 ]);
 
 LogBox.ignoreLogs([
@@ -88,17 +91,7 @@ function App() {
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
   const ChatComponent = React.memo(() => {
-    const [usrname, setUsername] = React.useState("");
-
-    const getData = async () => {
-      const username = await AsyncStorage.getItem("username");
-      if (username !== null) {
-        setUsername(username);
-        console.log("sdsd", username);
-      } else {
-        console.log("no usrname");
-      }
-    };
+    const usrname = storage.getString("username");
 
     const [chatData, setChatData] = React.useState([]);
     const [refreshing, setRefreshing] = React.useState(false);
@@ -137,7 +130,6 @@ function App() {
     };
 
     useEffect(() => {
-      getData();
       getChatLogs();
       UserFullname();
     }, [usrname, userFullname]);
@@ -1096,7 +1088,7 @@ function App() {
           name="Chat"
           component={ChatScreen}
           initialParams={{
-            currentScreen: "ChatScreen",
+            ws: ws,
           }}
           options={{
             title: "Chat",
@@ -1400,6 +1392,7 @@ function App() {
             component={FriendNearby}
           />
           <Stack.Screen
+            initialParams={{ ws: ws }}
             options={({ route }) => ({
               title: route.params.name,
               header: () => {

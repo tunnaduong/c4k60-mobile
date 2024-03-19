@@ -20,7 +20,7 @@ import Toast from "react-native-tiny-toast";
 import HomeScreenCarousel from "./HomeScreenCarousel";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBirthdayCake, faBullhorn } from "@fortawesome/free-solid-svg-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +33,7 @@ export default class MyTabs extends Component {
   }
   getData = async () => {
     try {
-      const count = await AsyncStorage.getItem("noticount");
+      const count = storage.getString("noticount");
       if (count !== null) {
         // value previously stored
         this.setState({ noticount: count });

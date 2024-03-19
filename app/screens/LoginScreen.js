@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../global/storage";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import ProgressHUD from "../components/ProgressHUD";
@@ -48,10 +48,10 @@ export default function LoginScreen({ navigation }) {
           setAvatar("https://c4k60.tunnaduong.com/hoso/tunganh.jpg");
           //   setData();
           setToken("abc123");
-          await AsyncStorage.setItem("username", "tunganh");
-          await AsyncStorage.setItem("name", "Dương Tùng Anh");
-          await AsyncStorage.setItem("avatar", avatar);
-          await AsyncStorage.setItem("token", "abc123");
+          storage.set("username", "tunganh");
+          storage.set("name", "Dương Tùng Anh");
+          storage.set("avatar", avatar);
+          storage.set("token", "abc123");
           setLoading(false);
           navigation.dispatch(
             CommonActions.reset({
@@ -75,10 +75,10 @@ export default function LoginScreen({ navigation }) {
             setAvatar(response.data[0].Avatar);
             // setData();
             setToken("abc123");
-            await AsyncStorage.setItem("username", response.data[0].Username);
-            await AsyncStorage.setItem("name", response.data[0].Name);
-            await AsyncStorage.setItem("avatar", response.data[0].Avatar);
-            await AsyncStorage.setItem("token", "abc123");
+            storage.set("username", response.data[0].Username);
+            storage.set("name", response.data[0].Name);
+            storage.set("avatar", response.data[0].Avatar);
+            storage.set("token", "abc123");
             setLoading(false);
             navigation.dispatch(
               CommonActions.reset({
@@ -99,14 +99,14 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
-  const setData = async (input) => {
-    input == "delete_user" && (await AsyncStorage.removeItem("username"));
+  const setData = (input) => {
+    input == "delete_user" && storage.delete("username");
   };
 
-  const getData = async () => {
+  const getData = () => {
     try {
-      const value = await AsyncStorage.getItem("token");
-      const username = await AsyncStorage.getItem("username");
+      const value = storage.getString("token");
+      const username = storage.getString("username");
       if (value !== null) {
         // value previously stored
         setToken(value);

@@ -8,49 +8,31 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../../global/storage";
+import UserAvatar from "../../components/UserAvatar";
 
 export default function ChatRoom({ route, navigation }) {
-  const ws = new WebSocket("ws://103.81.85.224:6996");
+  const ws = route.params.ws;
   const [messages, setMessages] = React.useState(null);
   const [message, setMessage] = React.useState("");
-  const [username, setUsername] = React.useState("");
+  const scrollViewRef = React.useRef();
 
   React.useEffect(() => {
-    getData();
     getMessages();
     connectWebsocket();
-    return () => {
-      console.log("unmount");
-      ws.close();
-    };
   }, []);
 
   const connectWebsocket = () => {
     ws.onopen = () => {
       console.log("connected");
-      //   ws.send(
-      //     JSON.stringify({
-      //       type: "online",
-      //       data: {
-      //         username: username,
-      //       },
-      //     })
-      //   );
     };
-    // ws.onmessage = (e) => {
-    //   const message = JSON.parse(e.data);
-    //   console.log(message);
-    // };
     ws.onerror = (e) => {
       console.log(e.message);
-    };
-    ws.onclose = (e) => {
-      console.log("connection closed");
     };
   };
 
@@ -58,24 +40,21 @@ export default function ChatRoom({ route, navigation }) {
     try {
       ws.onmessage = (e) => {
         const message = JSON.parse(e.data);
+        if (message.type != "message") return;
         setMessages((prev) => [...prev, message.data]);
       };
       const user_to =
         route.params.type == "group" ? "class_group" : route.params.username;
+      const user_from = route.params.user_from;
       const response = await axios.get(
         "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/?user_to=" +
-          user_to
+          user_to +
+          "&user_from=" +
+          user_from
       );
       setMessages(response.data);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const getData = async () => {
-    const username = await AsyncStorage.getItem("username");
-    if (username !== null) {
-      setUsername(username);
     }
   };
 
@@ -85,7 +64,7 @@ export default function ChatRoom({ route, navigation }) {
         JSON.stringify({
           type: "message",
           data: {
-            user_from: username,
+            user_from: route.params.user_from,
             message: message,
             user_to:
               route.params.type == "group"
@@ -96,9 +75,9 @@ export default function ChatRoom({ route, navigation }) {
         })
       );
       const response = await axios.post(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/",
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/conversations/",
         {
-          user_from: username,
+          user_from: route.params.user_from,
           message: message,
           user_to:
             route.params.type == "group"
@@ -128,9 +107,17 @@ export default function ChatRoom({ route, navigation }) {
         }}
         behavior="padding"
         enabled
-        keyboardVerticalOffset={100}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : -200}
       >
-        <ScrollView>
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({ animated: true })
+          }
+          contentContainerStyle={{
+            marginTop: 10,
+          }}
+        >
           {messages == null ? (
             <>
               <View
@@ -152,25 +139,50 @@ export default function ChatRoom({ route, navigation }) {
                 <View
                   key={index}
                   style={{
-                    flexDirection: "row",
-                    width: "60%",
-                    alignSelf:
-                      item.user_from == username ? "flex-end" : "flex-start",
-                    backgroundColor:
-                      item.user_from == username ? "#2761FF" : "#EBEBEB",
-                    borderRadius: 5,
+                    flexDirection:
+                      item.user_from == route.params.user_from
+                        ? "row-reverse"
+                        : "row",
+                    alignItems: "center",
                     marginBottom: 10,
+                    gap: 10,
+                    paddingHorizontal: 10,
                   }}
                 >
-                  <Text
+                  {item.user_from != route.params.user_from && (
+                    <UserAvatar
+                      username={item.user_from}
+                      style={{ height: 35, width: 35, borderRadius: 20 }}
+                    />
+                  )}
+                  <View
                     style={{
-                      color: item.user_from == username ? "white" : "black",
-                      padding: 7,
-                      fontSize: 16,
+                      flexDirection: "row",
+                      alignSelf:
+                        item.user_from == route.params.user_from
+                          ? "flex-end"
+                          : "flex-start",
+                      backgroundColor:
+                        item.user_from == route.params.user_from
+                          ? "#2761FF"
+                          : "#EBEBEB",
+                      borderRadius: 20,
+                      padding: 3,
                     }}
                   >
-                    {item.message}
-                  </Text>
+                    <Text
+                      style={{
+                        color:
+                          item.user_from == route.params.user_from
+                            ? "white"
+                            : "black",
+                        padding: 7,
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.message}
+                    </Text>
+                  </View>
                 </View>
               );
             })
@@ -205,6 +217,16 @@ export default function ChatRoom({ route, navigation }) {
             style={{ height: 45, flex: 1, fontSize: 16 }}
             value={message}
             onChangeText={setMessage}
+            onFocus={() => {
+              setTimeout(
+                () => scrollViewRef.current?.scrollToEnd({ animated: true }),
+                100
+              );
+            }}
+            onSubmitEditing={() => {
+              setMessage("");
+              sendMessage();
+            }}
           ></TextInput>
           <TouchableOpacity
             style={[
