@@ -19,10 +19,15 @@ PODS:
     - ExpoModulesCore
   - EXFont (11.4.0):
     - ExpoModulesCore
+  - EXImageLoader (4.3.0):
+    - ExpoModulesCore
+    - React-Core
   - EXJSONUtils (0.7.1)
   - EXLocation (16.1.0):
     - ExpoModulesCore
   - EXManifests (0.7.2):
+    - ExpoModulesCore
+  - EXNotifications (0.20.1):
     - ExpoModulesCore
   - Expo (49.0.23):
     - ExpoModulesCore
@@ -83,12 +88,16 @@ PODS:
     - React-Core
   - ExpoBlur (12.4.1):
     - ExpoModulesCore
+  - ExpoDevice (5.4.0):
+    - ExpoModulesCore
   - ExpoImage (1.3.5):
     - ExpoModulesCore
     - SDWebImage (~> 5.15.8)
     - SDWebImageAVIFCoder (~> 0.10.0)
     - SDWebImageSVGCoder (~> 1.7.0)
     - SDWebImageWebPCoder (~> 0.11.0)
+  - ExpoImagePicker (14.3.2):
+    - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
   - ExpoLinearGradient (12.3.0):
@@ -615,16 +624,20 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
+  - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
   - EXLocation (from `../node_modules/expo-location/ios`)
   - EXManifests (from `../node_modules/expo-manifests/ios`)
+  - EXNotifications (from `../node_modules/expo-notifications/ios`)
   - Expo (from `../node_modules/expo`)
   - expo-dev-client (from `../node_modules/expo-dev-client/ios`)
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
   - ExpoBlur (from `../node_modules/expo-blur/ios`)
+  - ExpoDevice (from `../node_modules/expo-device/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios`)
+  - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -724,12 +737,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-file-system/ios"
   EXFont:
     :path: "../node_modules/expo-font/ios"
+  EXImageLoader:
+    :path: "../node_modules/expo-image-loader/ios"
   EXJSONUtils:
     :path: "../node_modules/expo-json-utils/ios"
   EXLocation:
     :path: "../node_modules/expo-location/ios"
   EXManifests:
     :path: "../node_modules/expo-manifests/ios"
+  EXNotifications:
+    :path: "../node_modules/expo-notifications/ios"
   Expo:
     :path: "../node_modules/expo"
   expo-dev-client:
@@ -742,8 +759,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu-interface/ios"
   ExpoBlur:
     :path: "../node_modules/expo-blur/ios"
+  ExpoDevice:
+    :path: "../node_modules/expo-device/ios"
   ExpoImage:
     :path: "../node_modules/expo-image/ios"
+  ExpoImagePicker:
+    :path: "../node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
@@ -875,16 +896,20 @@ SPEC CHECKSUMS:
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
   EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
+  EXImageLoader: 34b214f9387e98f3c73989f15d8d5b399c9ab3f7
   EXJSONUtils: 6802be4282d42b97c51682468ddc1026a06f8276
   EXLocation: a425ace19c0445e7ea9702982fc6b9a402791510
   EXManifests: cf66451b11b2c2f6464917528d792759f7fd6ce0
+  EXNotifications: 09394cbd7165f9a4a00a53328aa09bf874bae717
   Expo: ba9abdf444dc6d2c05a82c4c1b51a2400beb6167
   expo-dev-client: f350e6ddced33d2c14008c6d70c7904c0cd78b1f
   expo-dev-launcher: 3c29a60a0e17e62d02cddcb6c106a25f63f1c75c
   expo-dev-menu: c5f789b6228f4176f83a1f47dba54350e63437e1
   expo-dev-menu-interface: bda969497e73dadc2663c479e0fa726ca79a306e
   ExpoBlur: a2c90bdfa4ff9f459cdb0f83191bddf020e3e2db
+  ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
   ExpoImage: 723efcb8d9377ae8645a6f7a1579305f5b80a76f
+  ExpoImagePicker: c58fdf28be551681a8edc550bcec76c397a8dfcd
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoLinearGradient: 5966dd5d49872cc9c104fedc8bbc298b6049b2e8
   ExpoModulesCore: cf14fc49a3d5df3ed3cf2a38fc758d073bfd1c13

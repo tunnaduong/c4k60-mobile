@@ -9,12 +9,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  Pressable,
 } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import { storage } from "../../global/storage";
 import UserAvatar from "../../components/UserAvatar";
+import moment from "moment";
+import * as ImagePicker from "expo-image-picker";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
@@ -26,6 +29,39 @@ export default function ChatRoom({ route, navigation }) {
     getMessages();
     connectWebsocket();
   }, []);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerLeft: () => (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color={"black"} />
+          </Pressable>
+          {route.params.type == "group" ? (
+            <Image
+              source={require("../../assets/chat-nbb.jpeg")}
+              style={{ height: 30, width: 30, borderRadius: 15 }}
+            />
+          ) : (
+            <UserAvatar
+              username={route.params.username}
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                resizeMode: "cover",
+              }}
+            />
+          )}
+
+          <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+            {route.params.name}
+          </Text>
+        </View>
+      ),
+    });
+  });
 
   const connectWebsocket = () => {
     ws.onopen = () => {
@@ -90,6 +126,65 @@ export default function ChatRoom({ route, navigation }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const formatTime = (time) => {
+    return moment(time).format("hh:mm A");
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+    // const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    // if (!permission.granted) {
+    //   alert("Permission to access camera roll is required!");
+    //   return;
+    // }
+    // const result = await ImagePicker.launchImageLibraryAsync({
+    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //   quality: 1,
+    // });
+    // if (!result.cancelled) {
+    //   const formData = new FormData();
+    //   formData.append("image", {
+    //     uri: result.uri,
+    //     type: "image/jpeg",
+    //     name: "image.jpg",
+    //   });
+    //   try {
+    //     ws.send(
+    //       JSON.stringify({
+    //         type: "image",
+    //         data: {
+    //           user_from: route.params.user_from,
+    //           user_to:
+    //             route.params.type == "group"
+    //               ? "class_group"
+    //               : route.params.username,
+    //           type: route.params.type,
+    //         },
+    //       })
+    //     );
+    //     const response = await axios.post(
+    //       "https://c4k60.tunnaduong.com/api/v1.0/chat/conversations/",
+    //       formData,
+    //       {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     );
+    //     console.log(response.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
   };
 
   return (
@@ -157,7 +252,6 @@ export default function ChatRoom({ route, navigation }) {
                   )}
                   <View
                     style={{
-                      flexDirection: "row",
                       alignSelf:
                         item.user_from == route.params.user_from
                           ? "flex-end"
@@ -166,8 +260,9 @@ export default function ChatRoom({ route, navigation }) {
                         item.user_from == route.params.user_from
                           ? "#2761FF"
                           : "#EBEBEB",
-                      borderRadius: 20,
+                      borderRadius: 10,
                       padding: 3,
+                      maxWidth: "70%",
                     }}
                   >
                     <Text
@@ -177,10 +272,28 @@ export default function ChatRoom({ route, navigation }) {
                             ? "white"
                             : "black",
                         padding: 7,
-                        fontSize: 16,
+                        fontSize: 13,
                       }}
                     >
                       {item.message}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign:
+                          item.user_from == route.params.user_from
+                            ? "right"
+                            : "left",
+                        fontSize: 9,
+                        color:
+                          item.user_from == route.params.user_from
+                            ? "#EBEBEB"
+                            : "gray",
+                        marginLeft: 7,
+                        marginRight: 7,
+                        marginBottom: 3,
+                      }}
+                    >
+                      {formatTime(item.time)}
                     </Text>
                   </View>
                 </View>

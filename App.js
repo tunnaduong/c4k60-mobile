@@ -1395,16 +1395,16 @@ function App() {
             initialParams={{ ws: ws }}
             options={({ route }) => ({
               title: route.params.name,
-              header: () => {
-                return (
-                  <SameHeader
-                    defaultStyle
-                    havingBorder
-                    havingBackButton
-                    title={route.params.name}
-                  />
-                );
-              },
+              // header: () => {
+              //   return (
+              //     <SameHeader
+              //       defaultStyle
+              //       havingBorder
+              //       havingBackButton
+              //       title={route.params.name}
+              //     />
+              //   );
+              // },
             })}
             name="ChatRoom"
             component={ChatRoom}

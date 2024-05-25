@@ -14,14 +14,20 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/9b22d593-3b19-4bb5-b393-a3a92e28aa21"
     },
-    "assetBundlePatterns": [
-      "**/*"
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Ứng dụng yêu cầu quyền truy cập vào ảnh của bạn để có thể chia sẻ với bạn bè."
+        }
+      ]
     ],
+    "assetBundlePatterns": ["**/*"],
     "jsEngine": "jsc",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile",
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +35,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.c4k60.mobile",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

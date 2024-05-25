@@ -5,9 +5,11 @@ import moment from "moment";
 
 export default function LastChat({ user_from, user_to, type }) {
   const [lastChat, setLastChat] = React.useState([]);
+
   React.useEffect(() => {
     getLastChat();
   }, [user_from, user_to, type]);
+
   const getLastChat = async () => {
     try {
       const response = await axios.get(
@@ -23,6 +25,10 @@ export default function LastChat({ user_from, user_to, type }) {
       console.log(err);
     }
   };
+
+  const truncate = (input) =>
+    input?.length > 20 ? `${input?.substring(0, 20)}...` : input;
+
   return (
     <View style={{ flexDirection: "row" }}>
       {user_from == lastChat[0]?.user_from && (
@@ -31,8 +37,11 @@ export default function LastChat({ user_from, user_to, type }) {
         </Text>
       )}
 
-      <Text style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}>
-        {lastChat[0]?.message} ·{" "}
+      <Text
+        numberOfLines={1}
+        style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
+      >
+        {truncate(lastChat[0]?.message)} ·{" "}
         {moment(lastChat[0]?.time)
           .fromNow()
           .replace("một", "1")
