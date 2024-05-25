@@ -94,8 +94,50 @@ export default function ChatRoom({ route, navigation }) {
     }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (messageType, image) => {
     try {
+      if (messageType == "image") {
+        ws.send(
+          JSON.stringify({
+            type: "image",
+            data: {
+              user_from: route.params.user_from,
+              user_to:
+                route.params.type == "group"
+                  ? "class_group"
+                  : route.params.username,
+              type: route.params.type,
+            },
+          })
+        );
+        const formData = new FormData();
+        formData.append("user_from", route.params.user_from);
+        formData.append(
+          "user_to",
+          route.params.type == "group" ? "class_group" : route.params.username
+        );
+        formData.append("type", route.params.type);
+        // upload image base on type of extension
+        const uri = image;
+        const uriParts = uri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        formData.append("image", {
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+        const response = await axios.post(
+          "https://c4k60.tunnaduong.com/api/v1.0/chat/image/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(response.data);
+        return;
+      }
       ws.send(
         JSON.stringify({
           type: "message",
@@ -135,56 +177,13 @@ export default function ChatRoom({ route, navigation }) {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
       quality: 1,
     });
 
-    console.log(result);
-    // const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    // if (!permission.granted) {
-    //   alert("Permission to access camera roll is required!");
-    //   return;
-    // }
-    // const result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   quality: 1,
-    // });
-    // if (!result.cancelled) {
-    //   const formData = new FormData();
-    //   formData.append("image", {
-    //     uri: result.uri,
-    //     type: "image/jpeg",
-    //     name: "image.jpg",
-    //   });
-    //   try {
-    //     ws.send(
-    //       JSON.stringify({
-    //         type: "image",
-    //         data: {
-    //           user_from: route.params.user_from,
-    //           user_to:
-    //             route.params.type == "group"
-    //               ? "class_group"
-    //               : route.params.username,
-    //           type: route.params.type,
-    //         },
-    //       })
-    //     );
-    //     const response = await axios.post(
-    //       "https://c4k60.tunnaduong.com/api/v1.0/chat/conversations/",
-    //       formData,
-    //       {
-    //         headers: {
-    //           "Content-Type": "multipart/form-data",
-    //         },
-    //       }
-    //     );
-    //     console.log(response.data);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    if (!result.canceled) {
+      sendMessage("image", result.uri);
+    }
   };
 
   return (
@@ -265,18 +264,36 @@ export default function ChatRoom({ route, navigation }) {
                       maxWidth: "70%",
                     }}
                   >
-                    <Text
-                      style={{
-                        color:
-                          item.user_from == route.params.user_from
-                            ? "white"
-                            : "black",
-                        padding: 7,
-                        fontSize: 13,
-                      }}
-                    >
-                      {item.message}
-                    </Text>
+                    {item.image_url ? (
+                      <Image
+                        source={{
+                          uri:
+                            "https://c4k60.tunnaduong.com/assets/images/chats/" +
+                            item.image_url,
+                        }}
+                        style={{
+                          width: 150,
+                          height: 150,
+                          resizeMode: "contain",
+                          borderRadius: 10,
+                          margin: 5,
+                        }}
+                      />
+                    ) : (
+                      <Text
+                        style={{
+                          color:
+                            item.user_from == route.params.user_from
+                              ? "white"
+                              : "black",
+                          padding: 7,
+                          fontSize: 13,
+                        }}
+                      >
+                        {item.message}
+                      </Text>
+                    )}
+
                     <Text
                       style={{
                         textAlign:
@@ -312,6 +329,7 @@ export default function ChatRoom({ route, navigation }) {
           }}
         >
           <TouchableOpacity
+            onPress={pickImage}
             style={{
               backgroundColor: "white",
               height: 35,
