@@ -10,6 +10,7 @@ import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   Image,
   Keyboard,
@@ -1007,12 +1008,11 @@ function App() {
             <Pressable
               {...props}
               onPress={(e) => {
-                if (route.params.currentScreen == currentScreen) {
-                  return;
-                } else {
-                  navigation.navigate(route.name, {
-                    previous_screen: currentScreen,
-                  });
+                if (
+                  route.name === "Home" ||
+                  route.params.currentScreen !== currentScreen
+                ) {
+                  navigation.navigate(route.name);
                   setCurrentScreen(route.params.currentScreen);
                 }
               }}
@@ -1100,7 +1100,7 @@ function App() {
                   title="Chat"
                   icon="create-outline"
                   action={() => {
-                    console.log("pressed");
+                    Alert.alert("Tính năng đang phát triển", "Vui lòng chờ...");
                   }}
                 />
               );

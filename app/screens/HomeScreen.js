@@ -482,7 +482,7 @@ export default function HomeScreen({ navigation }) {
               {/* render changes */}
               <Text className="text-[16px]">Phiên bản 4.0</Text>
               <Text className="font-light text-[14px] mt-1">
-                Ngày phát hành: 03/09/2022
+                Ngày phát hành: 26/05/2024
               </Text>
               <View className="mt-2.5">
                 <View className="pl-2 text-base flex-row">
