@@ -21,6 +21,7 @@ export default function LastChat({ user_from, user_to, type }) {
           type
       );
       setLastChat(response.data);
+      // console.log(lastChat);
     } catch (err) {
       console.log(err);
     }
@@ -41,7 +42,7 @@ export default function LastChat({ user_from, user_to, type }) {
         numberOfLines={1}
         style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
       >
-        {truncate(lastChat[0]?.message)} ·{" "}
+        {!lastChat[0]?.image_url ? truncate(lastChat[0]?.message) : "[Ảnh]"} ·{" "}
         {moment(lastChat[0]?.time)
           .fromNow()
           .replace("một", "1")

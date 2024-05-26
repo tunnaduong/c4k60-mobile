@@ -15,6 +15,7 @@ import updateLastActivity from "../../utils/updateLastActivity";
 import UserAvatar from "../../components/UserAvatar";
 import UserFullName from "../../components/UserFullName";
 import LastChat from "../../components/LastChat";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ChatScreen({ navigation, route }) {
   const ws = route.params.ws;
@@ -111,20 +112,15 @@ export default function ChatScreen({ navigation, route }) {
           backgroundColor: "white",
           flex: 1,
         }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => {
-              setRefreshing(true);
-              setTimeout(() => {
-                getOnlineUsers();
-                updateLastActivity(username);
-                getConversation();
-                setRefreshing(false);
-              }, 800);
-            }}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={refreshing}
+        //     onRefresh={() => {
+        //       getOnlineUsers();
+        //       updateLastActivity(username);
+        //     }}
+        //   />
+        // }
       >
         <ScrollView
           contentContainerStyle={{
@@ -225,6 +221,7 @@ export default function ChatScreen({ navigation, route }) {
             flexDirection: "row",
             alignItems: "center",
             paddingVertical: 10,
+            backgroundColor: "#F4F4F4",
           }}
         >
           <>
@@ -239,7 +236,7 @@ export default function ChatScreen({ navigation, route }) {
                   height: 18,
                   width: 18,
                   borderRadius: 10,
-                  borderColor: "white",
+                  borderColor: "#F4F4F4",
                   borderWidth: 3,
                   position: "absolute",
                   bottom: 0,
@@ -248,12 +245,18 @@ export default function ChatScreen({ navigation, route }) {
               ></View>
             </View>
 
-            <View style={{ marginLeft: 13 }}>
+            <View style={{ marginLeft: 13, flex: 1 }}>
               <Text style={{ fontSize: 17, fontWeight: "500" }}>
                 Ngưng Bích Buildings :))))))
               </Text>
-              <LastChat user_from={username} type={"group"} />
+              <LastChat key={Date.now()} user_from={username} type={"group"} />
             </View>
+            <AntDesign
+              name="pushpin"
+              size={16}
+              color="#929293"
+              style={{ transform: [{ scaleX: -1 }] }}
+            />
           </>
         </TouchableRipple>
         {conversation.map((item, index) => {
@@ -304,7 +307,11 @@ export default function ChatScreen({ navigation, route }) {
                   <Text style={{ fontSize: 17, fontWeight: "500" }}>
                     {item.name}
                   </Text>
-                  <LastChat user_from={username} user_to={item.username} />
+                  <LastChat
+                    key={Date.now()}
+                    user_from={username}
+                    user_to={item.username}
+                  />
                 </View>
               </>
             </TouchableRipple>

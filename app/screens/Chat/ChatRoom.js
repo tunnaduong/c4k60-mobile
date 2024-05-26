@@ -18,11 +18,14 @@ import { storage } from "../../global/storage";
 import UserAvatar from "../../components/UserAvatar";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
+import LoadingView from "../../components/LoadingView";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
   const [messages, setMessages] = React.useState(null);
   const [message, setMessage] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [imageLoading, setImageLoading] = React.useState({});
   const scrollViewRef = React.useRef();
 
   React.useEffect(() => {
@@ -35,9 +38,9 @@ export default function ChatRoom({ route, navigation }) {
       headerTitle: "",
       headerLeft: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Pressable onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color={"black"} />
-          </Pressable>
+          </TouchableOpacity>
           {route.params.type == "group" ? (
             <Image
               source={require("../../assets/chat-nbb.jpeg")}
@@ -76,7 +79,7 @@ export default function ChatRoom({ route, navigation }) {
     try {
       ws.onmessage = (e) => {
         const message = JSON.parse(e.data);
-        if (message.type != "message") return;
+        // if (message.type != "message" && message.type != "image") return;
         setMessages((prev) => [...prev, message.data]);
       };
       const user_to =
@@ -94,9 +97,58 @@ export default function ChatRoom({ route, navigation }) {
     }
   };
 
+  function uniqid(prefix = "", random = false) {
+    const sec = Date.now() * 1000 + Math.random() * 1000;
+    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+    return `${prefix}${id}${
+      random ? `.${Math.trunc(Math.random() * 100000000)}` : ""
+    }`;
+  }
+
   const sendMessage = async (messageType, image) => {
     try {
       if (messageType == "image") {
+        const uri = image;
+        const uriParts = uri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        const imageName = `${uniqid(
+          route.params.user_from + "_to_" + route.params.username,
+          true
+        )}.${fileType}`;
+
+        const formData = new FormData();
+        formData.append("user_from", route.params.user_from);
+        formData.append(
+          "user_to",
+          route.params.type == "group" ? "class_group" : route.params.username
+        );
+        formData.append("type", route.params.type);
+        formData.append("image", {
+          uri,
+          name: imageName,
+          type: `image/${fileType}`,
+        });
+
+        setImageLoading((prev) => ({ ...prev, [imageName]: true }));
+
+        const response = await axios.post(
+          "https://c4k60.tunnaduong.com/api/v1.0/chat/image/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // Unset loading status for this image
+        setImageLoading((prev) => {
+          const newLoading = { ...prev };
+          delete newLoading[imageName];
+          return newLoading;
+        });
+
+        // Check if the Axios request was successful
         ws.send(
           JSON.stringify({
             type: "image",
@@ -107,34 +159,12 @@ export default function ChatRoom({ route, navigation }) {
                   ? "class_group"
                   : route.params.username,
               type: route.params.type,
+              message: "",
+              image_url: imageName, // send the image URL
             },
           })
         );
-        const formData = new FormData();
-        formData.append("user_from", route.params.user_from);
-        formData.append(
-          "user_to",
-          route.params.type == "group" ? "class_group" : route.params.username
-        );
-        formData.append("type", route.params.type);
-        // upload image base on type of extension
-        const uri = image;
-        const uriParts = uri.split(".");
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append("image", {
-          uri,
-          name: `photo.${fileType}`,
-          type: `image/${fileType}`,
-        });
-        const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/v1.0/chat/image/",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+
         console.log(response.data);
         return;
       }
@@ -206,7 +236,7 @@ export default function ChatRoom({ route, navigation }) {
         <ScrollView
           ref={scrollViewRef}
           onContentSizeChange={() =>
-            scrollViewRef.current.scrollToEnd({ animated: true })
+            scrollViewRef.current.scrollToEnd({ animated: false })
           }
           contentContainerStyle={{
             marginTop: 10,
@@ -255,30 +285,47 @@ export default function ChatRoom({ route, navigation }) {
                         item.user_from == route.params.user_from
                           ? "flex-end"
                           : "flex-start",
-                      backgroundColor:
-                        item.user_from == route.params.user_from
-                          ? "#2761FF"
-                          : "#EBEBEB",
+                      backgroundColor: item.image_url
+                        ? "white"
+                        : item.user_from == route.params.user_from
+                        ? "#2761FF"
+                        : "#EBEBEB",
                       borderRadius: 10,
                       padding: 3,
                       maxWidth: "70%",
                     }}
                   >
                     {item.image_url ? (
-                      <Image
-                        source={{
-                          uri:
-                            "https://c4k60.tunnaduong.com/assets/images/chats/" +
-                            item.image_url,
-                        }}
-                        style={{
-                          width: 150,
-                          height: 150,
-                          resizeMode: "contain",
-                          borderRadius: 10,
-                          margin: 5,
-                        }}
-                      />
+                      <>
+                        <Image
+                          source={{
+                            uri:
+                              "https://c4k60.tunnaduong.com/assets/images/chats/" +
+                              item.image_url,
+                          }}
+                          style={{
+                            width: 150,
+                            height: 200,
+                            resizeMode: "cover",
+                            borderRadius: 10,
+                            margin: 5,
+                          }}
+                          onLoadStart={() =>
+                            setImageLoading((prev) => ({
+                              ...prev,
+                              [item.image_url]: true,
+                            }))
+                          }
+                          onLoadEnd={() =>
+                            setImageLoading((prev) => {
+                              const newLoading = { ...prev };
+                              delete newLoading[item.image_url];
+                              return newLoading;
+                            })
+                          }
+                        />
+                        {imageLoading[item.image_url] && <LoadingView />}
+                      </>
                     ) : (
                       <Text
                         style={{
@@ -301,10 +348,11 @@ export default function ChatRoom({ route, navigation }) {
                             ? "right"
                             : "left",
                         fontSize: 9,
-                        color:
-                          item.user_from == route.params.user_from
-                            ? "#EBEBEB"
-                            : "gray",
+                        color: item.image_url
+                          ? "#aaa"
+                          : item.user_from == route.params.user_from
+                          ? "#EBEBEB"
+                          : "gray",
                         marginLeft: 7,
                         marginRight: 7,
                         marginBottom: 3,
