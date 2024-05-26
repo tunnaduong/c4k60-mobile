@@ -54,6 +54,8 @@
         </dict>
       </dict>
     </dict>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Ứng dụng yêu cầu quyền truy cập vào ảnh của bạn để có thể chia sẻ với bạn bè.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your calendars</string>
     <key>NSCalendarsUsageDescription</key>
