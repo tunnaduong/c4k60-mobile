@@ -25,6 +25,7 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
+  ImageBackground,
   View,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
@@ -1051,7 +1052,7 @@ function App() {
             // tab screen fade transition
             headerShown: true,
             headerBackButtonMenuEnabled: false,
-            header: () => {
+            headerTitle: () => {
               return (
                 <SameHeader
                   icon="search"
@@ -1061,6 +1062,17 @@ function App() {
                 />
               );
             },
+            headerBackground: () => (
+              <ImageBackground
+                source={require("./app/assets/headerBg.png")}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              ></ImageBackground>
+            ),
           }}
         />
         <Tab.Screen
@@ -1072,7 +1084,7 @@ function App() {
           options={{
             title: "Bảng tin",
             headerShown: true,
-            header: () => {
+            headerTitle: () => {
               return (
                 <SameHeader
                   icon="search"
@@ -1081,6 +1093,11 @@ function App() {
                   havingIcon
                 />
               );
+            },
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
             },
           }}
         />
@@ -1094,7 +1111,7 @@ function App() {
             title: "Chat",
             headerShown: true,
             headerTitleAlign: "left",
-            header: () => {
+            headerTitle: () => {
               return (
                 <SameHeader
                   title="Chat"
@@ -1104,6 +1121,11 @@ function App() {
                   }}
                 />
               );
+            },
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
             },
           }}
         />
@@ -1117,7 +1139,7 @@ function App() {
             title: "Thông báo",
             headerShown: true,
             headerTitleAlign: "left",
-            header: () => {
+            headerTitle: () => {
               return (
                 <SameHeader
                   title="Thông báo"
@@ -1125,6 +1147,11 @@ function App() {
                   action={() => navigation.navigate("SearchScreen")}
                 />
               );
+            },
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
             },
           }}
         />
@@ -1138,7 +1165,7 @@ function App() {
             title: "Menu",
             headerShown: true,
             headerTitleAlign: "left",
-            header: () => {
+            headerTitle: () => {
               return (
                 <SameHeader
                   title="Menu"
@@ -1146,6 +1173,11 @@ function App() {
                   action={() => navigation.navigate("SearchScreen")}
                 />
               );
+            },
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomWidth: 0,
             },
           }}
         />
@@ -1207,7 +1239,7 @@ function App() {
           <Stack.Screen
             options={{
               title: "Thông báo lớp",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1217,6 +1249,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             }}
             name="NotiScreen"
             component={NotiScreen}
@@ -1224,7 +1266,7 @@ function App() {
           <Stack.Screen
             options={{
               title: "Nghe nhạc cùng nhau",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1234,6 +1276,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             }}
             name="MusicScreen"
             component={Music}
@@ -1241,7 +1293,7 @@ function App() {
           <Stack.Screen
             options={({ route }) => ({
               title: route.params.title,
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1251,6 +1303,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="Testing"
             component={TestingComponent}
@@ -1258,7 +1320,7 @@ function App() {
           <Stack.Screen
             options={{
               title: "Thư viện ảnh",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1268,6 +1330,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             }}
             name="GalleryScreen"
             component={GalleryScreen}
@@ -1275,7 +1347,7 @@ function App() {
           <Stack.Screen
             options={({ route }) => ({
               title: route.params.name,
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1285,6 +1357,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="PhotosScreen"
             component={PhotosScreen}
@@ -1292,7 +1374,7 @@ function App() {
           <Stack.Screen
             options={({ route }) => ({
               title: route.params.name,
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1302,6 +1384,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="VideoScreen"
             component={VideoScreen}
@@ -1309,7 +1401,7 @@ function App() {
           <Stack.Screen
             options={() => ({
               title: "Hồ sơ thành viên",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1319,6 +1411,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="StudentProfile"
             component={StudentProfile}
@@ -1326,7 +1428,7 @@ function App() {
           <Stack.Screen
             options={({ route }) => ({
               title: route.params.name,
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1336,6 +1438,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="ProfileDetail"
             component={ProfileDetail}
@@ -1343,7 +1455,7 @@ function App() {
           <Stack.Screen
             options={() => ({
               title: "Lịch",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1353,6 +1465,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="CalendarScreen"
             component={CalendarScreen}
@@ -1360,7 +1482,7 @@ function App() {
           <Stack.Screen
             options={() => ({
               title: "Lịch",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1370,6 +1492,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="CalendarDetail"
             component={CalendarDetail}
@@ -1377,7 +1509,7 @@ function App() {
           <Stack.Screen
             options={() => ({
               title: "Bạn bè gần đây",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1387,6 +1519,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             })}
             name="FriendNearby"
             component={FriendNearby}
@@ -1395,7 +1537,7 @@ function App() {
             initialParams={{ ws: ws }}
             options={({ route }) => ({
               title: route.params.name,
-              // header: () => {
+              // headerTitle: () => {
               //   return (
               //     <SameHeader
               //       defaultStyle
@@ -1422,7 +1564,7 @@ function App() {
           <Stack.Screen
             options={{
               title: "Sinh nhật sắp tới",
-              header: () => {
+              headerTitle: () => {
                 return (
                   <SameHeader
                     defaultStyle
@@ -1432,6 +1574,16 @@ function App() {
                   />
                 );
               },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
             }}
             name="IncomingBirthday"
             component={IncomingBirthday}

@@ -29,6 +29,20 @@ export default function ChatScreen({ navigation, route }) {
   // });
 
   React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      console.log("focus");
+      getOnlineUsers();
+    });
+
+    // Call getOnlineUsers() when the component mounts
+    getOnlineUsers();
+    console.log("mount");
+
+    // Clean up: remove the listener when the component unmounts
+    return unsubscribe;
+  }, [navigation]);
+
+  React.useEffect(() => {
     getOnlineUsers();
     getConversation();
     updateLastActivity(username);

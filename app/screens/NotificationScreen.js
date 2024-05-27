@@ -1,9 +1,8 @@
 import React from "react";
 import {
   View,
-  Animated,
+  SectionList,
   Image,
-  Easing,
   Text,
   TouchableHighlight,
   RefreshControl,
@@ -145,11 +144,9 @@ export default function NotificationScreen({ navigation, route }) {
 
   return (
     <>
-      <Animated.SectionList
+      <SectionList
         style={{
           height: "100%",
-          // transform: [{ translateX: translateX }],
-          // opacity: opacity,
           backgroundColor: "white",
           flex: 1,
         }}
@@ -206,7 +203,7 @@ export default function NotificationScreen({ navigation, route }) {
         }
         ListHeaderComponent={
           <>
-            <View className="flex-row gap-x-2 mx-2 mb-3">
+            <View className="flex-row gap-x-2 mx-2 mb-3 mt-2">
               <TouchableHighlight
                 onPress={(e) => {
                   if (filter == "all") {
