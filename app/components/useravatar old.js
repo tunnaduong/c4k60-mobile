@@ -11,7 +11,7 @@ export default class UserAvatar extends React.Component {
   // }
 
   // GetAvatar = (Username) => {
-  //   var APIURL = "https://c4k60.tunnaduong.com/api/getAvatar.php";
+  //   var APIURL = "https://c4k60.com/api/getAvatar.php";
 
   //   var headers = {
   //     Accept: "application/json",

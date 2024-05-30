@@ -21,7 +21,7 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   return (
-    <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
+    <SafeAreaView>
       <View style={styles.topBar}>
         <TouchableHighlight
           style={styles.backButton}
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#DFDEDD",
+    paddingTop: 10,
   },
   searchImage: {
     height: Dimensions.get("window").height * 0.5,

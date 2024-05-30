@@ -101,7 +101,7 @@ export default function VideoScreen() {
   const getVideoList = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/gallery/videos"
+        "https://c4k60.com/api/v1.0/gallery/videos"
       );
       setVideoList(response.data);
       return response.data;
@@ -188,10 +188,7 @@ export default function VideoScreen() {
                     }}
                   >
                     <Image
-                      source={
-                        "https://c4k60.tunnaduong.com/anhvavideo/" +
-                        item.thumb_path
-                      }
+                      source={"https://c4k60.com/anhvavideo/" + item.thumb_path}
                       style={{
                         width: "100%",
                         height: 130,
@@ -261,19 +258,14 @@ export default function VideoScreen() {
                     }}
                     activeOpacity={0.6}
                     onPress={() => {
-                      setVideoUrl(
-                        "https://c4k60.tunnaduong.com/anhvavideo/" + item.path
-                      );
+                      setVideoUrl("https://c4k60.com/anhvavideo/" + item.path);
                       setVisible(true);
                       setCaption(item.caption);
                       setType("html5");
                     }}
                   >
                     <Image
-                      source={
-                        "https://c4k60.tunnaduong.com/anhvavideo/" +
-                        item.thumb_path
-                      }
+                      source={"https://c4k60.com/anhvavideo/" + item.thumb_path}
                       style={{
                         width: "100%",
                         height: 130,

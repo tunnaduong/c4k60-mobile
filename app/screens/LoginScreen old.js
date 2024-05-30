@@ -54,7 +54,7 @@ export default class LoginScreen extends Component {
       this.setState({ loading: false });
       Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!");
     } else {
-      var APIURL = "https://c4k60.tunnaduong.com/api/login.php";
+      var APIURL = "https://c4k60.com/api/login.php";
 
       var headers = {
         Accept: "application/json",

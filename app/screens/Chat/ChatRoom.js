@@ -22,6 +22,7 @@ import LoadingView from "../../components/LoadingView";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
+  const expoPushToken = route.params.token;
   const [messages, setMessages] = React.useState(null);
   const [message, setMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -86,7 +87,7 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/?user_to=" +
+        "https://c4k60.com/api/v1.0/chat/messages/?user_to=" +
           user_to +
           "&user_from=" +
           user_from
@@ -132,7 +133,7 @@ export default function ChatRoom({ route, navigation }) {
         setImageLoading((prev) => ({ ...prev, [imageName]: true }));
 
         const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/v1.0/chat/image/",
+          "https://c4k60.com/api/v1.0/chat/image/",
           formData,
           {
             headers: {
@@ -183,7 +184,7 @@ export default function ChatRoom({ route, navigation }) {
         })
       );
       const response = await axios.post(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/conversations/",
+        "https://c4k60.com/api/v1.0/chat/conversations/",
         {
           user_from: route.params.user_from,
           message: message,
@@ -300,12 +301,12 @@ export default function ChatRoom({ route, navigation }) {
                         <Image
                           source={{
                             uri:
-                              "https://c4k60.tunnaduong.com/assets/images/chats/" +
+                              "https://c4k60.com/assets/images/chats/" +
                               item.image_url,
                           }}
                           style={{
+                            aspectRatio: 3 / 4,
                             width: 150,
-                            height: 200,
                             resizeMode: "cover",
                             borderRadius: 10,
                             margin: 5,

@@ -346,7 +346,7 @@ export class HomeScreen extends Component {
   }
 
   responseList(input) {
-    fetch("https://c4k60.tunnaduong.com/api/getNotification.php", {
+    fetch("https://c4k60.com/api/getNotification.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -370,7 +370,7 @@ export class HomeScreen extends Component {
   }
 
   getBirthday(input) {
-    fetch("https://c4k60.tunnaduong.com/api/getBirthday.php", {
+    fetch("https://c4k60.com/api/getBirthday.php", {
       method: "POST",
       headers: {
         Accept: "application/json",

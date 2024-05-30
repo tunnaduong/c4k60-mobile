@@ -18,9 +18,7 @@ export default function GalleryScreen({ navigation }) {
 
   const getGallery = async () => {
     try {
-      const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/gallery/"
-      );
+      const response = await axios.get("https://c4k60.com/api/v1.0/gallery/");
       setGallery(response.data);
       return response.data;
     } catch (err) {
@@ -89,9 +87,7 @@ export default function GalleryScreen({ navigation }) {
               }}
             >
               <Image
-                source={
-                  "https://c4k60.tunnaduong.com/anhvavideo/" + item.bg_image
-                }
+                source={"https://c4k60.com/anhvavideo/" + item.bg_image}
                 style={{
                   width: "100%",
                   height: 130,

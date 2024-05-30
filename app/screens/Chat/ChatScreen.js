@@ -58,7 +58,7 @@ export default function ChatScreen({ navigation, route }) {
   const getConversation = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/home/?username=" + username
+        "https://c4k60.com/api/v1.0/chat/home/?username=" + username
       );
       setConversation(response.data);
     } catch (error) {
@@ -69,7 +69,7 @@ export default function ChatScreen({ navigation, route }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/online/"
+        "https://c4k60.com/api/v1.0/chat/online/"
       );
       setOnlineUsers(response.data);
     } catch (error) {

@@ -26,9 +26,7 @@ export default function NewsfeedScreen({ navigation, route }) {
 
   const fetchNewsfeed = async () => {
     try {
-      const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/feed/list/"
-      );
+      const response = await axios.get("https://c4k60.com/api/v1.0/feed/list/");
       setData(response.data.items);
     } catch (error) {
       console.error(error);
@@ -42,7 +40,7 @@ export default function NewsfeedScreen({ navigation, route }) {
 
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/feed/list/?page=" + page
+        "https://c4k60.com/api/v1.0/feed/list/?page=" + page
       );
       if (response.data?.items.length === 0) {
         setHasMore(false);
@@ -97,7 +95,7 @@ export default function NewsfeedScreen({ navigation, route }) {
                 time={item.timeofpost}
                 image={
                   item.has_image == "block"
-                    ? "https://m-feed-c4k60.tunnaduong.com" + item.image
+                    ? "https://m.c4k60.com" + item.image
                     : null
                 }
               />

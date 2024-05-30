@@ -60,6 +60,16 @@ import CalendarScreen from "./app/screens/Calendar/CalendarScreen";
 import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -88,6 +98,75 @@ LogBox.ignoreLogs([
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [expoPushToken, setExpoPushToken] = React.useState("");
+
+  useEffect(() => {
+    console.log("Registering for push notifications...");
+    registerForPushNotificationsAsync()
+      .then((token) => {
+        console.log("token: ", token);
+        setExpoPushToken(token);
+        updatePushNotificationToken();
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  async function updatePushNotificationToken() {
+    try {
+      const usrname = storage.getString("username");
+      const response = await axios.post(
+        "https://c4k60.com/api/v1.0/notification/token/",
+        {
+          username: usrname,
+          token: expoPushToken,
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error in updatePushNotificationToken: ", error);
+    }
+  }
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      // Learn more about projectId:
+      // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: "9b22d593-3b19-4bb5-b393-a3a92e28aa21",
+        })
+      ).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
+
   const inputText = React.useRef(null);
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
@@ -105,12 +184,9 @@ function App() {
     const UserFullname = async () => {
       try {
         console.log("---->", usrname);
-        const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/v1.0/users/",
-          {
-            username: usrname,
-          }
-        );
+        const response = await axios.post("https://c4k60.com/api/v1.0/users/", {
+          username: usrname,
+        });
         setUserFullname(response.data.info.full_name);
         return response.data.info.full_name;
       } catch (err) {
@@ -120,7 +196,7 @@ function App() {
 
     const insertJoining = async () => {
       const response = await axios.post(
-        "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs/",
+        "https://c4k60.com/api/v1.0/radio/chatlogs/",
         {
           by: "System",
           msg_type: "user_join",
@@ -142,7 +218,7 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs"
+        "https://c4k60.com/api/v1.0/radio/chatlogs"
       );
       setChatData(response.data.items);
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
@@ -156,7 +232,7 @@ function App() {
       if (message == "") return;
       try {
         const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/v1.0/radio/chatlogs/",
+          "https://c4k60.com/api/v1.0/radio/chatlogs/",
           {
             by: created_by,
             msg_type: msg_type,
@@ -1534,7 +1610,7 @@ function App() {
             component={FriendNearby}
           />
           <Stack.Screen
-            initialParams={{ ws: ws }}
+            initialParams={{ ws: ws, token: expoPushToken }}
             options={({ route }) => ({
               title: route.params.name,
               // headerTitle: () => {

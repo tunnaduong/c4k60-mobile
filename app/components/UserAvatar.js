@@ -10,7 +10,7 @@ const UserAvatar = ({ username, style }) => {
   const getAvatar = async () => {
     try {
       const response = await axios.post(
-        "https://c4k60.tunnaduong.com/api/v1.0/users/avatar/",
+        "https://c4k60.com/api/v1.0/users/avatar/",
         {
           username: username,
         }

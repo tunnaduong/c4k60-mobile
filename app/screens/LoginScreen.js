@@ -45,7 +45,7 @@ export default function LoginScreen({ navigation }) {
       try {
         if (username == "tunganh" && password == "1") {
           setName("Dương Tùng Anh");
-          setAvatar("https://c4k60.tunnaduong.com/hoso/tunganh.jpg");
+          setAvatar("https://c4k60.com/hoso/tunganh.jpg");
           //   setData();
           setToken("abc123");
           storage.set("username", "tunganh");
@@ -60,13 +60,10 @@ export default function LoginScreen({ navigation }) {
             })
           );
         }
-        const response = await axios.post(
-          "https://c4k60.tunnaduong.com/api/login.php",
-          {
-            username: username,
-            password: password,
-          }
-        );
+        const response = await axios.post("https://c4k60.com/api/login.php", {
+          username: username,
+          password: password,
+        });
         // console.log(response.data);
 
         if (response.data[0].Message == "Thành công!") {

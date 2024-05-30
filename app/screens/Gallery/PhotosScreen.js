@@ -37,12 +37,11 @@ export default function PhotosScreen({ navigation, route }) {
   const getPhotos = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/gallery/photos?album=" +
-          route.params.id
+        "https://c4k60.com/api/v1.0/gallery/photos?album=" + route.params.id
       );
       setPhotos(response.data);
       response.data.map((n) =>
-        addImage("https://c4k60.tunnaduong.com/anhvavideo/" + n.path)
+        addImage("https://c4k60.com/anhvavideo/" + n.path)
       );
       return response.data;
     } catch (err) {
@@ -90,9 +89,7 @@ export default function PhotosScreen({ navigation, route }) {
             }}
           >
             <Image
-              source={
-                "https://c4k60.tunnaduong.com/anhvavideo/" + item.thumb_path
-              }
+              source={"https://c4k60.com/anhvavideo/" + item.thumb_path}
               style={{
                 width: "100%",
                 height: 130,

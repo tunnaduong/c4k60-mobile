@@ -15,7 +15,7 @@ export default function StudentProfile({ navigation }) {
   const getMemberList = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/users/list/"
+        "https://c4k60.com/api/v1.0/users/list/"
       );
       setMemberList(response.data);
       return response.data;

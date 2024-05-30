@@ -79,7 +79,7 @@ export default function NotificationScreen({ navigation, route }) {
       image: [
         {
           img_id: 1,
-          url: "https://c4k60.tunnaduong.com/assets/images/cafe_hong.jpeg",
+          url: "https://c4k60.com/assets/images/cafe_hong.jpeg",
         },
       ],
       date: "2022-09-03 10:46:19",
@@ -92,7 +92,7 @@ export default function NotificationScreen({ navigation, route }) {
       image: [
         {
           img_id: 1,
-          url: "https://c4k60.tunnaduong.com/anhvavideo/media/original/%E1%BA%A2nh%20k%E1%BB%B7%20y%E1%BA%BFu/217707980348167410533151108516773PHQ_2379-min.jpg",
+          url: "https://c4k60.com/anhvavideo/media/original/%E1%BA%A2nh%20k%E1%BB%B7%20y%E1%BA%BFu/217707980348167410533151108516773PHQ_2379-min.jpg",
         },
       ],
       date: "2021-12-11 21:24:23",
