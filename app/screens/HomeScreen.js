@@ -26,6 +26,16 @@ import { useEffect } from "react";
 import axios from "axios";
 import sponsorsData from "../global/sponsorsData";
 import updateLastActivity from "../utils/updateLastActivity";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const screenWidth = Dimensions.get("window").width;
 // const screenHeight = Dimensions.get("window").height;
@@ -37,6 +47,74 @@ export default function HomeScreen({ navigation }) {
   const [loadText, setLoadText] = React.useState("");
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
+
+  useEffect(() => {
+    console.log("Registering for push notifications...");
+    registerForPushNotificationsAsync()
+      .then((token) => {
+        console.log("token: ", token);
+        // set expo push token to storage mmkv
+        storage.set("expoPushToken", token);
+        updatePushNotificationToken(token);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  async function updatePushNotificationToken(token) {
+    try {
+      const usrname = storage.getString("username");
+      const response = await axios.post(
+        "https://c4k60.com/api/v1.0/notification/token/",
+        {
+          username: usrname,
+          token: token,
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error in updatePushNotificationToken: ", error);
+    }
+  }
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      // Learn more about projectId:
+      // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: "9b22d593-3b19-4bb5-b393-a3a92e28aa21",
+        })
+      ).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
 
   const name = storage.getString("name");
   const username = storage.getString("username");

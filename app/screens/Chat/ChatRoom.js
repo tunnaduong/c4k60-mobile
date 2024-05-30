@@ -19,6 +19,7 @@ import UserAvatar from "../../components/UserAvatar";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import LoadingView from "../../components/LoadingView";
+import { getUserFullName } from "../../utils/getUserFullName";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
@@ -94,7 +95,7 @@ export default function ChatRoom({ route, navigation }) {
       );
       setMessages(response.data);
     } catch (error) {
-      console.log(error);
+      console.log("getmsg", error);
     }
   };
 
@@ -166,7 +167,7 @@ export default function ChatRoom({ route, navigation }) {
           })
         );
 
-        console.log(response.data);
+        console.log("image", response.data);
         return;
       }
       ws.send(
@@ -195,9 +196,15 @@ export default function ChatRoom({ route, navigation }) {
           type: route.params.type,
         }
       );
-      console.log(response.data);
+      console.log("conv", response.data);
+      const fullName = await getUserFullName(route.params.user_from);
+      console.log(fullName);
+      const response2 = await axios.get(
+        `https://c4k60.com/api/v1.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message}`
+      );
+      console.log("noti", response2.data);
     } catch (error) {
-      console.log(error);
+      console.log("converr", error);
     }
   };
 
