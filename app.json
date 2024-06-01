@@ -37,7 +37,9 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.c4k60.mobile",
-      "versionCode": 6
+      "versionCode": 7,
+      "googleServicesFile": "./android/google-services.json",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

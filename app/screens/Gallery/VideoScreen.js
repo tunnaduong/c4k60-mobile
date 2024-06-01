@@ -101,7 +101,7 @@ export default function VideoScreen() {
   const getVideoList = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/gallery/videos"
+        "https://c4k60.com/api/v1.0/gallery/videos/"
       );
       setVideoList(response.data);
       return response.data;

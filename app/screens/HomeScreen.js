@@ -155,14 +155,14 @@ export default function HomeScreen({ navigation }) {
 
   const getNotification = async (input) => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/notification/list?show=" + input
+      "https://c4k60.com/api/v1.0/notification/list/?show=" + input
     );
     setNotificationData(response.data);
   };
 
   const getBirthday = async () => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/users/birthday"
+      "https://c4k60.com/api/v1.0/users/birthday/"
     );
     setBirthdayData(response.data);
   };

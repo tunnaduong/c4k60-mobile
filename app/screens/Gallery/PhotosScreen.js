@@ -37,7 +37,7 @@ export default function PhotosScreen({ navigation, route }) {
   const getPhotos = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/gallery/photos?album=" + route.params.id
+        "https://c4k60.com/api/v1.0/gallery/photos/?album=" + route.params.id
       );
       setPhotos(response.data);
       response.data.map((n) =>

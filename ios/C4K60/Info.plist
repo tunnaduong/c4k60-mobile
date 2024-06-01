@@ -54,12 +54,12 @@
         </dict>
       </dict>
     </dict>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Ứng dụng yêu cầu quyền truy cập vào ảnh của bạn để có thể chia sẻ với bạn bè.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your calendars</string>
     <key>NSCalendarsUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your calendars</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your camera</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSLocationAlwaysUsageDescription</key>
@@ -68,6 +68,8 @@
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Ứng dụng yêu cầu quyền truy cập vào ảnh của bạn để có thể chia sẻ với bạn bè.</string>
     <key>NSRemindersFullAccessUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your reminders</string>
     <key>NSRemindersUsageDescription</key>

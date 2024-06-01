@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "33737674540",
+    "project_id": "c4k60-app",
+    "storage_bucket": "c4k60-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33737674540:android:0230b3202dc13ef7bea689",
+        "android_client_info": {
+          "package_name": "com.c4k60.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe6UMpVTdw1WNZZ3HmclYy4MvyBTHWy3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

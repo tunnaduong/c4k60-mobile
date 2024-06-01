@@ -140,7 +140,7 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/radio/chatlogs"
+        "https://c4k60.com/api/v1.0/radio/chatlogs/"
       );
       setChatData(response.data.items);
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));

@@ -126,6 +126,9 @@ export default function ChatScreen({ navigation, route }) {
           backgroundColor: "white",
           flex: 1,
         }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+        }}
         // refreshControl={
         //   <RefreshControl
         //     refreshing={refreshing}

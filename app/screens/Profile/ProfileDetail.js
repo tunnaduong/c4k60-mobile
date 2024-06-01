@@ -22,7 +22,7 @@ export default function ProfileDetail({ route }) {
   const getProfile = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/users/list?username=" +
+        "https://c4k60.com/api/v1.0/users/list/?username=" +
           route.params.username
       );
       setProfile(response.data);
