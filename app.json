@@ -2,7 +2,7 @@
   "expo": {
     "name": "C4K60",
     "slug": "c4k60",
-    "version": "0.7.4",
+    "version": "0.8.3",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -22,9 +22,7 @@
         }
       ]
     ],
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "jsEngine": "jsc",
     "ios": {
       "supportsTablet": false,
