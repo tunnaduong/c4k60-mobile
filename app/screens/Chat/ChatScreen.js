@@ -58,7 +58,7 @@ export default function ChatScreen({ navigation, route }) {
   const getConversation = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/home/?username=" + username
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/home/?username=" + username
       );
       setConversation(response.data);
     } catch (error) {
@@ -69,7 +69,7 @@ export default function ChatScreen({ navigation, route }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/online/"
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/online/"
       );
       setOnlineUsers(response.data);
     } catch (error) {
@@ -300,10 +300,10 @@ export default function ChatScreen({ navigation, route }) {
               <>
                 <View>
                   <Image
-                    source={item.avatar}
+                    source={item?.avatar}
                     style={{ height: 60, width: 60, borderRadius: 30 }}
                   ></Image>
-                  {checkTime(item.last_activity) && (
+                  {checkTime(item?.last_activity) && (
                     <View
                       style={{
                         backgroundColor: "#00BF00",
@@ -322,12 +322,12 @@ export default function ChatScreen({ navigation, route }) {
 
                 <View style={{ marginLeft: 13 }}>
                   <Text style={{ fontSize: 17, fontWeight: "500" }}>
-                    {item.name}
+                    {item?.name}
                   </Text>
                   <LastChat
                     key={Date.now()}
                     user_from={username}
-                    user_to={item.username}
+                    user_to={item?.username}
                   />
                 </View>
               </>

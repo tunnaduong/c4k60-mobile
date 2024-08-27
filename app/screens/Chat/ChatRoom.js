@@ -88,7 +88,7 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/messages/?user_to=" +
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/?user_to=" +
           user_to +
           "&user_from=" +
           user_from
@@ -131,6 +131,18 @@ export default function ChatRoom({ route, navigation }) {
           type: `image/${fileType}`,
         });
 
+        console.log("user_from", route.params.user_from);
+        console.log(
+          "user_to",
+          route.params.type == "group" ? "class_group" : route.params.username
+        );
+        console.log("type", route.params.type);
+        console.log("image", {
+          uri,
+          name: imageName,
+          type: `image/${fileType}`,
+        });
+
         setImageLoading((prev) => ({ ...prev, [imageName]: true }));
 
         const response = await axios.post(
@@ -142,6 +154,8 @@ export default function ChatRoom({ route, navigation }) {
             },
           }
         );
+
+        console.log("image", response.data);
 
         // Unset loading status for this image
         setImageLoading((prev) => {
@@ -204,7 +218,15 @@ export default function ChatRoom({ route, navigation }) {
       );
       console.log("noti", response2.data);
     } catch (error) {
-      console.log("converr", error);
+      if (error.config.url.includes("chat/image/")) {
+        console.log("Error in image upload request:", error);
+      } else if (error.config.url.includes("chat/conversations/")) {
+        console.log("Error in chat conversations request:", error);
+      } else if (error.config.url.includes("notification/send/")) {
+        console.log("Error in notification send request:", error);
+      } else {
+        console.log("Unknown error:", error);
+      }
     }
   };
 

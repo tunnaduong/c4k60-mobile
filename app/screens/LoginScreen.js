@@ -43,23 +43,6 @@ export default function LoginScreen({ navigation }) {
     } else {
       setLoading(true);
       try {
-        if (username == "tunganh" && password == "1") {
-          setName("Dương Tùng Anh");
-          setAvatar("https://c4k60.com/hoso/tunganh.jpg");
-          //   setData();
-          setToken("abc123");
-          storage.set("username", "tunganh");
-          storage.set("name", "Dương Tùng Anh");
-          storage.set("avatar", avatar);
-          storage.set("token", "abc123");
-          setLoading(false);
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: "MainScreen" }],
-            })
-          );
-        }
         const response = await axios.post("https://c4k60.com/api/login.php", {
           username: username,
           password: password,
