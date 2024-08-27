@@ -29,11 +29,44 @@ export default function ChatRoom({ route, navigation }) {
   const [loading, setLoading] = React.useState(false);
   const [imageLoading, setImageLoading] = React.useState({});
   const scrollViewRef = React.useRef();
+  const [onlineUsers, setOnlineUsers] = React.useState([]);
 
   React.useEffect(() => {
     getMessages();
     connectWebsocket();
+    getOnlineUsers();
   }, []);
+
+  const getOnlineUsers = async () => {
+    try {
+      const response = await axios.get(
+        "https://c4k60.tunnaduong.com/api/v1.0/chat/online/"
+      );
+      setOnlineUsers(response.data);
+      console.log(
+        "online us",
+        onlineUsers.filter((user) => user.username == route.params.username)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function getActivityStatus(lastActivityTime) {
+    const currentTime = new Date();
+    const lastActivity = new Date(lastActivityTime);
+    const diffInMinutes = (currentTime - lastActivity) / (1000 * 60);
+
+    if (lastActivityTime == null) {
+      return "Đang hoạt động";
+    }
+
+    if (diffInMinutes < 10) {
+      return "Đang hoạt động";
+    } else {
+      return "Hoạt động " + moment(lastActivityTime).fromNow();
+    }
+  }
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -60,9 +93,18 @@ export default function ChatRoom({ route, navigation }) {
             />
           )}
 
-          <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-            {route.params.name}
-          </Text>
+          <View>
+            <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+              {route.params.name}
+            </Text>
+            <Text style={{ fontSize: 12, color: "gray" }}>
+              {getActivityStatus(
+                onlineUsers?.filter(
+                  (user) => user.username == route.params.username
+                )[0]?.last_activity
+              )}
+            </Text>
+          </View>
         </View>
       ),
     });

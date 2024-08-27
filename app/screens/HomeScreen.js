@@ -98,7 +98,7 @@ export default function HomeScreen({ navigation }) {
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
+        // alert("Failed to get push token for push notification!");
         return;
       }
       // Learn more about projectId:
@@ -110,7 +110,7 @@ export default function HomeScreen({ navigation }) {
       ).data;
       console.log(token);
     } else {
-      alert("Must use physical device for Push Notifications");
+      // alert("Must use physical device for Push Notifications");
     }
 
     return token;

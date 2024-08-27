@@ -95,7 +95,7 @@ export default function NewsfeedScreen({ navigation, route }) {
                 time={item.timeofpost}
                 image={
                   item.has_image == "block"
-                    ? "https://m.c4k60.com" + item.image
+                    ? "https://c4k60.com/assets" + item.image
                     : null
                 }
               />
