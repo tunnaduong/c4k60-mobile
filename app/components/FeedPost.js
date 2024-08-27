@@ -5,6 +5,8 @@ import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableRipple } from "react-native-paper";
 import moment from "moment";
+import LikeButton from "./LikeButton";
+import { storage } from "../global/storage";
 
 export default function FeedPost({
   name,
@@ -12,9 +14,17 @@ export default function FeedPost({
   image,
   caption,
   time,
-  likes,
   comments,
+  likeText,
+  postId,
 }) {
+  const username_ = storage.getString("username");
+  const [refreshLikeText, setRefreshLikeText] = React.useState(false);
+
+  const handleLikeToggle = () => {
+    setRefreshLikeText(!refreshLikeText); // Toggle the state to trigger LikeText re-fetch
+  };
+
   return (
     <View
       style={{
@@ -48,16 +58,9 @@ export default function FeedPost({
       {image == null ? null : (
         <Image source={image} style={{ width: "100%", height: 300 }}></Image>
       )}
-      <View
-        style={{
-          marginHorizontal: 12,
-          paddingVertical: 12,
-          borderBottomWidth: 1,
-          borderBottomColor: "#E6E6E6",
-        }}
-      >
-        <Text>1 like</Text>
-      </View>
+
+      {likeText}
+
       <View
         style={{
           flexDirection: "row",
@@ -68,28 +71,12 @@ export default function FeedPost({
           gap: 4,
         }}
       >
-        <TouchableRipple
-          rippleColor="rgba(0, 0, 0, .2)"
-          onPress={() => {}}
-          style={{
-            padding: 5,
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 6,
-          }}
-        >
-          <>
-            <Ionicons
-              name="heart-outline"
-              size={22}
-              color={"#8B8D95"}
-              style={{ marginRight: 7 }}
-            ></Ionicons>
-            <Text style={{ color: "#8B8D95" }}>Thích</Text>
-          </>
-        </TouchableRipple>
+        <LikeButton
+          key={new Date().getTime()}
+          postId={postId}
+          userId={username_}
+          onLikeToggle={handleLikeToggle}
+        />
         <TouchableRipple
           rippleColor="rgba(0, 0, 0, .2)"
           onPress={() => {}}

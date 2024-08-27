@@ -11,6 +11,7 @@ import UserAvatar from "../components/UserAvatar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FeedPost from "../components/FeedPost";
 import axios from "axios";
+import LikeText from "../components/LikeText";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -19,6 +20,11 @@ export default function NewsfeedScreen({ navigation, route }) {
   const [hasMore, setHasMore] = React.useState(true);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
   const username = storage.getString("username");
+  const [screenState, setScreenState] = React.useState("initialState");
+
+  const resetScreenState = () => {
+    setScreenState("initialState");
+  };
 
   React.useEffect(() => {
     fetchNewsfeed();
@@ -34,7 +40,10 @@ export default function NewsfeedScreen({ navigation, route }) {
   };
 
   const fetchNextPage = async () => {
+    // console.log("-------");
+    console.log("runnn", page);
     if (!hasMore || isFirstRender) {
+      // setPage(2);
       return;
     }
 
@@ -47,7 +56,12 @@ export default function NewsfeedScreen({ navigation, route }) {
         return;
       }
 
-      setData((prevData) => [...prevData, ...response.data?.items]);
+      // Ensure response.data?.items is an array and handle errors
+      setData((prevData) => {
+        return [...prevData, ...response.data.items];
+      });
+
+      // Increment the page number
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error(error);
@@ -82,6 +96,7 @@ export default function NewsfeedScreen({ navigation, route }) {
         <View style={{ backgroundColor: "white", flex: 1 }}>
           <FlatList
             data={data}
+            extraData={data}
             onEndReached={fetchNextPage}
             onEndReachedThreshold={0.2}
             ListFooterComponent={ListEndLoader}
@@ -89,6 +104,7 @@ export default function NewsfeedScreen({ navigation, route }) {
             contentContainerStyle={{ paddingBottom: 100 }}
             renderItem={({ item }) => (
               <FeedPost
+                key={new Date().getTime()}
                 username={item.username}
                 name={item.author}
                 caption={item.content}
@@ -98,16 +114,20 @@ export default function NewsfeedScreen({ navigation, route }) {
                     ? "https://c4k60.com/assets" + item.image
                     : null
                 }
+                likeText={
+                  <LikeText key={new Date().getTime()} like_id={item.id} />
+                }
+                postId={item.id}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => item.id.toString()}
             refreshControl={
               <RefreshControl
                 colors={["#9Bd35A", "#689F38"]}
                 refreshing={refreshing}
-                onRefresh={() => {
+                onRefresh={async () => {
                   setRefreshing(true);
-                  fetchNewsfeed();
+                  await fetchNewsfeed(); // Refresh feed
                   setHasMore(true);
                   setPage(2);
                   setTimeout(() => {
