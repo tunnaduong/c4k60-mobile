@@ -11,7 +11,6 @@ import UserAvatar from "../components/UserAvatar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FeedPost from "../components/FeedPost";
 import axios from "axios";
-import LikeText from "../components/LikeText";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -40,10 +39,7 @@ export default function NewsfeedScreen({ navigation, route }) {
   };
 
   const fetchNextPage = async () => {
-    // console.log("-------");
-    console.log("runnn", page);
     if (!hasMore || isFirstRender) {
-      // setPage(2);
       return;
     }
 
@@ -113,9 +109,6 @@ export default function NewsfeedScreen({ navigation, route }) {
                   item.has_image == "block"
                     ? "https://c4k60.com/assets" + item.image
                     : null
-                }
-                likeText={
-                  <LikeText key={new Date().getTime()} like_id={item.id} />
                 }
                 postId={item.id}
               />

@@ -7,6 +7,7 @@ import { TouchableRipple } from "react-native-paper";
 import moment from "moment";
 import LikeButton from "./LikeButton";
 import { storage } from "../global/storage";
+import LikeText from "./LikeText";
 
 export default function FeedPost({
   name,
@@ -15,7 +16,6 @@ export default function FeedPost({
   caption,
   time,
   comments,
-  likeText,
   postId,
 }) {
   const username_ = storage.getString("username");
@@ -59,7 +59,7 @@ export default function FeedPost({
         <Image source={image} style={{ width: "100%", height: 300 }}></Image>
       )}
 
-      {likeText}
+      <LikeText key={new Date().getTime()} like_id={postId} />
 
       <View
         style={{

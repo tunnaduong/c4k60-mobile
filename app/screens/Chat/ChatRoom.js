@@ -380,7 +380,7 @@ export default function ChatRoom({ route, navigation }) {
                             width: 150,
                             resizeMode: "cover",
                             borderRadius: 10,
-                            margin: 5,
+                            marginVertical: 5,
                           }}
                           onLoadStart={() =>
                             setImageLoading((prev) => ({

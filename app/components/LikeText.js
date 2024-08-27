@@ -63,7 +63,7 @@ const LikeText = ({ like_id }) => {
 
   return (
     likeText && (
-      <View style={styles.container} key={new Date().getTime()}>
+      <View style={styles.container}>
         <Ionicons
           name="heart"
           size={22}
