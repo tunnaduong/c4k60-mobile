@@ -20,6 +20,8 @@ import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import LoadingView from "../../components/LoadingView";
 import { getUserFullName } from "../../utils/getUserFullName";
+import { GiftedChat } from "react-native-gifted-chat";
+import vi from "dayjs/locale/vi";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
@@ -136,6 +138,7 @@ export default function ChatRoom({ route, navigation }) {
           user_from
       );
       setMessages(response.data);
+      console.log("getmsg2", messages);
     } catch (error) {
       console.log("getmsg", error);
     }
@@ -295,214 +298,30 @@ export default function ChatRoom({ route, navigation }) {
         backgroundColor: "white",
       }}
     >
-      <KeyboardAvoidingView
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "center",
+      <GiftedChat
+        messages={messages?.map((message) => ({
+          _id: message.id,
+          createdAt: message.time,
+          text: message.message,
+          image:
+            message.image_url != null
+              ? "https://c4k60.com/assets/images/chats/" + message.image_url
+              : null,
+          user: {
+            _id: message.user_from,
+            name: message.user_from,
+            avatar: `https://c4k60.com/api/v1.0/users/avatar/get/?username=${message.user_from}`,
+          },
+          sent: message.sent == 1,
+          received: message.received == 1,
+        }))}
+        onSend={(messages) => onSend(messages)}
+        user={{
+          _id: route.params.user_from,
         }}
-        behavior="padding"
-        enabled
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : -200}
-      >
-        <ScrollView
-          ref={scrollViewRef}
-          onContentSizeChange={() =>
-            scrollViewRef.current.scrollToEnd({ animated: false })
-          }
-          contentContainerStyle={{
-            marginTop: 10,
-          }}
-        >
-          {messages == null ? (
-            <>
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 400,
-                  width: "100%",
-                }}
-              >
-                <ActivityIndicator size={"large"} color="#636568" />
-                <Text style={{ marginTop: 15 }}>Đang tải tin nhắn...</Text>
-              </View>
-            </>
-          ) : (
-            messages.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection:
-                      item.user_from == route.params.user_from
-                        ? "row-reverse"
-                        : "row",
-                    alignItems: "center",
-                    marginBottom: 10,
-                    gap: 10,
-                    paddingHorizontal: 10,
-                  }}
-                >
-                  {item.user_from != route.params.user_from && (
-                    <UserAvatar
-                      username={item.user_from}
-                      style={{ height: 35, width: 35, borderRadius: 20 }}
-                    />
-                  )}
-                  <View
-                    style={{
-                      alignSelf:
-                        item.user_from == route.params.user_from
-                          ? "flex-end"
-                          : "flex-start",
-                      backgroundColor: item.image_url
-                        ? "white"
-                        : item.user_from == route.params.user_from
-                        ? "#2761FF"
-                        : "#EBEBEB",
-                      borderRadius: 10,
-                      padding: 3,
-                      maxWidth: "70%",
-                    }}
-                  >
-                    {item.image_url ? (
-                      <>
-                        <Image
-                          source={{
-                            uri:
-                              "https://c4k60.com/assets/images/chats/" +
-                              item.image_url,
-                          }}
-                          style={{
-                            aspectRatio: 3 / 4,
-                            width: 150,
-                            resizeMode: "cover",
-                            borderRadius: 10,
-                            marginVertical: 5,
-                          }}
-                          onLoadStart={() =>
-                            setImageLoading((prev) => ({
-                              ...prev,
-                              [item.image_url]: true,
-                            }))
-                          }
-                          onLoadEnd={() =>
-                            setImageLoading((prev) => {
-                              const newLoading = { ...prev };
-                              delete newLoading[item.image_url];
-                              return newLoading;
-                            })
-                          }
-                        />
-                        {imageLoading[item.image_url] && <LoadingView />}
-                      </>
-                    ) : (
-                      <Text
-                        style={{
-                          color:
-                            item.user_from == route.params.user_from
-                              ? "white"
-                              : "black",
-                          padding: 7,
-                          fontSize: 13,
-                        }}
-                      >
-                        {item.message}
-                      </Text>
-                    )}
-
-                    <Text
-                      style={{
-                        textAlign:
-                          item.user_from == route.params.user_from
-                            ? "right"
-                            : "left",
-                        fontSize: 9,
-                        color: item.image_url
-                          ? "#aaa"
-                          : item.user_from == route.params.user_from
-                          ? "#EBEBEB"
-                          : "gray",
-                        marginLeft: 7,
-                        marginRight: 7,
-                        marginBottom: 3,
-                      }}
-                    >
-                      {formatTime(item.time)}
-                    </Text>
-                  </View>
-                </View>
-              );
-            })
-          )}
-        </ScrollView>
-        <View
-          style={{
-            backgroundColor: "#EBEBEB",
-            height: 45,
-            margin: 10,
-            borderRadius: 25,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={pickImage}
-            style={{
-              backgroundColor: "white",
-              height: 35,
-              width: 35,
-              borderRadius: 30,
-              justifyContent: "center",
-              alignItems: "center",
-              marginHorizontal: 5,
-              marginRight: 9,
-            }}
-          >
-            <Ionicons name="camera" size={20} color="black" />
-          </TouchableOpacity>
-          <TextInput
-            placeholder="Nhắn tin..."
-            style={{ height: 45, flex: 1, fontSize: 16 }}
-            value={message}
-            onChangeText={setMessage}
-            onFocus={() => {
-              setTimeout(
-                () => scrollViewRef.current?.scrollToEnd({ animated: true }),
-                100
-              );
-            }}
-            onSubmitEditing={() => {
-              setMessage("");
-              sendMessage();
-            }}
-          ></TextInput>
-          <TouchableOpacity
-            style={[
-              {
-                backgroundColor: "#2761FF",
-                height: 35,
-                width: 60,
-                borderRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
-                marginHorizontal: 5,
-              },
-              !message && { opacity: 0.4 },
-            ]}
-            disabled={!message}
-            onPress={() => {
-              // setMessages([...messages, message]);
-              setMessage("");
-              sendMessage();
-            }}
-          >
-            <Ionicons name="paper-plane" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+        locale={vi}
+      />
+      {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
     </SafeAreaView>
   );
 }
