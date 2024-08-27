@@ -60,6 +60,7 @@ import CalendarScreen from "./app/screens/Calendar/CalendarScreen";
 import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
+import NewChat from "./app/screens/Chat/NewChat";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -1115,7 +1116,7 @@ function App() {
                   title="Chat"
                   icon="create-outline"
                   action={() => {
-                    Alert.alert("Tính năng đang phát triển", "Vui lòng chờ...");
+                    navigation.navigate("NewChat", { ws: ws });
                   }}
                 />
               );
@@ -1558,6 +1559,35 @@ function App() {
             }}
             name="SearchScreen"
             component={SearchScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Đoạn chat mới",
+              gestureEnabled: false,
+              animation: "slide_from_bottom",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Đoạn chat mới"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="NewChat"
+            component={NewChat}
           />
           <Stack.Screen
             options={{
