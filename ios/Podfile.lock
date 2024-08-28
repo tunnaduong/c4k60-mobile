@@ -110,6 +110,8 @@ PODS:
     - React-NativeModulesApple
     - React-RCTAppDelegate
     - ReactCommon/turbomodule/core
+  - ExpoRandom (13.2.0):
+    - ExpoModulesCore
   - ExpoWebBrowser (12.3.2):
     - ExpoModulesCore
   - EXSplashScreen (0.20.5):
@@ -627,6 +629,7 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoRandom (from `../node_modules/expo-random/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXStructuredHeaders (from `../node_modules/expo-structured-headers/ios`)
@@ -759,6 +762,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
+  ExpoRandom:
+    :path: "../node_modules/expo-random/ios"
   ExpoWebBrowser:
     :path: "../node_modules/expo-web-browser/ios"
   EXSplashScreen:
@@ -902,6 +907,7 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoLinearGradient: 5966dd5d49872cc9c104fedc8bbc298b6049b2e8
   ExpoModulesCore: cf14fc49a3d5df3ed3cf2a38fc758d073bfd1c13
+  ExpoRandom: 4f2bba684312acd6c0700528ae62f85265776c84
   ExpoWebBrowser: 2c788f9c07718a780fe6d8bf2f6195c47609faaa
   EXSplashScreen: c0e7f2d4a640f3b875808ed0b88575538daf6d82
   EXStructuredHeaders: 324cc3130571d2696357fafd8be7fd9a0b5fdf6e

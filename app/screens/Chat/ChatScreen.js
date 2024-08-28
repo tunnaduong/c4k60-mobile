@@ -229,6 +229,7 @@ export default function ChatScreen({ navigation, route }) {
             navigation.navigate("ChatRoom", {
               ws: ws,
               user_from: username,
+              // username: "class_group",
               type: "group",
               name: "Ngưng Bích Buildings :)))))",
             });

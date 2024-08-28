@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  StyleSheet,
 } from "react-native";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -20,14 +21,19 @@ import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import LoadingView from "../../components/LoadingView";
 import { getUserFullName } from "../../utils/getUserFullName";
-import { GiftedChat } from "react-native-gifted-chat";
+import {
+  GiftedChat,
+  InputToolbar,
+  Send,
+  Composer,
+} from "react-native-gifted-chat";
 import vi from "dayjs/locale/vi";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
   const expoPushToken = route.params.token;
-  const [messages, setMessages] = React.useState(null);
   const [message, setMessage] = React.useState("");
+  const [messages, setMessages] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [imageLoading, setImageLoading] = React.useState({});
   const scrollViewRef = React.useRef();
@@ -119,15 +125,25 @@ export default function ChatRoom({ route, navigation }) {
     ws.onerror = (e) => {
       console.log(e.message);
     };
+    ws.onmessage = (e) => {
+      const message = JSON.parse(e.data).data;
+
+      console.log("message", message);
+      // Check if the message is intended for the current user
+      if (
+        message.user_to !== route.params.user_from &&
+        message.user_from !== route.params.user_from &&
+        message.user_to !== route.params.username &&
+        message.user_from !== route.params.username
+      ) {
+        return; // Ignore messages not intended for or from the current user
+      }
+      setMessages((previousMessages) => [message, ...previousMessages]);
+    };
   };
 
   const getMessages = async () => {
     try {
-      ws.onmessage = (e) => {
-        const message = JSON.parse(e.data);
-        // if (message.type != "message" && message.type != "image") return;
-        setMessages((prev) => [...prev, message.data]);
-      };
       const user_to =
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
@@ -138,6 +154,7 @@ export default function ChatRoom({ route, navigation }) {
           user_from
       );
       setMessages(response.data);
+      console.log(messages);
       console.log("getmsg2", messages);
     } catch (error) {
       console.log("getmsg", error);
@@ -152,7 +169,7 @@ export default function ChatRoom({ route, navigation }) {
     }`;
   }
 
-  const sendMessage = async (messageType, image) => {
+  const sendMessage = async (messageType = "text", image) => {
     try {
       if (messageType == "image") {
         const uri = image;
@@ -214,6 +231,8 @@ export default function ChatRoom({ route, navigation }) {
           JSON.stringify({
             type: "image",
             data: {
+              id: makeid(10),
+              time: new Date(),
               user_from: route.params.user_from,
               user_to:
                 route.params.type == "group"
@@ -222,6 +241,7 @@ export default function ChatRoom({ route, navigation }) {
               type: route.params.type,
               message: "",
               image_url: imageName, // send the image URL
+              sent: 1,
             },
           })
         );
@@ -229,39 +249,6 @@ export default function ChatRoom({ route, navigation }) {
         console.log("image", response.data);
         return;
       }
-      ws.send(
-        JSON.stringify({
-          type: "message",
-          data: {
-            user_from: route.params.user_from,
-            message: message,
-            user_to:
-              route.params.type == "group"
-                ? "class_group"
-                : route.params.username,
-            type: route.params.type,
-          },
-        })
-      );
-      const response = await axios.post(
-        "https://c4k60.com/api/v1.0/chat/conversations/",
-        {
-          user_from: route.params.user_from,
-          message: message,
-          user_to:
-            route.params.type == "group"
-              ? "class_group"
-              : route.params.username,
-          type: route.params.type,
-        }
-      );
-      console.log("conv", response.data);
-      const fullName = await getUserFullName(route.params.user_from);
-      console.log(fullName);
-      const response2 = await axios.get(
-        `https://c4k60.com/api/v1.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message}`
-      );
-      console.log("noti", response2.data);
     } catch (error) {
       if (error.config.url.includes("chat/image/")) {
         console.log("Error in image upload request:", error);
@@ -291,6 +278,126 @@ export default function ChatRoom({ route, navigation }) {
     }
   };
 
+  function makeid(length) {
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  }
+
+  const _sendMessage = async (message) => {
+    ws.send(
+      JSON.stringify({
+        type: "message",
+        data: {
+          id: makeid(10),
+          user_from: route.params.user_from,
+          time: new Date(),
+          message: message[0].text,
+          user_to:
+            route.params.type == "group"
+              ? "class_group"
+              : route.params.username,
+          type: route.params.type,
+          sent: 1,
+        },
+      })
+    );
+    console.log(message);
+    const response = await axios.post(
+      "https://c4k60.com/api/v1.0/chat/conversations/",
+      {
+        user_from: route.params.user_from,
+        message: message[0].text,
+        user_to:
+          route.params.type == "group" ? "class_group" : route.params.username,
+        type: route.params.type,
+      }
+    );
+
+    console.log("conv", response.data);
+
+    const fullName = await getUserFullName(route.params.user_from);
+    console.log(fullName);
+    const response2 = await axios.get(
+      `https://c4k60.com/api/v1.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
+    );
+    console.log("noti", response2.data);
+  };
+
+  // Custom Composer for single-line text input
+  const renderComposer = (props) => {
+    return (
+      <Composer
+        {...props}
+        textInputStyle={styles.singleLineComposer}
+        multiline={false} // Disable multiline to enforce single-line input
+        placeholder="Nhắn tin..."
+      />
+    );
+  };
+
+  // Custom Input Toolbar
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={styles.inputToolbar}
+        primaryStyle={{ alignItems: "center" }}
+      />
+    );
+  };
+
+  // Custom Send Button
+  const renderSend = (props) => {
+    return (
+      <Send {...props} disabled={!message}>
+        <View
+          style={[
+            {
+              backgroundColor: "#2761FF",
+              height: 35,
+              width: 60,
+              borderRadius: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              marginHorizontal: 5,
+              marginRight: -3,
+            },
+            !message && { opacity: 0.4 },
+          ]}
+        >
+          <Ionicons name="paper-plane" size={20} color="white" />
+        </View>
+      </Send>
+    );
+  };
+
+  // Custom Actions (e.g., attach image button)
+  const renderActions = (props) => (
+    <TouchableOpacity
+      onPress={pickImage}
+      style={{
+        backgroundColor: "white",
+        height: 35,
+        width: 35,
+        borderRadius: 30,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 5,
+        marginRight: 9,
+      }}
+    >
+      <Ionicons name="camera" size={20} color="black" />
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView
       style={{
@@ -315,13 +422,68 @@ export default function ChatRoom({ route, navigation }) {
           sent: message.sent == 1,
           received: message.received == 1,
         }))}
-        onSend={(messages) => onSend(messages)}
+        onSend={(newMessages) => {
+          // setMessages((previousMessages) => [
+          //   ...newMessages.map((message) => ({
+          //     id: message._id,
+          //     message: message.text,
+          //     time: new Date(),
+          //     user_from: route.params.user_from,
+          //     user_to:
+          //       route.params.type == "group"
+          //         ? "class_group"
+          //         : route.params.username,
+          //     type: route.params.type,
+          //     sent: 1,
+          //   })),
+          //   ...previousMessages,
+          // ]);
+          _sendMessage(newMessages);
+        }}
         user={{
           _id: route.params.user_from,
         }}
         locale={vi}
+        renderInputToolbar={renderInputToolbar} // Custom Input Toolbar
+        renderSend={renderSend} // Custom Send Button
+        renderActions={renderActions} // Custom Actions
+        alwaysShowSend={true}
+        onInputTextChanged={(text) => setMessage(text)}
+        text={message}
+        renderComposer={renderComposer}
       />
       {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  inputToolbar: {
+    backgroundColor: "#EBEBEB",
+    height: 45,
+    margin: 10,
+    borderRadius: 25,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  sendButton: {
+    marginRight: 10,
+    marginBottom: 5,
+    backgroundColor: "#007AFF",
+    padding: 8,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  attachButton: {
+    marginLeft: 10,
+    marginBottom: 5,
+    padding: 8,
+  },
+  singleLineComposer: {
+    flex: 1,
+    marginTop: 2,
+    marginLeft: 0,
+    maxHeight: 40, // Ensures it remains a single line
+  },
+});
