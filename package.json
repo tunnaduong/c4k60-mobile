@@ -97,7 +97,8 @@
     "tailwindcss-react-native": "^1.7.10",
     "text-encoding": "^0.7.0",
     "yarn": "^1.22.19",
-    "expo-random": "~13.2.0"
+    "expo-random": "~13.2.0",
+    "expo-clipboard": "~4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
