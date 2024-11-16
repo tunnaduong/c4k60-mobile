@@ -88,7 +88,7 @@ PODS:
     - React-Core
   - ExpoBlur (12.4.1):
     - ExpoModulesCore
-  - ExpoClipboard (6.0.3):
+  - ExpoClipboard (4.3.1):
     - ExpoModulesCore
   - ExpoDevice (5.4.0):
     - ExpoModulesCore
@@ -900,7 +900,7 @@ SPEC CHECKSUMS:
   expo-dev-menu: c5f789b6228f4176f83a1f47dba54350e63437e1
   expo-dev-menu-interface: bda969497e73dadc2663c479e0fa726ca79a306e
   ExpoBlur: a2c90bdfa4ff9f459cdb0f83191bddf020e3e2db
-  ExpoClipboard: 23d203f5d4843699fbc45be1cc4fe1fbd811a6fa
+  ExpoClipboard: 695f274f8e028cd113837f917da40c76850877eb
   ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
   ExpoImage: 723efcb8d9377ae8645a6f7a1579305f5b80a76f
   ExpoImagePicker: c58fdf28be551681a8edc550bcec76c397a8dfcd

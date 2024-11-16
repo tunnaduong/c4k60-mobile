@@ -16,7 +16,6 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
 import { storage } from "../global/storage";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import UserAvatar from "../components/UserAvatar";
 import moment from "moment";
 import menuData from "../global/quickMenuData";
@@ -164,6 +163,8 @@ export default function HomeScreen({ navigation }) {
     const response = await axios.get(
       "https://c4k60.com/api/v1.0/users/birthday/"
     );
+    console.log(response);
+
     setBirthdayData(response.data);
   };
 
