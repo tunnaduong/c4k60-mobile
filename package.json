@@ -98,13 +98,15 @@
     "tailwindcss": "3.3.2",
     "tailwindcss-react-native": "^1.7.10",
     "text-encoding": "^0.7.0",
-    "yarn": "^1.22.19",
-    "expo-random": "~13.2.0"
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "metro-react-native-babel-preset": "~0.64.0",
     "postinstall-postinstall": "^2.1.0"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "react-native-reanimated": "~3.3.0"
+  }
 }
