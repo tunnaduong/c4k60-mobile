@@ -9,10 +9,23 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import { CommonActions } from "@react-navigation/native";
 import LoginCarousel from "../components/LoginCarousel";
+import { storage } from "../global/storage";
 
 class WelcomeScreen extends React.Component {
+  // handle click on "Trải nghiệm thử" button
+  handleTry = async () => {
+    storage.set("username", "test");
+    storage.set("name", "Khách");
+    storage.set(
+      "avatar",
+      "https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg"
+    );
+    storage.set("token", "abc123");
+    // navigate to the home screen
+    this.props.navigation.navigate("MainScreen");
+  };
+
   render() {
     return (
       <ImageBackground
@@ -39,7 +52,13 @@ class WelcomeScreen extends React.Component {
         >
           <Text style={styles.loginText}>Đăng nhập</Text>
         </TouchableOpacity>
-
+        <TouchableOpacity
+          activeOpacity={Platform.OS === "ios" ? 0.6 : null}
+          style={styles.signupButton}
+          onPress={this.handleTry}
+        >
+          <Text style={styles.signupText}>Trải nghiệm thử</Text>
+        </TouchableOpacity>
         <View style={styles.underButtons}></View>
       </ImageBackground>
     );
@@ -76,10 +95,30 @@ const styles = StyleSheet.create({
     zIndex: 10,
     elevation: 10,
     position: "absolute",
-    bottom: 0,
+    bottom:
+      Platform.OS === "ios"
+        ? Dimensions.get("screen").height > 667
+          ? 85
+          : 70
+        : 70,
     width: "100%",
-    height: 90,
+    height: 70,
     backgroundColor: "#F5E100",
+    flex: 0,
+    justifyContent: "center",
+  },
+  signupButton: {
+    zIndex: 9,
+    elevation: 9,
+    position: "absolute",
+    width: "100%",
+    height:
+      Platform.OS === "ios"
+        ? Dimensions.get("screen").height > 667
+          ? 85
+          : 70
+        : 70,
+    backgroundColor: "#FF416E",
     flex: 0,
     justifyContent: "center",
   },
@@ -87,7 +126,12 @@ const styles = StyleSheet.create({
     zIndex: 0,
     elevation: 0,
     width: "100%",
-    height: 90,
+    height:
+      Platform.OS === "ios"
+        ? Dimensions.get("screen").height > 667
+          ? 155
+          : 140
+        : 140,
     backgroundColor: "#E9E9E9",
   },
   loginText: {

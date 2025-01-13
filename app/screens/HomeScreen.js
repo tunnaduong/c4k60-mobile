@@ -46,8 +46,10 @@ export default function HomeScreen({ navigation }) {
   const [loadText, setLoadText] = React.useState("");
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
+  const [loiChucData, setLoiChucData] = React.useState("");
 
   useEffect(() => {
+    loiChuc();
     console.log("Registering for push notifications...");
     registerForPushNotificationsAsync()
       .then((token) => {
@@ -150,6 +152,30 @@ export default function HomeScreen({ navigation }) {
     }
 
     return g;
+  };
+
+  const loiChuc = () => {
+    let today = new Date();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+
+    if ((hours >= 5 && hours < 10) || (hours === 10 && minutes < 30)) {
+      setLoiChucData("Chúc bạn có một ngày mới năng động và hiệu quả.");
+    } else if ((hours >= 11 && hours < 13) || (hours == 10 && minutes >= 30)) {
+      setLoiChucData(
+        "Chúc bạn có một buổi trưa thật vui vẻ, ngập tràn năng lượng."
+      );
+    } else if ((hours >= 13 && hours < 18) || (hours === 18 && minutes < 30)) {
+      setLoiChucData("Chúc bạn có một buổi chiều vui vẻ và cả ngày hạnh phúc!");
+    } else if ((hours >= 18 && hours < 22) || (hours === 22 && minutes < 30)) {
+      setLoiChucData(
+        "Chúc cậu có một buổi tối an lành, vui vẻ nhé. Good night!"
+      );
+    } else {
+      setLoiChucData(
+        "Nằm xuống giường đi và mơ những giấc mơ ngọt ngào nhất bạn nhé!"
+      );
+    }
   };
 
   const getNotification = async (input) => {
@@ -258,10 +284,19 @@ export default function HomeScreen({ navigation }) {
                 }}
               >
                 <View>
-                  <UserAvatar
-                    username={username}
-                    style={{ height: 50, width: 50, borderRadius: 100 }}
-                  />
+                  {storage.getString("username") == "test" ? (
+                    <Image
+                      source={{
+                        uri: "https://avatar.iran.liara.run/public/boy?username=Ash",
+                      }}
+                      style={{ height: 50, width: 50, borderRadius: 100 }}
+                    ></Image>
+                  ) : (
+                    <UserAvatar
+                      username={username}
+                      style={{ height: 50, width: 50, borderRadius: 100 }}
+                    />
+                  )}
                 </View>
                 <View style={{ marginLeft: 17 }}>
                   <Text
@@ -280,7 +315,7 @@ export default function HomeScreen({ navigation }) {
                       width: screenWidth - 115,
                     }}
                   >
-                    Mỗi ngày mới là một cơ hội để thay đổi bản thân bạn.
+                    {loiChucData}
                   </Text>
                 </View>
                 <View
