@@ -8,21 +8,13 @@ const UserAvatar = ({ username, style }) => {
   const [showDefault, setDefault] = React.useState(true);
 
   const getAvatar = async () => {
-    try {
-      const response = await axios.post(
-        "https://c4k60.com/api/v1.0/users/avatar/",
-        {
-          username: username,
-        }
-      );
-      setUrl(response.data.avatar);
-      setDefault(false);
-      // console.log("asdkasd", response.data.avatar);
-    } catch (err) {
-      // console.log("errrrr", err);
-    }
+    setUrl("https://c4k60.com/api/v1.0/users/avatar/get/?username=" + username);
+    setDefault(false);
   };
-  getAvatar();
+
+  React.useEffect(() => {
+    getAvatar();
+  }, [username]);
 
   return (
     <>

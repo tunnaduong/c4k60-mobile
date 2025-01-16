@@ -1009,6 +1009,16 @@ function App() {
               {...props}
               onPress={(e) => {
                 if (
+                  (route.name === "Newsfeed" &&
+                    storage.getString("username") == "test") ||
+                  (route.name === "Chat" &&
+                    storage.getString("username") == "test")
+                ) {
+                  return Alert.alert(
+                    "Chức năng này không khả dụng trong chế độ xem trước."
+                  );
+                }
+                if (
                   route.name === "Home" ||
                   route.params.currentScreen !== currentScreen
                 ) {

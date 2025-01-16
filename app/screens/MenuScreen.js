@@ -9,6 +9,7 @@ import {
   Text,
   Pressable,
   View,
+  Image,
 } from "react-native";
 import { storage } from "../global/storage";
 import { Divider } from "react-native-elements/dist/divider/Divider";
@@ -92,6 +93,11 @@ export default function MenuScreen({ navigation, route }) {
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => {
+          if (storage.getString("username") == "test") {
+            return Alert.alert(
+              "Chức năng này không khả dụng trong chế độ xem trước."
+            );
+          }
           navigation.navigate("ProfileDetail", {
             name: name,
             username: username,
@@ -99,10 +105,21 @@ export default function MenuScreen({ navigation, route }) {
           });
         }}
       >
-        <UserAvatar username={username} style={styles.avatar} />
+        {storage.getString("username") == "test" ? (
+          <Image
+            source={require("../assets/user.png")}
+            style={{ height: 50, width: 50, borderRadius: 100 }}
+          ></Image>
+        ) : (
+          <UserAvatar username={username} style={styles.avatar} />
+        )}
         <View style={{ marginLeft: 12 }}>
           <Text style={{ fontSize: 20 }}>{name}</Text>
-          <Text style={{ color: "#7F7F7F" }}>Xem trang cá nhân của bạn</Text>
+          <Text style={{ color: "#7F7F7F" }}>
+            {storage.getString("username") == "test"
+              ? "Đăng nhập để xem thông tin cá nhân"
+              : "Xem trang cá nhân của bạn"}
+          </Text>
         </View>
       </TouchableOpacity>
       <Divider style={{ marginTop: 13 }} />
@@ -185,6 +202,11 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
+          if (storage.getString("username") == "test") {
+            return Alert.alert(
+              "Chức năng này không khả dụng trong chế độ xem trước."
+            );
+          }
           navigation.navigate("FriendNearby");
         }}
       >
@@ -209,6 +231,11 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
+          if (storage.getString("username") == "test") {
+            return Alert.alert(
+              "Chức năng này không khả dụng trong chế độ xem trước."
+            );
+          }
           navigation.navigate("MusicScreen");
         }}
       >
@@ -309,6 +336,11 @@ export default function MenuScreen({ navigation, route }) {
           alignItems: "center",
         }}
         onPress={() => {
+          if (storage.getString("username") == "test") {
+            return Alert.alert(
+              "Chức năng này không khả dụng trong chế độ xem trước."
+            );
+          }
           navigation.navigate("Testing", {
             title: "Cài đặt",
           });

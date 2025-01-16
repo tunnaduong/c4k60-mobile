@@ -12,6 +12,7 @@ import {
   Linking,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
@@ -189,8 +190,6 @@ export default function HomeScreen({ navigation }) {
     const response = await axios.get(
       "https://c4k60.com/api/v1.0/users/birthday/"
     );
-    console.log(response);
-
     setBirthdayData(response.data);
   };
 
@@ -267,6 +266,9 @@ export default function HomeScreen({ navigation }) {
             <TouchableRipple
               rippleColor="rgba(0, 0, 0, .2)"
               onPress={() => {
+                if (storage.getString("username") == "test") {
+                  return navigation.navigate("Login");
+                }
                 navigation.navigate("ProfileDetail", {
                   name: name,
                   username: username,
@@ -286,9 +288,7 @@ export default function HomeScreen({ navigation }) {
                 <View>
                   {storage.getString("username") == "test" ? (
                     <Image
-                      source={{
-                        uri: "https://avatar.iran.liara.run/public/boy?username=Ash",
-                      }}
+                      source={require("../assets/user.png")}
                       style={{ height: 50, width: 50, borderRadius: 100 }}
                     ></Image>
                   ) : (
@@ -307,7 +307,9 @@ export default function HomeScreen({ navigation }) {
                       marginBottom: 3,
                     }}
                   >
-                    Chào {getGreetingTime(moment())}, {name}
+                    {storage.getString("username") == "test"
+                      ? "Bạn chưa đăng nhập"
+                      : "Chào " + getGreetingTime(moment()) + ", " + name}
                   </Text>
                   <Text
                     numberOfLines={2}
@@ -315,7 +317,9 @@ export default function HomeScreen({ navigation }) {
                       width: screenWidth - 115,
                     }}
                   >
-                    {loiChucData}
+                    {storage.getString("username") == "test"
+                      ? "Hãy đăng nhập để trải nghiệm đầy đủ các tính năng tuyệt vời của ứng dụng."
+                      : loiChucData}
                   </Text>
                 </View>
                 <View
@@ -348,6 +352,13 @@ export default function HomeScreen({ navigation }) {
                   key={index}
                   rippleColor="rgba(0, 0, 0, .2)"
                   onPress={() => {
+                    if (item.guestEnabled == false) {
+                      if (storage.getString("username") == "test") {
+                        return Alert.alert(
+                          "Chức năng này không khả dụng trong chế độ xem trước."
+                        );
+                      }
+                    }
                     // this.props.navigation.navigate(item.route);
                     navigation.navigate(item.route);
                   }}

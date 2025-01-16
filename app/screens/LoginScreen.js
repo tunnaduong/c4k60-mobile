@@ -144,7 +144,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={(username) => setUsername(username)}
                 placeholder="Tên đăng nhập"
                 autoCapitalize="none"
-                value={username}
+                value={username == "test" ? "" : username}
                 ref={usernameRef}
               />
               <Pressable
