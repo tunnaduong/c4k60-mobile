@@ -48,7 +48,7 @@ export default function ChatRoom({ route, navigation }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60aduong.com/api/v1.0/chat/online/"
+        "https://c4k60.com/api/v1.0/chat/online/"
       );
       setOnlineUsers(response.data);
       console.log(
@@ -148,7 +148,7 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://c4k60aduong.com/api/v1.0/chat/messages/?user_to=" +
+        "https://c4k60.com/api/v1.0/chat/messages/?user_to=" +
           user_to +
           "&user_from=" +
           user_from
