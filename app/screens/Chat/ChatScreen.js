@@ -24,19 +24,19 @@ export default function ChatScreen({ navigation, route }) {
   const [conversation, setConversation] = React.useState([]);
   const username = storage.getString("username");
   // React.useEffect(() => {
-  //   console.log(">> in useEffect ", Math.random());
+  //   console.log(new Error().stack, ">> in useEffect ", Math.random());
   //   getConversation();
   // });
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      console.log("focus");
+      console.log(new Error().stack, "focus");
       getOnlineUsers();
     });
 
     // Call getOnlineUsers() when the component mounts
     getOnlineUsers();
-    console.log("mount");
+    console.log(new Error().stack, "mount");
 
     // Clean up: remove the listener when the component unmounts
     return unsubscribe;
@@ -58,22 +58,22 @@ export default function ChatScreen({ navigation, route }) {
   const getConversation = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/home/?username=" + username
+        "https://api.c4k60.com/v2.0/chat/home/?username=" + username
       );
       setConversation(response.data);
     } catch (error) {
-      console.log(error);
+      console.log(new Error().stack, error);
     }
   };
 
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/online/"
+        "https://api.c4k60.com/v2.0/chat/online/"
       );
       setOnlineUsers(response.data);
     } catch (error) {
-      console.log(error);
+      console.log(new Error().stack, error);
     }
   };
 
@@ -81,14 +81,14 @@ export default function ChatScreen({ navigation, route }) {
     getOnlineUsers();
     connectWebsocket();
     // return () => {
-    //   console.log("unmount");
+    //   console.log(new Error().stack, "unmount");
     //   ws.close();
     // };
   }, []);
 
   const connectWebsocket = () => {
     ws.onopen = () => {
-      console.log("connected");
+      console.log(new Error().stack, "connected");
       ws.send(
         JSON.stringify({
           type: "online",
@@ -102,13 +102,13 @@ export default function ChatScreen({ navigation, route }) {
       const message = JSON.parse(e.data);
       getOnlineUsers();
       getConversation();
-      console.log(message);
+      console.log(new Error().stack, message);
     };
     ws.onerror = (e) => {
-      console.log(e.message);
+      console.log(new Error().stack, e.message);
     };
     ws.onclose = (e) => {
-      console.log("connection closed");
+      console.log(new Error().stack, "connection closed");
     };
   };
 

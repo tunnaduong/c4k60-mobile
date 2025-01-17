@@ -13,7 +13,7 @@ export default function LastChat({ user_from, user_to, type }) {
   const getLastChat = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/last-chat/?user_from=" +
+        "https://api.c4k60.com/v2.0/chat/last-chat/?user_from=" +
           user_from +
           "&user_to=" +
           user_to +
@@ -21,9 +21,9 @@ export default function LastChat({ user_from, user_to, type }) {
           type
       );
       setLastChat(response.data);
-      // console.log(lastChat);
+      // console.log(new Error().stack, lastChat);
     } catch (err) {
-      console.log(err);
+      console.log(new Error().stack, err);
     }
   };
 

@@ -43,11 +43,11 @@ export default function LoginScreen({ navigation }) {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post("https://c4k60.com/api/login.php", {
+        const response = await axios.post("https://api.c4k60.com/login.php", {
           username: username,
           password: password,
         });
-        // console.log(response.data);
+        // console.log(new Error().stack, response.data);
 
         if (response.data[0].Message == "Thành công!") {
           setTimeout(async () => {
@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }) {
         }
       } catch (error) {
         setLoading(false);
-        console.log(error);
+        console.log(new Error().stack, error);
         Alert.alert("Tên đăng nhập hoặc mật khẩu không đúng!");
       }
     }

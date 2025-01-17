@@ -106,20 +106,20 @@ function App() {
 
     const UserFullname = async () => {
       try {
-        console.log("---->", usrname);
-        const response = await axios.post("https://c4k60.com/api/v1.0/users/", {
+        console.log(new Error().stack, "---->", usrname);
+        const response = await axios.post("https://api.c4k60.com/v1.0/users/", {
           username: usrname,
         });
         setUserFullname(response.data.info.full_name);
         return response.data.info.full_name;
       } catch (err) {
-        console.log("errhhihih", err);
+        console.log(new Error().stack, "errhhihih", err);
       }
     };
 
     const insertJoining = async () => {
       const response = await axios.post(
-        "https://c4k60.com/api/v1.0/radio/chatlogs/",
+        "https://api.c4k60.com/v1.0/radio/chatlogs/",
         {
           by: "System",
           msg_type: "user_join",
@@ -141,11 +141,11 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/radio/chatlogs/"
+        "https://api.c4k60.com/v1.0/radio/chatlogs/"
       );
       setChatData(response.data.items);
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
-      // console.log(
+      // console.log(new Error().stack,
       //   "data: " + JSON.parse(localStorage.getItem("chat-data"))[0].msg
       // );
       return response.data;
@@ -155,7 +155,7 @@ function App() {
       if (message == "") return;
       try {
         const response = await axios.post(
-          "https://c4k60.com/api/v1.0/radio/chatlogs/",
+          "https://api.c4k60.com/v1.0/radio/chatlogs/",
           {
             by: created_by,
             msg_type: msg_type,
@@ -165,7 +165,7 @@ function App() {
         );
         return response.data.code;
       } catch (err) {
-        // console.log(err);
+        // console.log(new Error().stack, err);
       }
     };
 
@@ -175,7 +175,7 @@ function App() {
           setCurrentInputText("");
           getChatLogs();
           if (res == 200) {
-            console.log("200 OK sending refresh");
+            console.log(new Error().stack, "200 OK sending refresh");
             sendRefresh();
           }
         }
@@ -396,7 +396,7 @@ function App() {
       );
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.log(new Error().stack, err);
     }
   }
 
@@ -413,7 +413,7 @@ function App() {
 
     const result = () => {
       getSearchResults(search).then((data) => {
-        // console.log("dataasdasd", data);
+        // console.log(new Error().stack, "dataasdasd", data);
         setResult(data.items);
         // data.items.map((vid) => {});
       });
@@ -495,7 +495,7 @@ function App() {
               </View>
             </View>
             {res.map((vid) => {
-              // console.log(vid.snippet.thumbnails.default.url);
+              // console.log(new Error().stack, vid.snippet.thumbnails.default.url);
               return (
                 <>
                   <List.Item
@@ -969,7 +969,7 @@ function App() {
                   backgroundColor: "#FF5674",
                 }}
                 icon="heart"
-                onPress={() => console.log("Pressed")}
+                onPress={() => console.log(new Error().stack, "Pressed")}
               />
             </>
           }

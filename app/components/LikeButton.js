@@ -17,11 +17,11 @@ const LikeButton = ({ postId, userId, onLikeToggle }) => {
     try {
       setLoading(true);
       const response = await axios(
-        `https://c4k60.com/api/v1.0/feed/likes/?id=${postId}&username=${userId}`
+        `https://api.c4k60.com/v2.0/feed/likes/?id=${postId}&username=${userId}`
       );
       setLiked(response.data.items.length != 0);
     } catch (error) {
-      console.error("Error fetching like status:", error);
+      console.error(new Error().stack, ("Error fetching like status:", error));
     } finally {
       setLoading(false);
     }
@@ -31,7 +31,7 @@ const LikeButton = ({ postId, userId, onLikeToggle }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://c4k60.com/api/v1.0/feed/likes/add/`,
+        `https://api.c4k60.com/v2.0/feed/likes/add/`,
         {
           method: liked ? "DELETE" : "POST",
           headers: {
@@ -49,10 +49,10 @@ const LikeButton = ({ postId, userId, onLikeToggle }) => {
         // Call the reset function from the parent
         onLikeToggle();
       } else {
-        console.error("Error toggling like status");
+        console.error(new Error().stack, "Error toggling like status");
       }
     } catch (error) {
-      console.error("Error toggling like status:", error);
+      console.error(new Error().stack, ("Error toggling like status:", error));
     } finally {
       setLoading(false);
     }

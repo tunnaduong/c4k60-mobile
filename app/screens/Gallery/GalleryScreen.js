@@ -18,11 +18,11 @@ export default function GalleryScreen({ navigation }) {
 
   const getGallery = async () => {
     try {
-      const response = await axios.get("https://c4k60.com/api/v1.0/gallery/");
+      const response = await axios.get("https://api.c4k60.com/v2.0/gallery/");
       setGallery(response.data);
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.log(new Error().stack, err);
     }
   };
 

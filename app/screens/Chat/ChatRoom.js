@@ -48,15 +48,16 @@ export default function ChatRoom({ route, navigation }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/online/"
+        "https://api.c4k60.com/v2.0/chat/online/"
       );
       setOnlineUsers(response.data);
       console.log(
+        new Error().stack,
         "online us",
         onlineUsers.filter((user) => user.username == route.params.username)
       );
     } catch (error) {
-      console.log(error);
+      console.log(new Error().stack, error);
     }
   };
 
@@ -120,15 +121,15 @@ export default function ChatRoom({ route, navigation }) {
 
   const connectWebsocket = () => {
     ws.onopen = () => {
-      console.log("connected");
+      console.log(new Error().stack, "connected");
     };
     ws.onerror = (e) => {
-      console.log(e.message);
+      console.log(new Error().stack, e.message);
     };
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data).data;
 
-      console.log("message", message);
+      console.log(new Error().stack, "message", message);
       // Check if the message is intended for the current user
       if (
         message.user_to !== route.params.user_from &&
@@ -148,16 +149,16 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/chat/messages/?user_to=" +
+        "https://api.c4k60.com/v2.0/chat/messages/?user_to=" +
           user_to +
           "&user_from=" +
           user_from
       );
       setMessages(response.data);
-      console.log(messages);
-      console.log("getmsg2", messages);
+      console.log(new Error().stack, messages);
+      console.log(new Error().stack, "getmsg2", messages);
     } catch (error) {
-      console.log("getmsg", error);
+      console.log(new Error().stack, "getmsg", error);
     }
   };
 
@@ -193,13 +194,14 @@ export default function ChatRoom({ route, navigation }) {
           type: `image/${fileType}`,
         });
 
-        console.log("user_from", route.params.user_from);
+        console.log(new Error().stack, "user_from", route.params.user_from);
         console.log(
+          new Error().stack,
           "user_to",
           route.params.type == "group" ? "class_group" : route.params.username
         );
-        console.log("type", route.params.type);
-        console.log("image", {
+        console.log(new Error().stack, "type", route.params.type);
+        console.log(new Error().stack, "image", {
           uri,
           name: imageName,
           type: `image/${fileType}`,
@@ -208,7 +210,7 @@ export default function ChatRoom({ route, navigation }) {
         setImageLoading((prev) => ({ ...prev, [imageName]: true }));
 
         const response = await axios.post(
-          "https://c4k60.com/api/v1.0/chat/image/",
+          "https://api.c4k60.com/v2.0/chat/image/",
           formData,
           {
             headers: {
@@ -217,7 +219,7 @@ export default function ChatRoom({ route, navigation }) {
           }
         );
 
-        console.log("image", response.data);
+        console.log(new Error().stack, "image", response.data);
 
         // Unset loading status for this image
         setImageLoading((prev) => {
@@ -246,18 +248,26 @@ export default function ChatRoom({ route, navigation }) {
           })
         );
 
-        console.log("image", response.data);
+        console.log(new Error().stack, "image", response.data);
         return;
       }
     } catch (error) {
       if (error.config.url.includes("chat/image/")) {
-        console.log("Error in image upload request:", error);
+        console.log(new Error().stack, "Error in image upload request:", error);
       } else if (error.config.url.includes("chat/conversations/")) {
-        console.log("Error in chat conversations request:", error);
+        console.log(
+          new Error().stack,
+          "Error in chat conversations request:",
+          error
+        );
       } else if (error.config.url.includes("notification/send/")) {
-        console.log("Error in notification send request:", error);
+        console.log(
+          new Error().stack,
+          "Error in notification send request:",
+          error
+        );
       } else {
-        console.log("Unknown error:", error);
+        console.log(new Error().stack, "Unknown error:", error);
       }
     }
   };
@@ -309,9 +319,9 @@ export default function ChatRoom({ route, navigation }) {
         },
       })
     );
-    console.log(message);
+    console.log(new Error().stack, message);
     const response = await axios.post(
-      "https://c4k60.com/api/v1.0/chat/conversations/",
+      "https://api.c4k60.com/v2.0/chat/conversations/",
       {
         user_from: route.params.user_from,
         message: message[0].text,
@@ -321,14 +331,14 @@ export default function ChatRoom({ route, navigation }) {
       }
     );
 
-    console.log("conv", response.data);
+    console.log(new Error().stack, "conv", response.data);
 
     const fullName = await getUserFullName(route.params.user_from);
-    console.log(fullName);
+    console.log(new Error().stack, fullName);
     const response2 = await axios.get(
-      `https://c4k60.com/api/v1.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
+      `https://api.c4k60.com/v2.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
     );
-    console.log("noti", response2.data);
+    console.log(new Error().stack, "noti", response2.data);
   };
 
   // Custom Composer for single-line text input
@@ -417,7 +427,7 @@ export default function ChatRoom({ route, navigation }) {
           user: {
             _id: message.user_from,
             name: message.user_from,
-            avatar: `https://c4k60.com/api/v1.0/users/avatar/get/?username=${message.user_from}`,
+            avatar: `https://api.c4k60.com/v2.0/users/avatar/get/?username=${message.user_from}`,
           },
           sent: message.sent == 1,
           received: message.received == 1,

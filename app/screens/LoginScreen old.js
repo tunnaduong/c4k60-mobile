@@ -54,7 +54,7 @@ export default class LoginScreen extends Component {
       this.setState({ loading: false });
       Alert.alert("Vui lòng điền đầy đủ thông tin vào các trường!");
     } else {
-      var APIURL = "https://c4k60.com/api/login.php";
+      var APIURL = "https://api.c4k60.com/login.php";
 
       var headers = {
         Accept: "application/json",
@@ -100,7 +100,7 @@ export default class LoginScreen extends Component {
         })
         .catch((error) => {
           this.setState({ loading: false });
-          console.error("Lỗi " + error);
+          console.error(new Error().stack, ("Lỗi " + error);
           Alert.alert("Lỗi: " + error);
         });
     }

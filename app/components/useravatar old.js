@@ -11,7 +11,7 @@ export default class UserAvatar extends React.Component {
   // }
 
   // GetAvatar = (Username) => {
-  //   var APIURL = "https://c4k60.com/api/getAvatar.php";
+  //   var APIURL = "https://api.c4k60.com/getAvatar.php";
 
   //   var headers = {
   //     Accept: "application/json",
@@ -36,7 +36,7 @@ export default class UserAvatar extends React.Component {
   //       }
   //     })
   //     .catch((error) => {
-  //       console.error("Lỗi khi lấy ảnh đại diện người dùng: " + error);
+  //       console.error(new Error().stack, ("Lỗi khi lấy ảnh đại diện người dùng: " + error);
   //     });
   // };
 

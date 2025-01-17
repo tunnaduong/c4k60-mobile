@@ -51,31 +51,34 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     loiChuc();
-    console.log("Registering for push notifications...");
+    console.log(new Error().stack, "Registering for push notifications...");
     registerForPushNotificationsAsync()
       .then((token) => {
-        console.log("token: ", token);
+        console.log(new Error().stack, "token: ", token);
         // set expo push token to storage mmkv
         storage.set("expoPushToken", token);
         updatePushNotificationToken(token);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(new Error().stack, err));
   }, []);
 
   async function updatePushNotificationToken(token) {
     try {
       const usrname = storage.getString("username");
       const response = await axios.post(
-        "https://c4k60.com/api/v1.0/notification/token/",
+        "https://api.c4k60.com/v2.0/notification/token/",
         {
           username: usrname,
           token: token,
         }
       );
-      console.log(response.data);
+      console.log(new Error().stack, response.data);
       return response.data;
     } catch (error) {
-      console.error("Error in updatePushNotificationToken: ", error);
+      console.error(
+        new Error().stack,
+        ("Error in updatePushNotificationToken: ", error)
+      );
     }
   }
 
@@ -110,7 +113,7 @@ export default function HomeScreen({ navigation }) {
           projectId: "9b22d593-3b19-4bb5-b393-a3a92e28aa21",
         })
       ).data;
-      console.log(token);
+      console.log(new Error().stack, token);
     } else {
       // alert("Must use physical device for Push Notifications");
     }
@@ -181,14 +184,14 @@ export default function HomeScreen({ navigation }) {
 
   const getNotification = async (input) => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/notification/list/?show=" + input
+      "https://api.c4k60.com/v2.0/notification/list/?show=" + input
     );
     setNotificationData(response.data);
   };
 
   const getBirthday = async () => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/users/birthday/"
+      "https://api.c4k60.com/v2.0/users/birthday/"
     );
     setBirthdayData(response.data);
   };

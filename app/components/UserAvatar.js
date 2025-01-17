@@ -8,7 +8,7 @@ const UserAvatar = ({ username, style }) => {
   const [showDefault, setDefault] = React.useState(true);
 
   const getAvatar = async () => {
-    setUrl("https://c4k60.com/api/v1.0/users/avatar/get/?username=" + username);
+    setUrl("https://api.c4k60.com/v2.0/users/avatar/" + username);
     setDefault(false);
   };
 
@@ -18,7 +18,7 @@ const UserAvatar = ({ username, style }) => {
 
   return (
     <>
-      <View>
+      <View style={{ backgroundColor: "gray", borderRadius: 100 }}>
         <Image
           source={
             showDefault

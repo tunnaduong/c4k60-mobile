@@ -74,7 +74,7 @@ export default class MusicScreen extends React.Component {
 
     this.socket.on("chat-message", (msg) => {
       this.setState({ chatMessages: [...this.state.chatMessages, msg] });
-      console.log(this.state.chatMessages);
+      console.log(new Error().stack, this.state.chatMessages);
     });
 
     this.getData();
@@ -134,7 +134,7 @@ export default class MusicScreen extends React.Component {
         initialPlayerParams={{ controls: false, loop: true }}
         onChangeState={(event) => {
           if (event == "unstarted") {
-            console.log("loading syncing");
+            console.log(new Error().stack, "loading syncing");
             this.fet2();
             this.playerRef.seekTo(100, true);
           }
@@ -148,8 +148,8 @@ export default class MusicScreen extends React.Component {
           if (event == "paused") {
             this.togglePlaying();
             this.fet2();
-            console.log("paused");
-            console.log(this.state.played);
+            console.log(new Error().stack, "paused");
+            console.log(new Error().stack, this.state.played);
           }
         }}
       />
@@ -177,7 +177,7 @@ export default class MusicScreen extends React.Component {
         const vid2play = responseJson.video_in_queue[test].video_id;
         const startTime = responseJson.elapsed_time;
         yo.playerRef.seekTo(startTime, true);
-        console.log(startTime);
+        console.log(new Error().stack, startTime);
         this.setState({
           videos: vid2play,
         });

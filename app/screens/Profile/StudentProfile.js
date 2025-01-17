@@ -15,12 +15,12 @@ export default function StudentProfile({ navigation }) {
   const getMemberList = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/users/list/"
+        "https://api.c4k60.com/v2.0/users/list/"
       );
       setMemberList(response.data);
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.log(new Error().stack, err);
     }
   };
 

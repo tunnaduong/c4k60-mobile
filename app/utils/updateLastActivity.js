@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function updateLastActivity(username) {
   const response = await axios.get(
-    "https://c4k60.com/api/v1.0/users/online/?username=" + username
+    "https://api.c4k60.com/v2.0/users/online/?username=" + username
   );
-  console.log("last-activity", response.data);
+  console.log(new Error().stack, "last-activity", response.data);
 }

@@ -346,7 +346,7 @@ export class HomeScreen extends Component {
   }
 
   responseList(input) {
-    fetch("https://c4k60.com/api/getNotification.php", {
+    fetch("https://api.c4k60.com/getNotification.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -365,12 +365,12 @@ export class HomeScreen extends Component {
         this.setData();
       })
       .catch((error) => {
-        console.error(error);
+        console.error(new Error().stack, (error);
       });
   }
 
   getBirthday(input) {
-    fetch("https://c4k60.com/api/getBirthday.php", {
+    fetch("https://api.c4k60.com/getBirthday.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -385,7 +385,7 @@ export class HomeScreen extends Component {
         });
       })
       .catch((error) => {
-        console.error(error);
+        console.error(new Error().stack, (error);
       });
   }
 

@@ -96,13 +96,12 @@ export default class NotiScreen extends Component {
 
   async AddItemsToArray(id) {
     try {
-      const response = await axios.post(
-        "https://c4k60.com/api/getNotifImages.php",
-        JSON.stringify({ id: id })
+      const response = await axios.get(
+        "https://api.c4k60.com/v2.0/notification/image?id=" + id
       );
       response.data.map((n) => this.addImage(n.uri));
     } catch (err) {
-      console.error(err);
+      console.error(new Error().stack, err);
     }
   }
 

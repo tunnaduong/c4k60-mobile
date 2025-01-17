@@ -62,20 +62,20 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
     const socket = io("ws://" + baseBackendServerURL + "/");
     socket.connect();
     socket.on("connect", () => {
-      console.log(username + " connected to socket server");
+      console.log(new Error().stack, username + " connected to socket server");
       socket.emit("conn", username);
     });
     socket.on("refresh", () => {
-      // console.log("Received refresh signal from server! Now restarting...");
+      // console.log(new Error().stack, "Received refresh signal from server! Now restarting...");
       getData();
       syncWithServer();
     });
     socket.on("play", () => {
-      // console.log("Received play signal from server! Now playing video...");
+      // console.log(new Error().stack, "Received play signal from server! Now playing video...");
       setPlaying(true);
     });
     socket.on("views", () => {
-      // console.log(
+      // console.log(new Error().stack,
       //   "Received reload views count signal from server! Now reloading views count..."
       // );
       getData();
@@ -86,7 +86,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
     return () => {
       socket.emit("discon", username);
       setPlaying(false);
-      console.log("User exited");
+      console.log(new Error().stack, "User exited");
     };
   }, []);
 
@@ -105,13 +105,13 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        console.log("App has come to the foreground!");
+        console.log(new Error().stack, "App has come to the foreground!");
         setPlaying(true);
       }
 
       appState.current = nextAppState;
       setAppStateVisible(appState.current);
-      console.log("AppState", appState.current);
+      console.log(new Error().stack, "AppState", appState.current);
     });
 
     return () => {
@@ -138,13 +138,17 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
         onChangeState={(event) => {
           if (event == "unstarted") {
             console.log(
+              new Error().stack,
               "The player hasn't started yet. Now syncing duration time with server..."
             );
             getData();
             syncWithServer();
           }
           if (event == "ended") {
-            console.log("Video is ended, now loading next song...");
+            console.log(
+              new Error().stack,
+              "Video is ended, now loading next song..."
+            );
             getData();
             syncWithServer();
             setTimeout(() => {
@@ -153,9 +157,9 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
             }, 2000);
           }
           if (event == "paused") {
-            console.log("Video is paused...");
+            console.log(new Error().stack, "Video is paused...");
             setPlaying(false);
-            console.log("Is playing: " + playing);
+            console.log(new Error().stack, "Is playing: " + playing);
           }
           if (event == "playing") {
             watchingAnimation();
@@ -177,11 +181,11 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
         const elapsed = parseInt(res.data.elapsed_time);
         setVideo(videoToPlay);
         setElapsed(elapsed);
-        console.log("Server timestamp: " + elapsed);
+        console.log(new Error().stack, "Server timestamp: " + elapsed);
         player.current.seekTo(elapsed, true);
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log(new Error().stack, error.message);
         setSnackbarShow(true);
         setErrMsg(error.message);
         setMsg("Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + error.message);
@@ -226,7 +230,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
     const response = await axios
       .get("http://" + baseBackendServerURL + "/live")
       .catch((error) => {
-        console.log(error.message);
+        console.log(new Error().stack, error.message);
         setSnackbarShow(true);
         setErrMsg(error.message);
         setMsg("Không thể kết nối đến máy chủ!" + "\nMã lỗi: " + error.message);
@@ -261,12 +265,12 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
             .getDuration()
             .then((duration) => {
               // progress = currentTime / duration;
-              // console.log("Progress: " + progress);
+              // console.log(new Error().stack, "Progress: " + progress);
               setProgress(currentTime / duration);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(new Error().stack, err));
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(new Error().stack, err));
     }, 1000);
     return () => {
       clearInterval(refresh);
