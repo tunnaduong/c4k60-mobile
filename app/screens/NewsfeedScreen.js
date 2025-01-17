@@ -31,7 +31,7 @@ export default function NewsfeedScreen({ navigation, route }) {
 
   const fetchNewsfeed = async () => {
     try {
-      const response = await axios.get("https://api.c4k60.com/v2.0/feed/list/");
+      const response = await axios.get("https://api.c4k60.com/v2.0/feed/list");
       setData(response.data.items);
     } catch (error) {
       console.error(new Error().stack, error);

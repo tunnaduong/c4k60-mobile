@@ -13,20 +13,24 @@ const UserFullName = React.memo(function UserFullName({
   const getName = async () => {
     try {
       if (type == "full_name") {
-        const response = await axios.post("https://api.c4k60.com/v2.0/users/", {
-          username: username,
-        });
-        setName(response.data.info.full_name);
+        const response = await axios.get(
+          "https://api.c4k60.com/v2.0/users?username=" + username
+        );
+        setName(response.data?.info.full_name);
       } else {
-        const response = await axios.post("https://api.c4k60.com/v2.0/users/", {
-          username: username,
-        });
-        setName(response.data.info.last_name);
+        const response = await axios.get(
+          "https://api.c4k60.com/v2.0/users?username=" + username
+        );
+        setName(response.data?.info.last_name);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error("hih", err);
+    }
   };
 
-  getName();
+  React.useEffect(() => {
+    getName();
+  }, [username]);
 
   return (
     <Text numberOfLines={numberOfLines} style={style}>

@@ -48,7 +48,7 @@ export default function ChatRoom({ route, navigation }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/chat/online/"
+        "https://api.c4k60.com/v2.0/chat/online"
       );
       setOnlineUsers(response.data);
       console.log(
@@ -210,7 +210,7 @@ export default function ChatRoom({ route, navigation }) {
         setImageLoading((prev) => ({ ...prev, [imageName]: true }));
 
         const response = await axios.post(
-          "https://api.c4k60.com/v2.0/chat/image/",
+          "https://api.c4k60.com/v2.0/chat/image",
           formData,
           {
             headers: {
@@ -321,7 +321,7 @@ export default function ChatRoom({ route, navigation }) {
     );
     console.log(new Error().stack, message);
     const response = await axios.post(
-      "https://api.c4k60.com/v2.0/chat/conversations/",
+      "https://api.c4k60.com/v2.0/chat/conversations",
       {
         user_from: route.params.user_from,
         message: message[0].text,
@@ -422,12 +422,12 @@ export default function ChatRoom({ route, navigation }) {
           text: message.message,
           image:
             message.image_url != null
-              ? "https://c4k60.com/assets/images/chats/" + message.image_url
+              ? "https://api.c4k60.com" + message.image_url
               : null,
           user: {
             _id: message.user_from,
             name: message.user_from,
-            avatar: `https://api.c4k60.com/v2.0/users/avatar/get/?username=${message.user_from}`,
+            avatar: `https://api.c4k60.com/v2.0/users/avatar/${message.user_from}`,
           },
           sent: message.sent == 1,
           received: message.received == 1,

@@ -219,7 +219,7 @@ export default function ProfileDetail({ route }) {
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: 700, marginBottom: 10 }}>
-              Tính cách
+              Thông tin thêm
             </Text>
             <Text style={{ fontSize: 17 }}>{profile?.additional_info}</Text>
           </View>

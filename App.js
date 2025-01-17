@@ -61,6 +61,7 @@ import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
 import NewChat from "./app/screens/Chat/NewChat";
+import Sponsors from "./app/screens/Sponsors";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -107,7 +108,7 @@ function App() {
     const UserFullname = async () => {
       try {
         console.log(new Error().stack, "---->", usrname);
-        const response = await axios.post("https://api.c4k60.com/v1.0/users/", {
+        const response = await axios.post("https://api.c4k60.com/v2.0/users", {
           username: usrname,
         });
         setUserFullname(response.data.info.full_name);
@@ -119,7 +120,7 @@ function App() {
 
     const insertJoining = async () => {
       const response = await axios.post(
-        "https://api.c4k60.com/v1.0/radio/chatlogs/",
+        "https://api.c4k60.com/v2.0/radio/chatlogs",
         {
           by: "System",
           msg_type: "user_join",
@@ -141,7 +142,7 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://api.c4k60.com/v1.0/radio/chatlogs/"
+        "https://api.c4k60.com/v2.0/radio/chatlogs"
       );
       setChatData(response.data.items);
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
@@ -155,7 +156,7 @@ function App() {
       if (message == "") return;
       try {
         const response = await axios.post(
-          "https://api.c4k60.com/v1.0/radio/chatlogs/",
+          "https://api.c4k60.com/v2.0/radio/chatlogs",
           {
             by: created_by,
             msg_type: msg_type,
@@ -184,7 +185,7 @@ function App() {
 
     const sendRefresh = async () => {
       const response = await axios.get(
-        "http://" + baseBackendServerURL + "/admin/api/client/refresh/"
+        "http://" + baseBackendServerURL + "/admin/api/client/refresh"
       );
       return response.data;
     };
@@ -220,8 +221,8 @@ function App() {
                       width: 20,
                       height: 20,
                       borderRadius: 15,
-                      marginRight: 5,
                     }}
+                    containerStyle={{ marginRight: 5 }}
                   />
                   <Text
                     style={{
@@ -265,9 +266,9 @@ function App() {
                     width: 35,
                     height: 35,
                     borderRadius: 25,
-                    marginRight: 10,
                     alignItems: "flex-start",
                   }}
+                  containerStyle={{ marginRight: 10 }}
                 />
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row" }}>
@@ -563,8 +564,8 @@ function App() {
                               width: 40,
                               height: 40,
                               borderRadius: 100,
-                              marginRight: 10,
                             }}
+                            containerStyle={{ marginRight: 10 }}
                           />
                         </View>
                       );
@@ -1625,6 +1626,33 @@ function App() {
             }}
             name="IncomingBirthday"
             component={IncomingBirthday}
+          />
+          <Stack.Screen
+            options={{
+              title: "Nhà tài trợ",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Nhà tài trợ"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Sponsors"
+            component={Sponsors}
           />
         </Stack.Navigator>
       </TailwindProvider>

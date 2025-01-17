@@ -58,8 +58,8 @@ const CommentChat = React.forwardRef(
                 width: 40,
                 height: 40,
                 borderRadius: 50,
-                marginRight: 10,
               }}
+              containerStyle={{ marginRight: 10 }}
             />
             <View
               style={{

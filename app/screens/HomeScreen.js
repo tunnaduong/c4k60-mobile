@@ -48,6 +48,8 @@ export default function HomeScreen({ navigation }) {
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
   const [loiChucData, setLoiChucData] = React.useState("");
+  const [sponsors, setSponsors] = React.useState(null);
+  const [changelog, setChangelog] = React.useState(null);
 
   useEffect(() => {
     loiChuc();
@@ -66,7 +68,7 @@ export default function HomeScreen({ navigation }) {
     try {
       const usrname = storage.getString("username");
       const response = await axios.post(
-        "https://api.c4k60.com/v2.0/notification/token/",
+        "https://api.c4k60.com/v2.0/notification/token",
         {
           username: usrname,
           token: token,
@@ -134,6 +136,8 @@ export default function HomeScreen({ navigation }) {
     getNotification();
     getBirthday();
     updateLastActivity(username);
+    getSponsors();
+    getChangelog();
   };
 
   const getGreetingTime = (m) => {
@@ -191,9 +195,31 @@ export default function HomeScreen({ navigation }) {
 
   const getBirthday = async () => {
     const response = await axios.get(
-      "https://api.c4k60.com/v2.0/users/birthday/"
+      "https://api.c4k60.com/v2.0/users/birthday"
     );
     setBirthdayData(response.data);
+  };
+
+  const getSponsors = async () => {
+    try {
+      const response = await axios.get("https://api.c4k60.com/v2.0/sponsors");
+      setSponsors(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(new Error().stack, err);
+    }
+  };
+
+  const getChangelog = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.c4k60.com/v2.0/changelogs/latest"
+      );
+      setChangelog(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(new Error().stack, error);
+    }
   };
 
   return (
@@ -537,7 +563,7 @@ export default function HomeScreen({ navigation }) {
           <View className="mt-4 bg-white flex-1 p-5 shadow-sm">
             <View className="flex-row items-center mb-2 justify-between">
               <Text className="font-medium text-xl">Nhà tài trợ</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Sponsors")}>
                 <View className="flex-row items-center">
                   <Text className="text-gray-500">Xem tất cả</Text>
                   <Ionicons
@@ -554,42 +580,45 @@ export default function HomeScreen({ navigation }) {
                 C4K60 Web và C4K60 Mobile có thể đã không được tồn tại mà không
                 có sự hỗ trợ từ các mạnh thường quân sau:
               </Text>
-              {sponsorsData == "" && (
+              {sponsors == null ? (
                 <>
                   <Image
                     source={require("../assets/loading.gif")}
                     className="h-5 w-16 scale-75 -ml-1.5"
                   />
                 </>
-              )}
-              {sponsorsData?.sponsors.map((item, index) => (
-                <View key={index}>
-                  <View className="pl-2 text-base flex-row items-center">
-                    <Text
-                      className="text-[30px] leading-6"
-                      style={{ transform: [{ translateY: 2 }] }}
-                    >
-                      ·
-                    </Text>
-                    <View className="flex-row">
-                      <Text className="text-base"> </Text>
-                      <TouchableOpacity
-                        disabled={!item.link}
-                        onPress={() => {
-                          Linking.openURL(item.link);
-                        }}
+              ) : (
+                sponsors.map((item, index) => (
+                  <View key={index}>
+                    <View className="pl-2 text-base flex-row items-center">
+                      <Text
+                        className="text-[30px] leading-6"
+                        style={{ transform: [{ translateY: 2 }] }}
                       >
-                        <Text
-                          className={`text-sm ${item.link && "text-blue-500"}`}
+                        ·
+                      </Text>
+                      <View className="flex-row">
+                        <Text className="text-base"> </Text>
+                        <TouchableOpacity
+                          disabled={!item.social_link}
+                          onPress={() => {
+                            Linking.openURL(item.social_link);
+                          }}
                         >
-                          {item.name}
-                        </Text>
-                      </TouchableOpacity>
-                      <Text className="text-sm"> - {item.donated}</Text>
+                          <Text
+                            className={`text-sm ${
+                              item.social_link && "text-blue-500"
+                            }`}
+                          >
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <Text className="text-sm"> - {item.amount}</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              ))}
+                ))
+              )}
             </View>
           </View>
           <View className="mt-4 bg-white flex-1 p-5 shadow-sm">
@@ -608,30 +637,32 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View>
               {/* render changes */}
-              <Text className="text-[16px]">Phiên bản 4.0</Text>
-              <Text className="font-light text-[14px] mt-1">
-                Ngày phát hành: 26/05/2024
-              </Text>
-              <View className="mt-2.5">
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Ra mắt phiên bản di động của C4K60.
+              {changelog == null ? (
+                <>
+                  <Image
+                    source={require("../assets/loading.gif")}
+                    className="h-5 w-16 scale-75 -ml-1.5"
+                  />
+                </>
+              ) : (
+                <>
+                  <Text className="text-[16px]">
+                    Phiên bản {changelog.version}
                   </Text>
-                </View>
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Ra mắt phiên bản web hoàn toàn mới của C4K60.
+                  <Text className="font-light text-[14px] mt-1">
+                    Ngày phát hành:{" "}
+                    {moment(changelog.release_date).format("DD/MM/YYYY")}
                   </Text>
-                </View>
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Cải thiện hiệu suất ứng dụng...
-                  </Text>
-                </View>
-              </View>
+                  {changelog.changelogs.split("\n").map((line, index) => (
+                    <View className="mt-2.5">
+                      <View className="pl-2 text-base flex-row">
+                        <Text className="text-[30px] leading-6">· </Text>
+                        <Text className="items-center">{line}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </>
+              )}
             </View>
           </View>
         </ScrollView>

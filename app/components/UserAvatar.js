@@ -3,12 +3,12 @@ import React from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
 
-const UserAvatar = ({ username, style }) => {
+const UserAvatar = ({ username, style, containerStyle }) => {
   const [url, setUrl] = React.useState(null);
   const [showDefault, setDefault] = React.useState(true);
 
   const getAvatar = async () => {
-    setUrl("https://api.c4k60.com/v2.0/users/avatar/" + username);
+    setUrl("https://api.c4k60.com/v2.0/users/avatar" + username);
     setDefault(false);
   };
 
@@ -18,15 +18,13 @@ const UserAvatar = ({ username, style }) => {
 
   return (
     <>
-      <View style={{ backgroundColor: "gray", borderRadius: 100 }}>
+      <View
+        style={[{ backgroundColor: "gray", borderRadius: 100 }, containerStyle]}
+      >
         <Image
-          source={
-            showDefault
-              ? require("../assets/gray_load.png")
-              : url == "default_avatar"
-              ? require("../assets/userdefault.jpeg")
-              : url
-          }
+          source={{
+            uri: "https://api.c4k60.com/v2.0/users/avatar" + username,
+          }}
           style={style}
         ></Image>
       </View>

@@ -69,7 +69,7 @@ export default function ChatScreen({ navigation, route }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/chat/online/"
+        "https://api.c4k60.com/v2.0/chat/online"
       );
       setOnlineUsers(response.data);
     } catch (error) {

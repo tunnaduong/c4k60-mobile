@@ -235,6 +235,7 @@ export default class NotiScreen extends Component {
                 <UserAvatar
                   username={this.username}
                   style={styles.commentAvatar}
+                  containerStyle={{ marginRight: 10 }}
                 />
                 <Pressable
                   onPress={() => {
@@ -310,6 +311,5 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50,
-    marginRight: 10,
   },
 });

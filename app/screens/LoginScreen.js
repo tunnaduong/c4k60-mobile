@@ -43,21 +43,21 @@ export default function LoginScreen({ navigation }) {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post("https://api.c4k60.com/login.php", {
+        const response = await axios.post("https://api.c4k60.com/v2.0/login", {
           username: username,
           password: password,
         });
         // console.log(new Error().stack, response.data);
 
-        if (response.data[0].Message == "Thành công!") {
+        if (response.data.Message == "Thành công!") {
           setTimeout(async () => {
-            setName(response.data[0].Name);
-            setAvatar(response.data[0].Avatar);
+            setName(response.data.Name);
+            setAvatar(response.data.Avatar);
             // setData();
             setToken("abc123");
-            storage.set("username", response.data[0].Username);
-            storage.set("name", response.data[0].Name);
-            storage.set("avatar", response.data[0].Avatar);
+            storage.set("username", response.data.Username);
+            storage.set("name", response.data.Name);
+            storage.set("avatar", response.data.Avatar);
             storage.set("token", "abc123");
             setLoading(false);
             navigation.dispatch(
@@ -74,7 +74,7 @@ export default function LoginScreen({ navigation }) {
       } catch (error) {
         setLoading(false);
         console.log(new Error().stack, error);
-        Alert.alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+        Alert.alert("Lỗi kết nối đến máy chủ!");
       }
     }
   };
