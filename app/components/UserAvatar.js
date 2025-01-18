@@ -4,18 +4,6 @@ import { View } from "react-native";
 import { Image } from "expo-image";
 
 const UserAvatar = ({ username, style, containerStyle }) => {
-  const [url, setUrl] = React.useState(null);
-  const [showDefault, setDefault] = React.useState(true);
-
-  const getAvatar = async () => {
-    setUrl("https://api.c4k60.com/v2.0/users/avatar" + username);
-    setDefault(false);
-  };
-
-  React.useEffect(() => {
-    getAvatar();
-  }, [username]);
-
   return (
     <>
       <View
@@ -23,7 +11,7 @@ const UserAvatar = ({ username, style, containerStyle }) => {
       >
         <Image
           source={{
-            uri: "https://api.c4k60.com/v2.0/users/avatar" + username,
+            uri: "https://api.c4k60.com/v2.0/users/avatar/" + username,
           }}
           style={style}
         ></Image>

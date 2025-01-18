@@ -635,7 +635,7 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </TouchableOpacity>
             </View>
-            <View>
+            <View className="mr-3">
               {/* render changes */}
               {changelog == null ? (
                 <>

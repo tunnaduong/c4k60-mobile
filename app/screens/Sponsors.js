@@ -74,7 +74,7 @@ export default function Sponsors({ navigation }) {
                       ? require("../assets/userdefault.jpeg")
                       : {
                           uri:
-                            "https://api.c4k60.com/v2.0/users/avatar" +
+                            "https://api.c4k60.com/v2.0/users/avatar/" +
                             sponsor.username,
                         }
                   }
