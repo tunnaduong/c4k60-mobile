@@ -62,6 +62,7 @@ import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
 import NewChat from "./app/screens/Chat/NewChat";
 import Sponsors from "./app/screens/Sponsors";
+import Changelogs from "./app/screens/Changelogs";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -1653,6 +1654,33 @@ function App() {
             }}
             name="Sponsors"
             component={Sponsors}
+          />
+          <Stack.Screen
+            options={{
+              title: "Những thay đổi",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Những thay đổi"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Changelogs"
+            component={Changelogs}
           />
         </Stack.Navigator>
       </TailwindProvider>
