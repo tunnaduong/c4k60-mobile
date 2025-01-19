@@ -17,6 +17,7 @@ import { TouchableRipple } from "react-native-paper";
 import PostItem from "../../components/PostItem";
 import { TouchableOpacity } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const [feedData, setFeedData] = React.useState(null);
@@ -66,6 +67,18 @@ export default function NewsfeedScreen({ navigation, route }) {
       });
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      navigation.navigate("CreatePost", { image: result.uri });
+    }
+  };
+
   const renderHeader = () => {
     return (
       <View
@@ -98,7 +111,7 @@ export default function NewsfeedScreen({ navigation, route }) {
         >
           <Text style={{ fontSize: 16, marginLeft: 5 }}>Bạn đang nghĩ gì?</Text>
         </TouchableRipple>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={pickImage}>
           <Ionicons
             name="images"
             size={22}
