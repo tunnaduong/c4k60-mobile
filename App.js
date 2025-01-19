@@ -27,6 +27,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   View,
+  Button,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -63,6 +64,7 @@ import ChatRoom from "./app/screens/Chat/ChatRoom";
 import NewChat from "./app/screens/Chat/NewChat";
 import Sponsors from "./app/screens/Sponsors";
 import Changelogs from "./app/screens/Changelogs";
+import CreatePost from "./app/screens/Newsfeed/CreatePost";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -1197,6 +1199,15 @@ function App() {
   };
 
   StatusBar.setBarStyle("dark-content", true);
+
+  const createPostRef = useRef(null);
+  const [isPostContentEmpty, setIsPostContentEmpty] = React.useState(true);
+
+  // Function to update postContent status
+  const handlePostContentChange = (content) => {
+    setIsPostContentEmpty(!content); // Update button disable state based on content
+  };
+
   return (
     <NavigationContainer ref={RootNavigation.navigationRef}>
       <TailwindProvider>
@@ -1682,6 +1693,48 @@ function App() {
             name="Changelogs"
             component={Changelogs}
           />
+          <Stack.Screen
+            options={{
+              title: "Tạo bài viết",
+              presentation: "fullScreenModal",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Tạo bài viết"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons name="close-outline" color="black" size={30} />
+                </TouchableOpacity>
+              ),
+              headerRight: () => (
+                <Button
+                  title="Đăng"
+                  onPress={() => {
+                    if (createPostRef.current) {
+                      createPostRef.current.handlePost();
+                    }
+                  }}
+                  disabled={isPostContentEmpty}
+                ></Button>
+              ),
+              headerBackVisible: false,
+            }}
+            name="CreatePost"
+          >
+            {(props) => (
+              <CreatePost
+                {...props}
+                ref={createPostRef}
+                onPostContentChange={handlePostContentChange}
+              />
+            )}
+          </Stack.Screen>
         </Stack.Navigator>
       </TailwindProvider>
     </NavigationContainer>
