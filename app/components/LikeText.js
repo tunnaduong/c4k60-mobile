@@ -16,11 +16,11 @@ const LikeText = ({ like_id }) => {
   const getLike = async (like_id) => {
     try {
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/feed/likes/?id=" + like_id
+        "https://api.c4k60.com/v2.0/feed/likes?id=" + like_id
       );
       getLikeText(username, response.data.items); // Adjust this based on your actual API response structure
     } catch (error) {
-      console.error(new Error().stack, error);
+      console.error(error);
     }
   };
 

@@ -26,7 +26,7 @@ export default function CalendarScreen({ navigation }) {
       );
       setEvents(response.data);
     } catch (error) {
-      console.error(new Error().stack, error);
+      console.error(error);
     }
   };
 

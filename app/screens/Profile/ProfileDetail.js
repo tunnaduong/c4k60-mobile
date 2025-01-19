@@ -28,7 +28,7 @@ export default function ProfileDetail({ route }) {
       setProfile(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

@@ -17,10 +17,6 @@ class WelcomeScreen extends React.Component {
   handleTry = async () => {
     storage.set("username", "test");
     storage.set("name", "Khách");
-    storage.set(
-      "avatar",
-      "https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg"
-    );
     storage.set("token", "abc123");
     // navigate to the home screen
     this.props.navigation.navigate("MainScreen");

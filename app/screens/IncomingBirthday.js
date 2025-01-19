@@ -17,12 +17,12 @@ const IncomingBirthday = () => {
     // return the birthday
     try {
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/users/birthday/?show=all"
+        "https://api.c4k60.com/v2.0/users/birthday?show=all"
       );
       setBirthday(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

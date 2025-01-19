@@ -7,7 +7,6 @@ import {
   RefreshControl,
   ImageBackground,
   Image,
-  StatusBar,
   Dimensions,
   Linking,
   SafeAreaView,
@@ -24,7 +23,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { TouchableRipple } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
-import sponsorsData from "../global/sponsorsData";
 import updateLastActivity from "../utils/updateLastActivity";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -53,15 +51,20 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     loiChuc();
-    console.log(new Error().stack, "Registering for push notifications...");
-    registerForPushNotificationsAsync()
-      .then((token) => {
-        console.log(new Error().stack, "token: ", token);
-        // set expo push token to storage mmkv
-        storage.set("expoPushToken", token);
-        updatePushNotificationToken(token);
-      })
-      .catch((err) => console.log(new Error().stack, err));
+    console.log("Registering for push notifications...");
+    if (Device.isDevice) {
+      registerForPushNotificationsAsync()
+        .then((token) => {
+          console.log("token: ", token);
+          if (token == undefined) {
+            return;
+          }
+          // set expo push token to storage mmkv
+          storage.set("expoPushToken", token);
+          updatePushNotificationToken(token);
+        })
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   async function updatePushNotificationToken(token) {
@@ -74,19 +77,15 @@ export default function HomeScreen({ navigation }) {
           token: token,
         }
       );
-      console.log(new Error().stack, response.data);
+      console.log(response.data);
       return response.data;
     } catch (error) {
-      console.error(
-        new Error().stack,
-        ("Error in updatePushNotificationToken: ", error)
-      );
+      console.error(("Error in updatePushNotificationToken: ", error));
     }
   }
 
   async function registerForPushNotificationsAsync() {
     let token;
-
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync("default", {
         name: "default",
@@ -115,7 +114,7 @@ export default function HomeScreen({ navigation }) {
           projectId: "9b22d593-3b19-4bb5-b393-a3a92e28aa21",
         })
       ).data;
-      console.log(new Error().stack, token);
+      console.log(token);
     } else {
       // alert("Must use physical device for Push Notifications");
     }
@@ -188,7 +187,7 @@ export default function HomeScreen({ navigation }) {
 
   const getNotification = async (input) => {
     const response = await axios.get(
-      "https://api.c4k60.com/v2.0/notification/list/?show=" + input
+      "https://api.c4k60.com/v2.0/notification/list?show=" + input
     );
     setNotificationData(response.data);
   };
@@ -206,7 +205,7 @@ export default function HomeScreen({ navigation }) {
       setSponsors(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 
@@ -218,7 +217,7 @@ export default function HomeScreen({ navigation }) {
       setChangelog(response.data);
       return response.data;
     } catch (error) {
-      console.error(new Error().stack, error);
+      console.error(error);
     }
   };
 
@@ -656,7 +655,7 @@ export default function HomeScreen({ navigation }) {
                     {moment(changelog.release_date).format("DD/MM/YYYY")}
                   </Text>
                   {changelog.changelogs.split("\n").map((line, index) => (
-                    <View className="mt-2.5">
+                    <View className="mt-2.5" key={index}>
                       <View className="pl-2 text-base flex-row">
                         <Text className="text-[30px] leading-6">· </Text>
                         <Text className="items-center">{line}</Text>

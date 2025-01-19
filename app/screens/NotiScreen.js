@@ -101,7 +101,7 @@ export default class NotiScreen extends Component {
       );
       response.data.map((n) => this.addImage(n.uri));
     } catch (err) {
-      console.error(new Error().stack, err);
+      console.error(err);
     }
   }
 

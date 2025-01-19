@@ -29,7 +29,7 @@ export default function NewChat({ navigation, route }) {
       setMemberList(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 
@@ -94,8 +94,8 @@ export default function NewChat({ navigation, route }) {
                       height: 50,
                       width: 50,
                       borderRadius: 25,
-                      marginRight: 5,
                     }}
+                    containerStyle={{ marginRight: 5 }}
                   />
                 )}
               />

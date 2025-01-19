@@ -18,7 +18,7 @@ export default function StudentProfile({ navigation }) {
       setMemberList(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

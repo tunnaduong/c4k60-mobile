@@ -36,7 +36,7 @@ export default class UserAvatar extends React.Component {
   //       }
   //     })
   //     .catch((error) => {
-  //       console.error(new Error().stack, ("Lỗi khi lấy ảnh đại diện người dùng: " + error);
+  //       console.error(("Lỗi khi lấy ảnh đại diện người dùng: " + error);
   //     });
   // };
 

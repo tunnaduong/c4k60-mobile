@@ -34,7 +34,7 @@ export default function NewsfeedScreen({ navigation, route }) {
       const response = await axios.get("https://api.c4k60.com/v2.0/feed/list");
       setData(response.data.items);
     } catch (error) {
-      console.error(new Error().stack, error);
+      console.error(error);
     }
   };
 
@@ -45,7 +45,7 @@ export default function NewsfeedScreen({ navigation, route }) {
 
     try {
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/feed/list/?page=" + page
+        "https://api.c4k60.com/v2.0/feed/list?page=" + page
       );
       if (response.data?.items.length === 0) {
         setHasMore(false);
@@ -60,7 +60,7 @@ export default function NewsfeedScreen({ navigation, route }) {
       // Increment the page number
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
-      console.error(new Error().stack, error);
+      console.error(error);
     }
   };
 
@@ -100,14 +100,13 @@ export default function NewsfeedScreen({ navigation, route }) {
             contentContainerStyle={{ paddingBottom: 100 }}
             renderItem={({ item }) => (
               <FeedPost
-                key={new Date().getTime()}
                 username={item.username}
                 name={item.author}
                 caption={item.content}
                 time={item.timeofpost}
                 image={
                   item.has_image == "block"
-                    ? "https://c4k60.com/assets" + item.image
+                    ? "https://c4k60.com/assets/" + item.image
                     : null
                 }
                 postId={item.id}

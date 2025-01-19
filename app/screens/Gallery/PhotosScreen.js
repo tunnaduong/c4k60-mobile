@@ -45,7 +45,7 @@ export default function PhotosScreen({ navigation, route }) {
       );
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

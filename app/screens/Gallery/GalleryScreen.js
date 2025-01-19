@@ -22,7 +22,7 @@ export default function GalleryScreen({ navigation }) {
       setGallery(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

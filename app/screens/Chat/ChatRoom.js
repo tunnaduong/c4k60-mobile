@@ -52,12 +52,11 @@ export default function ChatRoom({ route, navigation }) {
       );
       setOnlineUsers(response.data);
       console.log(
-        new Error().stack,
         "online us",
         onlineUsers.filter((user) => user.username == route.params.username)
       );
     } catch (error) {
-      console.log(new Error().stack, error);
+      console.log(error);
     }
   };
 
@@ -121,15 +120,15 @@ export default function ChatRoom({ route, navigation }) {
 
   const connectWebsocket = () => {
     ws.onopen = () => {
-      console.log(new Error().stack, "connected");
+      console.log("connected");
     };
     ws.onerror = (e) => {
-      console.log(new Error().stack, e.message);
+      console.log(e.message);
     };
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data).data;
 
-      console.log(new Error().stack, "message", message);
+      console.log("message", message);
       // Check if the message is intended for the current user
       if (
         message.user_to !== route.params.user_from &&
@@ -149,16 +148,16 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://api.c4k60.com/v2.0/chat/messages/?user_to=" +
+        "https://api.c4k60.com/v2.0/chat/messages?user_to=" +
           user_to +
           "&user_from=" +
           user_from
       );
       setMessages(response.data);
-      console.log(new Error().stack, messages);
-      console.log(new Error().stack, "getmsg2", messages);
+      console.log(messages);
+      console.log("getmsg2", messages);
     } catch (error) {
-      console.log(new Error().stack, "getmsg", error);
+      console.log("getmsg", error);
     }
   };
 
@@ -194,14 +193,13 @@ export default function ChatRoom({ route, navigation }) {
           type: `image/${fileType}`,
         });
 
-        console.log(new Error().stack, "user_from", route.params.user_from);
+        console.log("user_from", route.params.user_from);
         console.log(
-          new Error().stack,
           "user_to",
           route.params.type == "group" ? "class_group" : route.params.username
         );
-        console.log(new Error().stack, "type", route.params.type);
-        console.log(new Error().stack, "image", {
+        console.log("type", route.params.type);
+        console.log("image", {
           uri,
           name: imageName,
           type: `image/${fileType}`,
@@ -219,7 +217,7 @@ export default function ChatRoom({ route, navigation }) {
           }
         );
 
-        console.log(new Error().stack, "image", response.data);
+        console.log("image", response.data);
 
         // Unset loading status for this image
         setImageLoading((prev) => {
@@ -248,26 +246,18 @@ export default function ChatRoom({ route, navigation }) {
           })
         );
 
-        console.log(new Error().stack, "image", response.data);
+        console.log("image", response.data);
         return;
       }
     } catch (error) {
       if (error.config.url.includes("chat/image/")) {
-        console.log(new Error().stack, "Error in image upload request:", error);
+        console.log("Error in image upload request:", error);
       } else if (error.config.url.includes("chat/conversations/")) {
-        console.log(
-          new Error().stack,
-          "Error in chat conversations request:",
-          error
-        );
+        console.log("Error in chat conversations request:", error);
       } else if (error.config.url.includes("notification/send/")) {
-        console.log(
-          new Error().stack,
-          "Error in notification send request:",
-          error
-        );
+        console.log("Error in notification send request:", error);
       } else {
-        console.log(new Error().stack, "Unknown error:", error);
+        console.log("Unknown error:", error);
       }
     }
   };
@@ -319,7 +309,7 @@ export default function ChatRoom({ route, navigation }) {
         },
       })
     );
-    console.log(new Error().stack, message);
+    console.log(message);
     const response = await axios.post(
       "https://api.c4k60.com/v2.0/chat/conversations",
       {
@@ -331,14 +321,14 @@ export default function ChatRoom({ route, navigation }) {
       }
     );
 
-    console.log(new Error().stack, "conv", response.data);
+    console.log("conv", response.data);
 
     const fullName = await getUserFullName(route.params.user_from);
-    console.log(new Error().stack, fullName);
+    console.log(fullName);
     const response2 = await axios.get(
-      `https://api.c4k60.com/v2.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
+      `https://api.c4k60.com/v2.0/notification/send?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
     );
-    console.log(new Error().stack, "noti", response2.data);
+    console.log("noti", response2.data);
   };
 
   // Custom Composer for single-line text input

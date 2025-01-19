@@ -29,8 +29,8 @@ export const ImageRenderer = ({ url }: { url: string }) => {
           });
         },
         async (error) => {
-          console.log(new Error().stack, "image not loaded: " + url);
-          console.log(new Error().stack, error);
+          console.log("image not loaded: " + url);
+          console.log(error);
           resolve(undefined);
         }
       );

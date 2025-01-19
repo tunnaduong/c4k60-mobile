@@ -18,19 +18,6 @@ const Changelogs = () => {
     });
   }, []);
 
-  const logs1 = [
-    {
-      version: "1.0.0",
-      date: "2023-12-20",
-      changes: [
-        "Initial release",
-        "Basic features implemented",
-        "Bug fixes and improvements",
-      ],
-    },
-    // Add more changelog entries here
-  ];
-
   return (
     <ScrollView
       style={styles.container}

@@ -54,38 +54,37 @@ export default function Sponsors({ navigation }) {
             sự hỗ trợ từ các mạnh thường quân sau:
           </Text>
           {sponsors.map((sponsor) => (
-            <>
-              <TouchableOpacity
-                style={styles.sponsor}
-                className="flex-row items-center"
-                onPress={() => {
-                  if (sponsor.username == null) {
-                    return;
-                  }
-                  navigation.navigate("ProfileDetail", {
-                    name: sponsor.name,
-                    username: sponsor.username,
-                  });
-                }}
-              >
-                <Image
-                  source={
-                    sponsor.username == null
-                      ? require("../assets/userdefault.jpeg")
-                      : {
-                          uri:
-                            "https://api.c4k60.com/v2.0/users/avatar/" +
-                            sponsor.username,
-                        }
-                  }
-                  style={{ width: 60, height: 60, borderRadius: 50 }}
-                />
-                <View className="flex-col ml-3">
-                  <Text style={styles.sponsorText}>{sponsor.name}</Text>
-                  <Text className="text-lg">{sponsor.amount}</Text>
-                </View>
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity
+              key={`key-${sponsor.id}`}
+              style={styles.sponsor}
+              className="flex-row items-center"
+              onPress={() => {
+                if (sponsor.username == null) {
+                  return;
+                }
+                navigation.navigate("ProfileDetail", {
+                  name: sponsor.name,
+                  username: sponsor.username,
+                });
+              }}
+            >
+              <Image
+                source={
+                  sponsor.username == null
+                    ? require("../assets/userdefault.jpeg")
+                    : {
+                        uri:
+                          "https://api.c4k60.com/v2.0/users/avatar/" +
+                          sponsor.username,
+                      }
+                }
+                style={{ width: 60, height: 60, borderRadius: 50 }}
+              />
+              <View className="flex-col ml-3">
+                <Text style={styles.sponsorText}>{sponsor.name}</Text>
+                <Text className="text-lg">{sponsor.amount}</Text>
+              </View>
+            </TouchableOpacity>
           ))}
           <Text style={styles.text} className="mt-3">
             Bạn muốn ủng hộ cho dự án này? Mình rất cảm ơn tấm lòng của bạn.

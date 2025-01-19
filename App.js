@@ -40,7 +40,7 @@ import LoadingScreen from "./app/screens/LoadingScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import MenuScreen from "./app/screens/MenuScreen";
 import MusicScreen from "./app/screens/MusicScreen";
-import NewsfeedScreen from "./app/screens/NewsfeedScreen";
+import NewsfeedScreen from "./app/screens/Newsfeed";
 import NotificationScreen from "./app/screens/NotificationScreen";
 import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
@@ -108,14 +108,14 @@ function App() {
 
     const UserFullname = async () => {
       try {
-        console.log(new Error().stack, "---->", usrname);
+        console.log("---->", usrname);
         const response = await axios.post("https://api.c4k60.com/v2.0/users", {
           username: usrname,
         });
         setUserFullname(response.data.info.full_name);
         return response.data.info.full_name;
       } catch (err) {
-        console.log(new Error().stack, "errhhihih", err);
+        console.log("errhhihih", err);
       }
     };
 
@@ -167,7 +167,7 @@ function App() {
         );
         return response.data.code;
       } catch (err) {
-        // console.log(new Error().stack, err);
+        // console.log(err);
       }
     };
 
@@ -177,7 +177,7 @@ function App() {
           setCurrentInputText("");
           getChatLogs();
           if (res == 200) {
-            console.log(new Error().stack, "200 OK sending refresh");
+            console.log("200 OK sending refresh");
             sendRefresh();
           }
         }
@@ -398,7 +398,7 @@ function App() {
       );
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   }
 
@@ -415,7 +415,7 @@ function App() {
 
     const result = () => {
       getSearchResults(search).then((data) => {
-        // console.log(new Error().stack, "dataasdasd", data);
+        // console.log("dataasdasd", data);
         setResult(data.items);
         // data.items.map((vid) => {});
       });
@@ -497,7 +497,7 @@ function App() {
               </View>
             </View>
             {res.map((vid) => {
-              // console.log(new Error().stack, vid.snippet.thumbnails.default.url);
+              // console.log(vid.snippet.thumbnails.default.url);
               return (
                 <>
                   <List.Item
@@ -971,7 +971,7 @@ function App() {
                   backgroundColor: "#FF5674",
                 }}
                 icon="heart"
-                onPress={() => console.log(new Error().stack, "Pressed")}
+                onPress={() => console.log("Pressed")}
               />
             </>
           }

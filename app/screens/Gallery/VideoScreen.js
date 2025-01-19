@@ -106,7 +106,7 @@ export default function VideoScreen() {
       setVideoList(response.data);
       return response.data;
     } catch (err) {
-      console.log(new Error().stack, err);
+      console.log(err);
     }
   };
 

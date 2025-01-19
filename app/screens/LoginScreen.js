@@ -47,7 +47,7 @@ export default function LoginScreen({ navigation }) {
           username: username,
           password: password,
         });
-        // console.log(new Error().stack, response.data);
+        // console.log(response.data);
 
         if (response.data.Message == "Thành công!") {
           setTimeout(async () => {
@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }) {
         }
       } catch (error) {
         setLoading(false);
-        console.log(new Error().stack, error);
+        console.log(error);
         Alert.alert("Lỗi kết nối đến máy chủ!");
       }
     }

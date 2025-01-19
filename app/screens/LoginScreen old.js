@@ -100,7 +100,7 @@ export default class LoginScreen extends Component {
         })
         .catch((error) => {
           this.setState({ loading: false });
-          console.error(new Error().stack, ("Lỗi " + error);
+          console.error(("Lỗi " + error);
           Alert.alert("Lỗi: " + error);
         });
     }
