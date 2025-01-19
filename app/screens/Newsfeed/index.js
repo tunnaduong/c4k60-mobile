@@ -5,12 +5,16 @@ import {
   Text,
   RefreshControl,
   FlatList,
+  Image,
 } from "react-native";
 import { storage } from "../../global/storage";
 import UserAvatar from "../../components/UserAvatar";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 import { withBadge } from "react-native-elements";
+import moment from "moment";
+import { TouchableRipple } from "react-native-paper";
+import PostItem from "../../components/PostItem";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const [feedData, setFeedData] = React.useState(null);
@@ -50,39 +54,96 @@ export default function NewsfeedScreen({ navigation, route }) {
     return (
       <View
         style={{
-          padding: 10,
           borderBottomWidth: 8,
           borderBottomColor: "#E6E6E6",
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+        >
           <UserAvatar
             username={item.author.username}
             style={{ width: 40, height: 40, borderRadius: 20 }}
           />
-          <Text
-            style={{
-              marginLeft: 10,
-              fontWeight: "bold",
-              fontSize: 16,
-              color: "#333",
-            }}
-          >
-            {item.author.name}
-          </Text>
+          <View style={{ marginLeft: 10 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "#333",
+              }}
+            >
+              {item.author.name}
+            </Text>
+            <Text style={{ fontSize: 14, color: "#A9A9A9" }}>
+              {moment(item.timeofpost, "YYYY-MM-DD h:m:s").fromNow()}
+            </Text>
+          </View>
         </View>
-        <Text style={{ marginTop: 10 }}>{item.content}</Text>
+        <Text style={{ fontSize: 17, marginHorizontal: 10, marginBottom: 10 }}>
+          {item.content}
+        </Text>
+        {item.image == "" ? null : (
+          <Image
+            source={{ uri: "https://api.c4k60.com/storage/feed/" + item.image }}
+            style={{ width: "100%", height: 300 }}
+          ></Image>
+        )}
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 10,
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "white",
+            padding: 4,
+            gap: 4,
           }}
         >
-          <Text style={{ color: "#333" }}>
-            {new Date(item.timeofpost).toLocaleString()}
-          </Text>
-          <Ionicons name="heart" size={20} color="#333" />
+          <TouchableRipple
+            rippleColor="rgba(0, 0, 0, .2)"
+            onPress={() => {}}
+            style={{
+              padding: 5,
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 6,
+              backgroundColor: "white",
+            }}
+          >
+            <>
+              <Ionicons
+                name={"heart-outline"}
+                size={22}
+                color={"#8B8D95"}
+                style={{ marginRight: 7 }}
+              ></Ionicons>
+              <Text style={{ color: "#8B8D95" }}>Thích</Text>
+            </>
+          </TouchableRipple>
+          <TouchableRipple
+            rippleColor="rgba(0, 0, 0, .2)"
+            onPress={() => {}}
+            style={{
+              padding: 5,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 6,
+            }}
+          >
+            <>
+              <Ionicons
+                name="chatbox-ellipses-outline"
+                size={22}
+                color={"#8B8D95"}
+                style={{ marginRight: 7 }}
+              ></Ionicons>
+              <Text style={{ color: "#8B8D95" }}>Bình luận</Text>
+            </>
+          </TouchableRipple>
         </View>
       </View>
     );
@@ -144,8 +205,8 @@ export default function NewsfeedScreen({ navigation, route }) {
       <FlatList
         data={feedData}
         keyExtractor={(item, index) => `key-${index}`}
-        contentContainerStyle={{ paddingBottom: 90 }}
-        renderItem={renderItem}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        renderItem={({ item }) => <PostItem item={item} />}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.2}
         refreshControl={
