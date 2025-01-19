@@ -204,7 +204,7 @@ export default function NewsfeedScreen({ navigation, route }) {
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <FlatList
         data={feedData}
-        keyExtractor={(item, index) => `key-${index}`}
+        keyExtractor={(item, index) => `key-${item.id}`}
         contentContainerStyle={{ paddingBottom: 100 }}
         renderItem={({ item }) => <PostItem item={item} />}
         onEndReached={onEndReached}

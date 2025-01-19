@@ -89,7 +89,7 @@ const PostItem = ({ item }) => {
       <Text style={{ fontSize: 17, marginHorizontal: 10, marginBottom: 10 }}>
         {item.content}
       </Text>
-      {item.image == "" ? null : (
+      {item.image == "" || item.image == null ? null : (
         <Image
           source={{ uri: "https://api.c4k60.com/storage/feed/" + item.image }}
           style={{ width: "100%", height: 300 }}
