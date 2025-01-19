@@ -15,6 +15,7 @@ import { withBadge } from "react-native-elements";
 import moment from "moment";
 import { TouchableRipple } from "react-native-paper";
 import PostItem from "../../components/PostItem";
+import { TouchableOpacity } from "react-native";
 
 export default function NewsfeedScreen({ navigation, route }) {
   const [feedData, setFeedData] = React.useState(null);
@@ -165,15 +166,28 @@ export default function NewsfeedScreen({ navigation, route }) {
           username={username}
           style={{ width: 40, height: 40, borderRadius: 25 }}
         ></UserAvatar>
-        <Text style={{ fontSize: 16, marginLeft: 10, flex: 1 }}>
-          Bạn đang nghĩ gì?
-        </Text>
-        <Ionicons
-          name="images"
-          size={22}
-          color={"#36BF2D"}
-          style={{ marginRight: 7 }}
-        ></Ionicons>
+        <TouchableRipple
+          rippleColor="rgba(0, 0, 0, .1)"
+          onPress={() => {}}
+          style={{
+            flex: 1,
+            borderRadius: 10,
+            height: 40,
+            marginRight: 10,
+            marginLeft: 5,
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: 16, marginLeft: 5 }}>Bạn đang nghĩ gì?</Text>
+        </TouchableRipple>
+        <TouchableOpacity onPress={() => {}}>
+          <Ionicons
+            name="images"
+            size={22}
+            color={"#36BF2D"}
+            style={{ marginRight: 7 }}
+          ></Ionicons>
+        </TouchableOpacity>
       </View>
     );
   };
