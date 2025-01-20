@@ -17,6 +17,7 @@ const PostItem = ({ item }) => {
         (like) => like.liked_username === username
       );
       setLiked(userLiked);
+      setLikeCount(item.likes.length);
     };
 
     checkIfLiked();

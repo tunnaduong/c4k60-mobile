@@ -128,7 +128,7 @@ export default function ChatRoom({ route, navigation }) {
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data).data;
 
-      console.log("message", message);
+      // console.log("message", message);
       // Check if the message is intended for the current user
       if (
         message.user_to !== route.params.user_from &&
@@ -452,7 +452,7 @@ export default function ChatRoom({ route, navigation }) {
         text={message}
         renderComposer={renderComposer}
       />
-      {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
+      {/* {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />} */}
     </SafeAreaView>
   );
 }

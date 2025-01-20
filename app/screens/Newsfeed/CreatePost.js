@@ -69,13 +69,14 @@ const CreatePost = forwardRef(
         });
       }
 
-      fetch("https://api.c4k60.com/v2.0/feed/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: formData,
-      });
+      try {
+        fetch("https://api.c4k60.com/v2.0/feed/add", {
+          method: "POST",
+          body: formData,
+        });
+      } catch (error) {
+        console.error("Network Error:", error);
+      }
 
       // Handle post submission logic here
       navigation.goBack();

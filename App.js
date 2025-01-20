@@ -80,7 +80,6 @@ Object.assign(global, {
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
   config.baseBackendServerURL + ":" + config.backendServerPort;
-const socket = io("ws://" + baseBackendServerURL + "/");
 
 LogBox.ignoreLogs([
   "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
@@ -551,6 +550,56 @@ function App() {
     const countAnimatedValue = useRef(new Animated.Value(0)).current;
     const timeout = useRef();
 
+    const connectWebsocket = () => {
+      ws.onopen = () => {
+        console.log("connected");
+      };
+      ws.onerror = (e) => {
+        console.log(e.message);
+      };
+      ws.onmessage = (e) => {
+        const message = JSON.parse(e.data).data;
+
+        // console.log("message", message);
+        if (
+          message.type == "love_reaction" &&
+          message.username !== storage.getString("username")
+        ) {
+          handleLovePress();
+        }
+      };
+    };
+
+    useEffect(() => {
+      connectWebsocket();
+    }, []);
+
+    // Function to handle love button press
+    const handleLovePress = () => {
+      // Clear any existing animation timeout
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+
+      // Add heart locally
+      setHearts((oldHearts) => [...oldHearts, { id: getUniqueID() }]);
+
+      // Animate count
+      timeout.current = setTimeout(() => {
+        Animated.spring(countAnimatedValue, {
+          toValue: 0,
+          speed: 48,
+          useNativeDriver: true,
+        }).start();
+      }, 500);
+
+      Animated.spring(countAnimatedValue, {
+        toValue: -64,
+        speed: 48,
+        useNativeDriver: true,
+      }).start();
+    };
+
     const handleCompleteAnimation = useCallback((id) => {
       setHearts((oldHearts) => {
         return oldHearts.filter((heart) => heart.id !== id);
@@ -993,27 +1042,16 @@ function App() {
                 }}
                 icon="heart"
                 onPress={() => {
-                  if (timeout.current) {
-                    clearTimeout(timeout.current);
-                  }
-
-                  setHearts((oldHearts) => [
-                    ...oldHearts,
-                    { id: getUniqueID() },
-                  ]);
-
-                  timeout.current = setTimeout(() => {
-                    Animated.spring(countAnimatedValue, {
-                      toValue: 0,
-                      speed: 48,
-                      useNativeDriver: true,
-                    }).start();
-                  }, 500);
-                  Animated.spring(countAnimatedValue, {
-                    toValue: -64,
-                    speed: 48,
-                    useNativeDriver: true,
-                  }).start();
+                  handleLovePress();
+                  // Emit love reaction to other users
+                  ws.send(
+                    JSON.stringify({
+                      data: {
+                        type: "love_reaction",
+                        username: storage.getString("username"),
+                      },
+                    })
+                  );
                 }}
               />
               <View
