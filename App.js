@@ -67,7 +67,7 @@ import Sponsors from "./app/screens/Sponsors";
 import Changelogs from "./app/screens/Changelogs";
 import CreatePost from "./app/screens/Newsfeed/CreatePost";
 import AnimatedHeart from "./app/components/AnimatedHeart";
-import io from "socket.io-client";
+import * as Linking from "expo-linking";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -100,6 +100,16 @@ function App() {
   const inputText = React.useRef(null);
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
+
+  const linking = {
+    prefixes: ["exp+c4k60://", "c4k60://", "https://c4k60.com"], // Define your URI scheme
+    config: {
+      screens: {
+        NotiScreen: "notification/:id",
+        ChatRoom: "chat/:username/:user_from/:name/:type", // Route with a dynamic parameter
+      },
+    },
+  };
 
   const ChatComponent = React.memo(() => {
     const usrname = storage.getString("username");
@@ -1304,7 +1314,7 @@ function App() {
   };
 
   return (
-    <NavigationContainer ref={RootNavigation.navigationRef}>
+    <NavigationContainer linking={linking} ref={RootNavigation.navigationRef}>
       <TailwindProvider>
         <Stack.Navigator>
           <Stack.Screen

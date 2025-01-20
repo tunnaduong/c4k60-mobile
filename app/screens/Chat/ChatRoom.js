@@ -38,6 +38,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageLoading, setImageLoading] = React.useState({});
   const scrollViewRef = React.useRef();
   const [onlineUsers, setOnlineUsers] = React.useState([]);
+  const { username, user_from, name, type } = route.params; // Path parameter
 
   React.useEffect(() => {
     getMessages();
