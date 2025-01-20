@@ -7,7 +7,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -28,6 +28,7 @@ import {
   ImageBackground,
   View,
   Button,
+  Animated,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -65,6 +66,8 @@ import NewChat from "./app/screens/Chat/NewChat";
 import Sponsors from "./app/screens/Sponsors";
 import Changelogs from "./app/screens/Changelogs";
 import CreatePost from "./app/screens/Newsfeed/CreatePost";
+import AnimatedHeart from "./app/components/AnimatedHeart";
+import io from "socket.io-client";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -77,6 +80,7 @@ Object.assign(global, {
 const Tab = createMaterialTopTabNavigator();
 const baseBackendServerURL =
   config.baseBackendServerURL + ":" + config.backendServerPort;
+const socket = io("ws://" + baseBackendServerURL + "/");
 
 LogBox.ignoreLogs([
   "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
@@ -404,6 +408,10 @@ function App() {
     }
   }
 
+  function getUniqueID() {
+    return Math.floor(Math.random() * Date.now()).toString();
+  }
+
   const SearchComponent = () => {
     const [search, setSearch] = React.useState("");
     const [sugg, setSuggest] = React.useState([]);
@@ -538,6 +546,16 @@ function App() {
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
+    const [hearts, setHearts] = React.useState([]);
+
+    const countAnimatedValue = useRef(new Animated.Value(0)).current;
+    const timeout = useRef();
+
+    const handleCompleteAnimation = useCallback((id) => {
+      setHearts((oldHearts) => {
+        return oldHearts.filter((heart) => heart.id !== id);
+      });
+    }, []);
 
     const ViewerComponent = () => {
       return (
@@ -971,10 +989,49 @@ function App() {
                   right: 0,
                   bottom: 75,
                   backgroundColor: "#FF5674",
+                  zIndex: 1,
                 }}
                 icon="heart"
-                onPress={() => console.log("Pressed")}
+                onPress={() => {
+                  if (timeout.current) {
+                    clearTimeout(timeout.current);
+                  }
+
+                  setHearts((oldHearts) => [
+                    ...oldHearts,
+                    { id: getUniqueID() },
+                  ]);
+
+                  timeout.current = setTimeout(() => {
+                    Animated.spring(countAnimatedValue, {
+                      toValue: 0,
+                      speed: 48,
+                      useNativeDriver: true,
+                    }).start();
+                  }, 500);
+                  Animated.spring(countAnimatedValue, {
+                    toValue: -64,
+                    speed: 48,
+                    useNativeDriver: true,
+                  }).start();
+                }}
               />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 150,
+                  right: 25,
+                  zIndex: 0,
+                }}
+              >
+                {hearts.map(({ id }) => (
+                  <AnimatedHeart
+                    key={id}
+                    id={id}
+                    onCompleteAnimation={handleCompleteAnimation}
+                  />
+                ))}
+              </View>
             </>
           }
           {...props}
