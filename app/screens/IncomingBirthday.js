@@ -4,7 +4,7 @@ import axios from "axios";
 import { List } from "react-native-paper";
 import UserAvatar from "../components/UserAvatar";
 
-const IncomingBirthday = () => {
+const IncomingBirthday = ({ navigation }) => {
   const [birthday, setBirthday] = React.useState(null);
 
   React.useEffect(() => {
@@ -93,7 +93,12 @@ const IncomingBirthday = () => {
               title={item.name}
               description={item.birthday}
               key={index}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate("ProfileDetail", {
+                  name: item.name,
+                  username: item.username,
+                });
+              }}
               left={() => (
                 <UserAvatar
                   username={item.username}

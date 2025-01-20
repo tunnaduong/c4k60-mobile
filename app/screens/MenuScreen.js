@@ -94,9 +94,7 @@ export default function MenuScreen({ navigation, route }) {
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => {
           if (storage.getString("username") == "test") {
-            return Alert.alert(
-              "Chức năng này không khả dụng trong chế độ xem trước."
-            );
+            return navigation.navigate("Login");
           }
           navigation.navigate("ProfileDetail", {
             name: name,
@@ -370,6 +368,9 @@ export default function MenuScreen({ navigation, route }) {
           borderRadius: 6,
         }}
         onPress={() => {
+          if (storage.getString("username") == "test") {
+            return navigation.navigate("Login");
+          }
           Platform.OS === "ios"
             ? onPressIOS()
             : Platform.OS === "android"
@@ -377,7 +378,9 @@ export default function MenuScreen({ navigation, route }) {
             : setState({ modalVisible: true });
         }}
       >
-        <Text style={{ fontSize: 15 }}>Đăng xuất</Text>
+        <Text style={{ fontSize: 15 }}>
+          {storage.getString("username") == "test" ? "Đăng nhập" : "Đăng xuất"}
+        </Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"

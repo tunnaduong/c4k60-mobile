@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  RefreshControl,
-  Pressable,
-  Platform,
-} from "react-native";
+import { View, ScrollView, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { TouchableRipple } from "react-native-paper";
 import { storage } from "../../global/storage";
@@ -14,14 +7,14 @@ import axios from "axios";
 import updateLastActivity from "../../utils/updateLastActivity";
 import UserAvatar from "../../components/UserAvatar";
 import UserFullName from "../../components/UserFullName";
-import LastChat from "../../components/LastChat";
 import { AntDesign } from "@expo/vector-icons";
+import moment from "moment";
 
 export default function ChatScreen({ navigation, route }) {
   const ws = route.params.ws;
   const [onlineUsers, setOnlineUsers] = React.useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
   const [conversation, setConversation] = React.useState([]);
+  const [lastGroupChat, setLastGroupChat] = React.useState([]);
   const username = storage.getString("username");
   // React.useEffect(() => {
   //   console.log(">> in useEffect ", Math.random());
@@ -45,11 +38,14 @@ export default function ChatScreen({ navigation, route }) {
   React.useEffect(() => {
     getOnlineUsers();
     getConversation();
+    getLastGroupChat();
     updateLastActivity(username);
     const unsubscribe = navigation.addListener("focus", () => {
       getConversation();
+      getLastGroupChat();
       //Put your Data loading function here instead of my loadData()
     });
+    getLastGroupChat();
     getConversation();
 
     return unsubscribe;
@@ -63,6 +59,18 @@ export default function ChatScreen({ navigation, route }) {
       setConversation(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getLastGroupChat = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.c4k60.com/v2.0/chat/last-chat?type=group"
+      );
+      setLastGroupChat(response.data);
+      // console.log("hehe", lastChat);
+    } catch (err) {
+      console.log("hihi", err);
     }
   };
 
@@ -117,6 +125,9 @@ export default function ChatScreen({ navigation, route }) {
     var check = 10 * 60 * 1000;
     return date - new Date(time) < check;
   };
+
+  const truncate = (input) =>
+    input?.length > 20 ? `${input?.substring(0, 20)}...` : input;
 
   return (
     <>
@@ -214,11 +225,7 @@ export default function ChatScreen({ navigation, route }) {
                       right: 0,
                     }}
                   ></View>
-                  <UserFullName
-                    username={user.username}
-                    numberOfLines={1}
-                    type="last_name"
-                  />
+                  <Text>{user.lastname}</Text>
                 </Pressable>
               );
             })}
@@ -267,7 +274,29 @@ export default function ChatScreen({ navigation, route }) {
               <Text style={{ fontSize: 17, fontWeight: "500" }}>
                 Ngưng Bích Buildings :))))))
               </Text>
-              <LastChat key={Date.now()} user_from={username} type={"group"} />
+              <View style={{ flexDirection: "row" }}>
+                {username == lastGroupChat[0]?.user_from && (
+                  <Text
+                    style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
+                  >
+                    Bạn:{" "}
+                  </Text>
+                )}
+
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
+                >
+                  {!lastGroupChat[0]?.image_url
+                    ? truncate(lastGroupChat[0]?.message)
+                    : "[Ảnh]"}{" "}
+                  ·{" "}
+                  {moment(lastGroupChat[0]?.time)
+                    .fromNow()
+                    .replace("một", "1")
+                    .replace("trước", "")}
+                </Text>
+              </View>
             </View>
             <AntDesign
               name="pushpin"
@@ -325,12 +354,29 @@ export default function ChatScreen({ navigation, route }) {
                   <Text style={{ fontSize: 17, fontWeight: "500" }}>
                     {item?.name}
                   </Text>
-                  <LastChat
-                    key={Date.now()}
-                    user_from={username}
-                    user_to={item?.username}
-                    type={"private"}
-                  />
+                  <View style={{ flexDirection: "row" }}>
+                    {item.username == item.last_chat.user_to && (
+                      <Text
+                        style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
+                      >
+                        Bạn:{" "}
+                      </Text>
+                    )}
+
+                    <Text
+                      numberOfLines={1}
+                      style={{ fontSize: 16, marginTop: 5, color: "#8F8F90" }}
+                    >
+                      {!item.last_chat.image_url
+                        ? truncate(item.last_chat.message)
+                        : "[Ảnh]"}{" "}
+                      ·{" "}
+                      {moment(item.last_chat.time)
+                        .fromNow()
+                        .replace("một", "1")
+                        .replace("trước", "")}
+                    </Text>
+                  </View>
                 </View>
               </>
             </TouchableRipple>

@@ -485,6 +485,11 @@ export default function HomeScreen({ navigation }) {
                       <TouchableOpacity
                         className="py-[3px]"
                         onPress={() => {
+                          if (storage.getString("username") == "test") {
+                            return Alert.alert(
+                              "Chức năng này không khả dụng trong chế độ xem trước."
+                            );
+                          }
                           navigation.navigate("NotiScreen", {
                             id: item.id,
                             title: item.title,

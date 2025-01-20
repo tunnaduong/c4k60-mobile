@@ -147,7 +147,7 @@ function App() {
       const response = await axios.get(
         "https://api.c4k60.com/v2.0/radio/chatlogs"
       );
-      setChatData(response.data.items);
+      setChatData(response.data.items.reverse());
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
       // console.log(new Error().stack,
       //   "data: " + JSON.parse(localStorage.getItem("chat-data"))[0].msg
