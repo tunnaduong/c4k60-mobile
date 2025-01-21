@@ -68,6 +68,7 @@ import Changelogs from "./app/screens/Changelogs";
 import CreatePost from "./app/screens/Newsfeed/CreatePost";
 import AnimatedHeart from "./app/components/AnimatedHeart";
 import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -106,10 +107,25 @@ function App() {
     config: {
       screens: {
         NotiScreen: "notification/:id",
-        ChatRoom: "chat/:username/:user_from/:name/:type", // Route with a dynamic parameter
+        ChatRoom: "chat/:user_from/:username/:name/:type", // Route with a dynamic parameter
       },
     },
   };
+
+  React.useEffect(() => {
+    // Listen for incoming notifications
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const deepLink = response.notification.request.content.data.link;
+
+        if (deepLink) {
+          Linking.openURL(`c4k60://${deepLink}`);
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
 
   const ChatComponent = React.memo(() => {
     const usrname = storage.getString("username");
@@ -1164,6 +1180,7 @@ function App() {
           component={HomeScreen}
           initialParams={{
             currentScreen: "HomeScreen",
+            ws: ws,
           }}
           options={{
             title: "Trang chủ",

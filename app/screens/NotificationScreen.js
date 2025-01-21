@@ -36,13 +36,16 @@ export default function NotificationScreen({ navigation, route }) {
     setTimeout(() => {
       setSkeleton(false);
     }, 1500);
+    fetchNotification();
+  }, []);
 
+  function fetchNotification() {
     axios
       .get("https://api.c4k60.com/v2.0/notification/list?show=all")
       .then((response) => {
         setB(response.data.results);
       });
-  }, []);
+  }
 
   let A = [];
   let C = [];
@@ -95,6 +98,7 @@ export default function NotificationScreen({ navigation, route }) {
             refreshing={refreshing}
             onRefresh={() => {
               setRefreshing(true);
+              fetchNotification();
               setTimeout(() => {
                 setRefreshing(false);
               }, 800);

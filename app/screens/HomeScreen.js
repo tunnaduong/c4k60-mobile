@@ -40,7 +40,8 @@ const screenWidth = Dimensions.get("window").width;
 
 // const statusBarHeight =
 //   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
+  const ws = route.params.ws;
   const [refreshing, setRefreshing] = React.useState(false);
   const [loadText, setLoadText] = React.useState("");
   const [notificationData, setNotificationData] = React.useState([]);
@@ -65,6 +66,26 @@ export default function HomeScreen({ navigation }) {
         })
         .catch((err) => console.log(err));
     }
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const { username, user_from, name } =
+          response.notification.request.content.data;
+
+        // Navigate to a specific screen using the username
+        navigation.navigate("ChatRoom", {
+          ws: ws,
+          user_from: user_from,
+          username: username,
+          name: name,
+          type: "private",
+        });
+      }
+    );
+
+    return () => subscription.remove();
   }, []);
 
   async function updatePushNotificationToken(token) {

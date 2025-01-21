@@ -28,6 +28,7 @@ import {
   Composer,
 } from "react-native-gifted-chat";
 import vi from "dayjs/locale/vi";
+import * as Notifications from "expo-notifications";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
@@ -326,10 +327,24 @@ export default function ChatRoom({ route, navigation }) {
 
     const fullName = await getUserFullName(route.params.user_from);
     console.log(fullName);
-    const response2 = await axios.get(
-      `https://api.c4k60.com/v2.0/notification/send?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
-    );
-    console.log("noti", response2.data);
+    try {
+      const response2 = await axios.post(
+        `https://api.c4k60.com/v2.0/notification/send`,
+        {
+          to: route.params.username,
+          title: fullName,
+          body: message[0].text,
+          data: {
+            user_from: route.params.user_from,
+            username: route.params.username,
+            name: fullName,
+          },
+        }
+      );
+      console.log("noti", response2.data);
+    } catch (error) {
+      console.log("noti", error);
+    }
   };
 
   // Custom Composer for single-line text input
