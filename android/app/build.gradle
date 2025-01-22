@@ -85,7 +85,7 @@ android {
     defaultConfig {
         applicationId 'com.c4k60.mobile'
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdk 34
         versionCode 10
         versionName "4.1.0"
 

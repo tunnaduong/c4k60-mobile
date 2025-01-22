@@ -38,7 +38,8 @@
       },
       "package": "com.c4k60.mobile",
       "versionCode": 10,
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "targetSdkVersion": "34"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
