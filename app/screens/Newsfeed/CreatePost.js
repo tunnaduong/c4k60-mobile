@@ -95,7 +95,7 @@ const CreatePost = forwardRef(
         setPlaceholder("Nói gì đó về bức ảnh này...");
         setHeight(50);
         onPostContentChange("abc123");
-        setImage(result.uri);
+        setImage(result.assets[0].uri);
       }
     };
 

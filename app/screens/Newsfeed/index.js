@@ -76,7 +76,7 @@ export default function NewsfeedScreen({ navigation, route }) {
     });
 
     if (!result.canceled) {
-      navigation.navigate("CreatePost", { image: result.uri });
+      navigation.navigate("CreatePost", { image: result.assets[0].uri });
     }
   };
 

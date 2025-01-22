@@ -74,7 +74,8 @@ export default function LoginScreen({ navigation }) {
       } catch (error) {
         setLoading(false);
         console.log(error);
-        Alert.alert("Lỗi kết nối đến máy chủ!");
+        if (error.response.data.Message == "Sai thông tin đăng nhập!")
+          Alert.alert("Sai thông tin đăng nhập!");
       }
     }
   };

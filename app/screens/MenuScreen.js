@@ -32,13 +32,10 @@ export default function MenuScreen({ navigation, route }) {
     );
   };
   const clearAll = () => {
-    try {
-      storage.delete("token");
-      storage.delete("name");
-      storage.delete("avatar");
-    } catch (e) {
-      // clear error
-    }
+    storage.delete("token");
+    storage.delete("name");
+    storage.delete("avatar");
+    // storage.delete("isFirstTimeUse");
   };
 
   const onPressIOS = () => {
@@ -339,9 +336,7 @@ export default function MenuScreen({ navigation, route }) {
               "Chức năng này không khả dụng trong chế độ xem trước."
             );
           }
-          navigation.navigate("Testing", {
-            title: "Cài đặt",
-          });
+          navigation.navigate("SettingScreen");
         }}
       >
         <Ionicons

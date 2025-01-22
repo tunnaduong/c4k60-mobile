@@ -276,7 +276,7 @@ export default function ChatRoom({ route, navigation }) {
     });
 
     if (!result.canceled) {
-      sendMessage("image", result.uri);
+      sendMessage("image", result.assets[0].uri);
     }
   };
 

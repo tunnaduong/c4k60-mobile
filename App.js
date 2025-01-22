@@ -70,6 +70,11 @@ import AnimatedHeart from "./app/components/AnimatedHeart";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import Comment from "./app/screens/Newsfeed/Comment";
+import AddProfilePicture from "./app/screens/Settings/AddProfilePicture";
+import SettingScreen from "./app/screens/Settings/SettingScreen";
+import AvatarSelected from "./app/screens/Settings/AvatarSelected";
+import { CropAvatar } from "./app/screens/Settings/CropAvatar";
+import ChangePassword from "./app/screens/Settings/ChangePassword";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -1885,6 +1890,146 @@ function App() {
             }}
             name="Comment"
             component={Comment}
+          />
+          <Stack.Screen
+            options={{
+              title: "Sửa ảnh đại diện",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Sửa ảnh đại diện"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="AvatarEditScreen"
+            component={AddProfilePicture}
+          />
+          <Stack.Screen
+            options={{
+              title: "Cài đặt",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Cài đặt"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="SettingScreen"
+            component={SettingScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Xem trước ảnh đại diện",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Xem trước ảnh đại diện"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="AvatarSelected"
+            component={AvatarSelected}
+          />
+          <Stack.Screen
+            options={{
+              title: "Chỉnh sửa ảnh",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Chỉnh sửa ảnh"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="CropAvatar"
+            component={CropAvatar}
+          />
+          <Stack.Screen
+            options={{
+              title: "Đổi mật khẩu",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Đổi mật khẩu"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="ChangePassword"
+            component={ChangePassword}
           />
         </Stack.Navigator>
       </TailwindProvider>

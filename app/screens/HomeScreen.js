@@ -49,8 +49,14 @@ export default function HomeScreen({ navigation, route }) {
   const [loiChucData, setLoiChucData] = React.useState("");
   const [sponsors, setSponsors] = React.useState(null);
   const [changelog, setChangelog] = React.useState(null);
+  const isFirstTimeUse = storage.getBoolean("isFirstTimeUse");
 
   useEffect(() => {
+    if (!isFirstTimeUse && username != "test") {
+      navigation.navigate("AvatarEditScreen");
+      navigation.navigate("ChangePassword");
+    }
+
     loiChuc();
     console.log("Registering for push notifications...");
     if (Device.isDevice) {
