@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import { TouchableRipple } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment";
 import UserAvatar from "./UserAvatar";
 import { storage } from "../global/storage";
+import * as RootNavigation from "../utils/RootNavigation";
 
 const PostItem = ({ item }) => {
   const [liked, setLiked] = useState(false);
@@ -67,7 +68,17 @@ const PostItem = ({ item }) => {
         borderBottomColor: "#E6E6E6",
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
+      <Pressable
+        onPress={() => {
+          RootNavigation.navigate("Comment", {
+            username: item.author.username,
+            name: item.author.name,
+            timeofpost: item.timeofpost,
+            item,
+          });
+        }}
+        style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+      >
         <UserAvatar
           username={item.author.username}
           style={{ width: 40, height: 40, borderRadius: 20 }}
@@ -86,7 +97,7 @@ const PostItem = ({ item }) => {
             {moment(item.timeofpost, "YYYY-MM-DD h:m:s").fromNow()}
           </Text>
         </View>
-      </View>
+      </Pressable>
       {item.content == "" || item.content == null ? null : (
         <Text style={{ fontSize: 17, marginHorizontal: 10, marginBottom: 10 }}>
           {item.content}
@@ -98,7 +109,7 @@ const PostItem = ({ item }) => {
           style={{ width: "100%", height: 300 }}
         ></Image>
       )}
-      {likeCount > 0 && (
+      {(likeCount > 0 || item.comments.length > 0) && (
         <View
           style={{
             marginHorizontal: 12,
@@ -109,20 +120,51 @@ const PostItem = ({ item }) => {
             alignItems: "center",
           }}
         >
-          <Ionicons
-            name="heart"
-            size={22}
-            color={"#FC6D6C"}
-            style={{ marginRight: 5 }}
-          ></Ionicons>
-          <Text
-            style={{
-              fontSize: 14,
-              color: "#8E9098",
-            }}
-          >
-            {likeCount}
-          </Text>
+          {likeCount > 0 && (
+            <>
+              <Ionicons
+                name="heart"
+                size={22}
+                color={"#FC6D6C"}
+                style={{ marginRight: 5 }}
+              ></Ionicons>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#8E9098",
+                }}
+              >
+                {likeCount}
+              </Text>
+            </>
+          )}
+          <View style={{ flex: 1 }}></View>
+          {item.comments.length == 0 ? null : (
+            <TouchableRipple
+              onPress={() => {
+                RootNavigation.navigate("Comment", {
+                  username: item.author.username,
+                  name: item.author.name,
+                  timeofpost: item.timeofpost,
+                  item,
+                });
+              }}
+              style={{
+                paddingHorizontal: 5,
+                paddingVertical: 2,
+                borderRadius: 5,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#8E9098",
+                }}
+              >
+                {item.comments.length} bình luận
+              </Text>
+            </TouchableRipple>
+          )}
         </View>
       )}
       <View
@@ -161,7 +203,14 @@ const PostItem = ({ item }) => {
         </TouchableRipple>
         <TouchableRipple
           rippleColor="rgba(0, 0, 0, .2)"
-          onPress={() => {}}
+          onPress={() => {
+            RootNavigation.navigate("Comment", {
+              username: item.author.username,
+              name: item.author.name,
+              timeofpost: item.timeofpost,
+              item,
+            });
+          }}
           style={{
             padding: 5,
             flex: 1,

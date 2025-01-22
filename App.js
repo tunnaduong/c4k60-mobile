@@ -69,6 +69,7 @@ import CreatePost from "./app/screens/Newsfeed/CreatePost";
 import AnimatedHeart from "./app/components/AnimatedHeart";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
+import Comment from "./app/screens/Newsfeed/Comment";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -1857,6 +1858,34 @@ function App() {
               />
             )}
           </Stack.Screen>
+          <Stack.Screen
+            options={{
+              title: "Bình luận",
+              contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Bình luận"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Comment"
+            component={Comment}
+          />
         </Stack.Navigator>
       </TailwindProvider>
     </NavigationContainer>

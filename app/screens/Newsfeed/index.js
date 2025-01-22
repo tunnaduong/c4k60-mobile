@@ -37,6 +37,7 @@ export default function NewsfeedScreen({ navigation, route }) {
   // call the function that you use to mount the component.
 
   React.useEffect(() => {
+    isFocused && fetchNewsfeed();
     setTimeout(() => {
       isFocused && fetchNewsfeed();
     }, 1000);

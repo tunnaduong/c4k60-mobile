@@ -73,6 +73,8 @@ const CreatePost = forwardRef(
         fetch("https://api.c4k60.com/v2.0/feed/add", {
           method: "POST",
           body: formData,
+        }).catch((error) => {
+          console.error("Network Error:", error);
         });
       } catch (error) {
         console.error("Network Error:", error);
