@@ -24,12 +24,11 @@
       ]
     ],
     "assetBundlePatterns": ["**/*"],
-    "jsEngine": "hermes",
+    "jsEngine": "jsc",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.c4k60.mobile",
-      "buildNumber": "15",
-      "jsEngine": "hermes"
+      "buildNumber": "15"
     },
     "android": {
       "adaptiveIcon": {
