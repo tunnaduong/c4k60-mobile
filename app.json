@@ -36,9 +36,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.c4k60.mobile",
-      "versionCode": 15,
-      "useNextNotificationsApi": true,
-      "targetSdkVersion": "34"
+      "versionCode": 16,
+      "googleServicesFile": "./android/google-services.json"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
