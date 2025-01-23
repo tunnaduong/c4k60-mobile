@@ -7,11 +7,11 @@ import {
   RefreshControl,
   ImageBackground,
   Image,
-  StatusBar,
   Dimensions,
   Linking,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreenCarousel from "../components/HomeScreenCarousel";
@@ -23,7 +23,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { TouchableRipple } from "react-native-paper";
 import { useEffect } from "react";
 import axios from "axios";
-import sponsorsData from "../global/sponsorsData";
 import updateLastActivity from "../utils/updateLastActivity";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -41,29 +40,65 @@ const screenWidth = Dimensions.get("window").width;
 
 // const statusBarHeight =
 //   Platform.OS == "ios" ? getStatusBarHeight() : StatusBar.currentHeight || 0;
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
+  const ws = route.params.ws;
   const [refreshing, setRefreshing] = React.useState(false);
   const [loadText, setLoadText] = React.useState("");
   const [notificationData, setNotificationData] = React.useState([]);
   const [birthdayData, setBirthdayData] = React.useState([]);
+  const [loiChucData, setLoiChucData] = React.useState("");
+  const [sponsors, setSponsors] = React.useState(null);
+  const [changelog, setChangelog] = React.useState(null);
+  const isFirstTimeUse = storage.getBoolean("isFirstTimeUse");
 
   useEffect(() => {
+    if (!isFirstTimeUse && username != "test") {
+      navigation.navigate("AvatarEditScreen");
+      navigation.navigate("ChangePassword");
+    }
+
+    loiChuc();
     console.log("Registering for push notifications...");
-    registerForPushNotificationsAsync()
-      .then((token) => {
-        console.log("token: ", token);
-        // set expo push token to storage mmkv
-        storage.set("expoPushToken", token);
-        updatePushNotificationToken(token);
-      })
-      .catch((err) => console.log(err));
+    if (Device.isDevice) {
+      registerForPushNotificationsAsync()
+        .then((token) => {
+          console.log("token: ", token);
+          if (token == undefined) {
+            return;
+          }
+          // set expo push token to storage mmkv
+          storage.set("expoPushToken", token);
+          updatePushNotificationToken(token);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const { username, user_from, name } =
+          response.notification.request.content.data;
+
+        // Navigate to a specific screen using the username
+        navigation.navigate("ChatRoom", {
+          ws: ws,
+          user_from: user_from,
+          username: username,
+          name: name,
+          type: "private",
+        });
+      }
+    );
+
+    return () => subscription.remove();
   }, []);
 
   async function updatePushNotificationToken(token) {
     try {
       const usrname = storage.getString("username");
       const response = await axios.post(
-        "https://c4k60.com/api/v1.0/notification/token/",
+        "https://api.c4k60.com/v2.0/notification/token",
         {
           username: usrname,
           token: token,
@@ -72,13 +107,12 @@ export default function HomeScreen({ navigation }) {
       console.log(response.data);
       return response.data;
     } catch (error) {
-      console.error("Error in updatePushNotificationToken: ", error);
+      console.error(("Error in updatePushNotificationToken: ", error));
     }
   }
 
   async function registerForPushNotificationsAsync() {
     let token;
-
     if (Platform.OS === "android") {
       await Notifications.setNotificationChannelAsync("default", {
         name: "default",
@@ -128,6 +162,8 @@ export default function HomeScreen({ navigation }) {
     getNotification();
     getBirthday();
     updateLastActivity(username);
+    getSponsors();
+    getChangelog();
   };
 
   const getGreetingTime = (m) => {
@@ -152,20 +188,64 @@ export default function HomeScreen({ navigation }) {
     return g;
   };
 
+  const loiChuc = () => {
+    let today = new Date();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+
+    if ((hours >= 5 && hours < 10) || (hours === 10 && minutes < 30)) {
+      setLoiChucData("Chúc bạn có một ngày mới năng động và hiệu quả.");
+    } else if ((hours >= 11 && hours < 13) || (hours == 10 && minutes >= 30)) {
+      setLoiChucData(
+        "Chúc bạn có một buổi trưa thật vui vẻ, ngập tràn năng lượng."
+      );
+    } else if ((hours >= 13 && hours < 18) || (hours === 18 && minutes < 30)) {
+      setLoiChucData("Chúc bạn có một buổi chiều vui vẻ và cả ngày hạnh phúc!");
+    } else if ((hours >= 18 && hours < 22) || (hours === 22 && minutes < 30)) {
+      setLoiChucData(
+        "Chúc cậu có một buổi tối an lành, vui vẻ nhé. Good night!"
+      );
+    } else {
+      setLoiChucData(
+        "Nằm xuống giường đi và mơ những giấc mơ ngọt ngào nhất bạn nhé!"
+      );
+    }
+  };
+
   const getNotification = async (input) => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/notification/list/?show=" + input
+      "https://api.c4k60.com/v2.0/notification/list?show=" + input
     );
     setNotificationData(response.data);
   };
 
   const getBirthday = async () => {
     const response = await axios.get(
-      "https://c4k60.com/api/v1.0/users/birthday/"
+      "https://api.c4k60.com/v2.0/users/birthday"
     );
-    console.log(response);
-
     setBirthdayData(response.data);
+  };
+
+  const getSponsors = async () => {
+    try {
+      const response = await axios.get("https://api.c4k60.com/v2.0/sponsors");
+      setSponsors(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getChangelog = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.c4k60.com/v2.0/changelogs/latest"
+      );
+      setChangelog(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -241,6 +321,9 @@ export default function HomeScreen({ navigation }) {
             <TouchableRipple
               rippleColor="rgba(0, 0, 0, .2)"
               onPress={() => {
+                if (storage.getString("username") == "test") {
+                  return navigation.navigate("Login");
+                }
                 navigation.navigate("ProfileDetail", {
                   name: name,
                   username: username,
@@ -258,10 +341,17 @@ export default function HomeScreen({ navigation }) {
                 }}
               >
                 <View>
-                  <UserAvatar
-                    username={username}
-                    style={{ height: 50, width: 50, borderRadius: 100 }}
-                  />
+                  {storage.getString("username") == "test" ? (
+                    <Image
+                      source={require("../assets/user.png")}
+                      style={{ height: 50, width: 50, borderRadius: 100 }}
+                    ></Image>
+                  ) : (
+                    <UserAvatar
+                      username={username}
+                      style={{ height: 50, width: 50, borderRadius: 100 }}
+                    />
+                  )}
                 </View>
                 <View style={{ marginLeft: 17 }}>
                   <Text
@@ -272,7 +362,9 @@ export default function HomeScreen({ navigation }) {
                       marginBottom: 3,
                     }}
                   >
-                    Chào {getGreetingTime(moment())}, {name}
+                    {storage.getString("username") == "test"
+                      ? "Bạn chưa đăng nhập"
+                      : "Chào " + getGreetingTime(moment()) + ", " + name}
                   </Text>
                   <Text
                     numberOfLines={2}
@@ -280,7 +372,9 @@ export default function HomeScreen({ navigation }) {
                       width: screenWidth - 115,
                     }}
                   >
-                    Mỗi ngày mới là một cơ hội để thay đổi bản thân bạn.
+                    {storage.getString("username") == "test"
+                      ? "Hãy đăng nhập để trải nghiệm đầy đủ các tính năng tuyệt vời của ứng dụng."
+                      : loiChucData}
                   </Text>
                 </View>
                 <View
@@ -313,6 +407,13 @@ export default function HomeScreen({ navigation }) {
                   key={index}
                   rippleColor="rgba(0, 0, 0, .2)"
                   onPress={() => {
+                    if (item.guestEnabled == false) {
+                      if (storage.getString("username") == "test") {
+                        return Alert.alert(
+                          "Chức năng này không khả dụng trong chế độ xem trước."
+                        );
+                      }
+                    }
                     // this.props.navigation.navigate(item.route);
                     navigation.navigate(item.route);
                   }}
@@ -411,6 +512,11 @@ export default function HomeScreen({ navigation }) {
                       <TouchableOpacity
                         className="py-[3px]"
                         onPress={() => {
+                          if (storage.getString("username") == "test") {
+                            return Alert.alert(
+                              "Chức năng này không khả dụng trong chế độ xem trước."
+                            );
+                          }
                           navigation.navigate("NotiScreen", {
                             id: item.id,
                             title: item.title,
@@ -488,7 +594,7 @@ export default function HomeScreen({ navigation }) {
           <View className="mt-4 bg-white flex-1 p-5 shadow-sm">
             <View className="flex-row items-center mb-2 justify-between">
               <Text className="font-medium text-xl">Nhà tài trợ</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Sponsors")}>
                 <View className="flex-row items-center">
                   <Text className="text-gray-500">Xem tất cả</Text>
                   <Ionicons
@@ -505,48 +611,53 @@ export default function HomeScreen({ navigation }) {
                 C4K60 Web và C4K60 Mobile có thể đã không được tồn tại mà không
                 có sự hỗ trợ từ các mạnh thường quân sau:
               </Text>
-              {sponsorsData == "" && (
+              {sponsors == null ? (
                 <>
                   <Image
                     source={require("../assets/loading.gif")}
                     className="h-5 w-16 scale-75 -ml-1.5"
                   />
                 </>
-              )}
-              {sponsorsData?.sponsors.map((item, index) => (
-                <View key={index}>
-                  <View className="pl-2 text-base flex-row items-center">
-                    <Text
-                      className="text-[30px] leading-6"
-                      style={{ transform: [{ translateY: 2 }] }}
-                    >
-                      ·
-                    </Text>
-                    <View className="flex-row">
-                      <Text className="text-base"> </Text>
-                      <TouchableOpacity
-                        disabled={!item.link}
-                        onPress={() => {
-                          Linking.openURL(item.link);
-                        }}
+              ) : (
+                sponsors.map((item, index) => (
+                  <View key={index}>
+                    <View className="pl-2 text-base flex-row items-center">
+                      <Text
+                        className="text-[30px] leading-6"
+                        style={{ transform: [{ translateY: 2 }] }}
                       >
-                        <Text
-                          className={`text-sm ${item.link && "text-blue-500"}`}
+                        ·
+                      </Text>
+                      <View className="flex-row">
+                        <Text className="text-base"> </Text>
+                        <TouchableOpacity
+                          disabled={!item.social_link}
+                          onPress={() => {
+                            Linking.openURL(item.social_link);
+                          }}
                         >
-                          {item.name}
-                        </Text>
-                      </TouchableOpacity>
-                      <Text className="text-sm"> - {item.donated}</Text>
+                          <Text
+                            className={`text-sm ${
+                              item.social_link && "text-blue-500"
+                            }`}
+                          >
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <Text className="text-sm"> - {item.amount}</Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              ))}
+                ))
+              )}
             </View>
           </View>
           <View className="mt-4 bg-white flex-1 p-5 shadow-sm">
             <View className="flex-row items-center mb-2 justify-between">
               <Text className="font-medium text-xl">Những thay đổi</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Changelogs")}
+              >
                 <View className="flex-row items-center">
                   <Text className="text-gray-500">Xem tất cả</Text>
                   <Ionicons
@@ -557,32 +668,34 @@ export default function HomeScreen({ navigation }) {
                 </View>
               </TouchableOpacity>
             </View>
-            <View>
+            <View className="mr-3">
               {/* render changes */}
-              <Text className="text-[16px]">Phiên bản 4.0</Text>
-              <Text className="font-light text-[14px] mt-1">
-                Ngày phát hành: 26/05/2024
-              </Text>
-              <View className="mt-2.5">
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Ra mắt phiên bản di động của C4K60.
+              {changelog == null ? (
+                <>
+                  <Image
+                    source={require("../assets/loading.gif")}
+                    className="h-5 w-16 scale-75 -ml-1.5"
+                  />
+                </>
+              ) : (
+                <>
+                  <Text className="text-[16px]">
+                    Phiên bản {changelog.version}
                   </Text>
-                </View>
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Ra mắt phiên bản web hoàn toàn mới của C4K60.
+                  <Text className="font-light text-[14px] mt-1">
+                    Ngày phát hành:{" "}
+                    {moment(changelog.release_date).format("DD/MM/YYYY")}
                   </Text>
-                </View>
-                <View className="pl-2 text-base flex-row">
-                  <Text className="text-[30px] leading-6">· </Text>
-                  <Text className="items-center">
-                    Cải thiện hiệu suất ứng dụng...
-                  </Text>
-                </View>
-              </View>
+                  {changelog.changelogs.split("\n").map((line, index) => (
+                    <View className="mt-2.5" key={index}>
+                      <View className="pl-2 text-base flex-row">
+                        <Text className="text-[30px] leading-6">· </Text>
+                        <Text className="items-center">{line}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </>
+              )}
             </View>
           </View>
         </ScrollView>

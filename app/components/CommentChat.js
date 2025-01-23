@@ -13,6 +13,7 @@ const CommentChat = React.forwardRef(
       onChangeText,
       value,
       onKeyPress,
+      disabled,
     },
     ref
   ) => {
@@ -58,8 +59,8 @@ const CommentChat = React.forwardRef(
                 width: 40,
                 height: 40,
                 borderRadius: 50,
-                marginRight: 10,
               }}
+              containerStyle={{ marginRight: 10 }}
             />
             <View
               style={{
@@ -110,6 +111,7 @@ const CommentChat = React.forwardRef(
                 paddingLeft: 10,
               }}
               onPress={onSubmit}
+              disabled={disabled}
             >
               <Ionicons name={"send"} size={25} color={"#007AFF"} />
             </TouchableOpacity>

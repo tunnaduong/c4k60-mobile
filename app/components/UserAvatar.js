@@ -1,40 +1,16 @@
-import axios from "axios";
 import React from "react";
-import { View } from "react-native";
-import { Image } from "expo-image";
+import { View, Image } from "react-native";
 
-const UserAvatar = ({ username, style }) => {
-  const [url, setUrl] = React.useState(null);
-  const [showDefault, setDefault] = React.useState(true);
-
-  const getAvatar = async () => {
-    try {
-      const response = await axios.post(
-        "https://c4k60.com/api/v1.0/users/avatar/",
-        {
-          username: username,
-        }
-      );
-      setUrl(response.data.avatar);
-      setDefault(false);
-      // console.log("asdkasd", response.data.avatar);
-    } catch (err) {
-      // console.log("errrrr", err);
-    }
-  };
-  getAvatar();
-
+const UserAvatar = ({ username, style, containerStyle }) => {
   return (
     <>
-      <View>
+      <View
+        style={[{ backgroundColor: "gray", borderRadius: 100 }, containerStyle]}
+      >
         <Image
-          source={
-            showDefault
-              ? require("../assets/gray_load.png")
-              : url == "default_avatar"
-              ? require("../assets/userdefault.jpeg")
-              : url
-          }
+          source={{
+            uri: "https://api.c4k60.com/v2.0/users/avatar/get/" + username,
+          }}
           style={style}
         ></Image>
       </View>

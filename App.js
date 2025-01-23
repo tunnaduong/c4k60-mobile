@@ -7,7 +7,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -27,6 +27,8 @@ import {
   TouchableOpacity,
   ImageBackground,
   View,
+  Button,
+  Animated,
 } from "react-native";
 import { FAB, List, Modal, Portal, Provider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -40,7 +42,7 @@ import LoadingScreen from "./app/screens/LoadingScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import MenuScreen from "./app/screens/MenuScreen";
 import MusicScreen from "./app/screens/MusicScreen";
-import NewsfeedScreen from "./app/screens/NewsfeedScreen";
+import NewsfeedScreen from "./app/screens/Newsfeed";
 import NotificationScreen from "./app/screens/NotificationScreen";
 import NotiScreen from "./app/screens/NotiScreen";
 import SignupScreen from "./app/screens/SignupScreen";
@@ -61,6 +63,18 @@ import CalendarDetail from "./app/screens/Calendar/CalendarDetail";
 import FriendNearby from "./app/screens/FriendNearby";
 import ChatRoom from "./app/screens/Chat/ChatRoom";
 import NewChat from "./app/screens/Chat/NewChat";
+import Sponsors from "./app/screens/Sponsors";
+import Changelogs from "./app/screens/Changelogs";
+import CreatePost from "./app/screens/Newsfeed/CreatePost";
+import AnimatedHeart from "./app/components/AnimatedHeart";
+import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
+import Comment from "./app/screens/Newsfeed/Comment";
+import AddProfilePicture from "./app/screens/Settings/AddProfilePicture";
+import SettingScreen from "./app/screens/Settings/SettingScreen";
+import AvatarSelected from "./app/screens/Settings/AvatarSelected";
+import { CropAvatar } from "./app/screens/Settings/CropAvatar";
+import ChangePassword from "./app/screens/Settings/ChangePassword";
 
 const ws = new WebSocket("ws://103.81.85.224:6996");
 
@@ -94,6 +108,31 @@ function App() {
 
   const TestingComponent = () => <Text>Tung Anh</Text>;
 
+  const linking = {
+    prefixes: ["exp+c4k60://", "c4k60://", "https://c4k60.com"], // Define your URI scheme
+    config: {
+      screens: {
+        NotiScreen: "notification/:id",
+        ChatRoom: "chat/:user_from/:username/:name/:type", // Route with a dynamic parameter
+      },
+    },
+  };
+
+  React.useEffect(() => {
+    // Listen for incoming notifications
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const deepLink = response.notification.request.content.data.link;
+
+        if (deepLink) {
+          Linking.openURL(`c4k60://${deepLink}`);
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
+
   const ChatComponent = React.memo(() => {
     const usrname = storage.getString("username");
 
@@ -107,7 +146,7 @@ function App() {
     const UserFullname = async () => {
       try {
         console.log("---->", usrname);
-        const response = await axios.post("https://c4k60.com/api/v1.0/users/", {
+        const response = await axios.post("https://api.c4k60.com/v2.0/users", {
           username: usrname,
         });
         setUserFullname(response.data.info.full_name);
@@ -119,7 +158,7 @@ function App() {
 
     const insertJoining = async () => {
       const response = await axios.post(
-        "https://c4k60.com/api/v1.0/radio/chatlogs/",
+        "https://api.c4k60.com/v2.0/radio/chatlogs",
         {
           by: "System",
           msg_type: "user_join",
@@ -141,11 +180,11 @@ function App() {
 
     const getChatLogs = async () => {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/radio/chatlogs/"
+        "https://api.c4k60.com/v2.0/radio/chatlogs"
       );
-      setChatData(response.data.items);
+      setChatData(response.data.items.reverse());
       // localStorage.setItem("chat-data", JSON.stringify(response.data.items));
-      // console.log(
+      // console.log(new Error().stack,
       //   "data: " + JSON.parse(localStorage.getItem("chat-data"))[0].msg
       // );
       return response.data;
@@ -155,7 +194,7 @@ function App() {
       if (message == "") return;
       try {
         const response = await axios.post(
-          "https://c4k60.com/api/v1.0/radio/chatlogs/",
+          "https://api.c4k60.com/v2.0/radio/chatlogs",
           {
             by: created_by,
             msg_type: msg_type,
@@ -184,7 +223,7 @@ function App() {
 
     const sendRefresh = async () => {
       const response = await axios.get(
-        "http://" + baseBackendServerURL + "/admin/api/client/refresh/"
+        "http://" + baseBackendServerURL + "/admin/api/client/refresh"
       );
       return response.data;
     };
@@ -220,8 +259,8 @@ function App() {
                       width: 20,
                       height: 20,
                       borderRadius: 15,
-                      marginRight: 5,
                     }}
+                    containerStyle={{ marginRight: 5 }}
                   />
                   <Text
                     style={{
@@ -265,9 +304,9 @@ function App() {
                     width: 35,
                     height: 35,
                     borderRadius: 25,
-                    marginRight: 10,
                     alignItems: "flex-start",
                   }}
+                  containerStyle={{ marginRight: 10 }}
                 />
                 <View style={{ flex: 1 }}>
                   <View style={{ flexDirection: "row" }}>
@@ -398,6 +437,10 @@ function App() {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function getUniqueID() {
+    return Math.floor(Math.random() * Date.now()).toString();
   }
 
   const SearchComponent = () => {
@@ -534,6 +577,66 @@ function App() {
 
   const Music = (props) => {
     const [data, setData] = React.useState("");
+    const [hearts, setHearts] = React.useState([]);
+
+    const countAnimatedValue = useRef(new Animated.Value(0)).current;
+    const timeout = useRef();
+
+    const connectWebsocket = () => {
+      ws.onopen = () => {
+        console.log("connected");
+      };
+      ws.onerror = (e) => {
+        console.log(e.message);
+      };
+      ws.onmessage = (e) => {
+        const message = JSON.parse(e.data).data;
+
+        // console.log("message", message);
+        if (
+          message.type == "love_reaction" &&
+          message.username !== storage.getString("username")
+        ) {
+          handleLovePress();
+        }
+      };
+    };
+
+    useEffect(() => {
+      connectWebsocket();
+    }, []);
+
+    // Function to handle love button press
+    const handleLovePress = () => {
+      // Clear any existing animation timeout
+      if (timeout.current) {
+        clearTimeout(timeout.current);
+      }
+
+      // Add heart locally
+      setHearts((oldHearts) => [...oldHearts, { id: getUniqueID() }]);
+
+      // Animate count
+      timeout.current = setTimeout(() => {
+        Animated.spring(countAnimatedValue, {
+          toValue: 0,
+          speed: 48,
+          useNativeDriver: true,
+        }).start();
+      }, 500);
+
+      Animated.spring(countAnimatedValue, {
+        toValue: -64,
+        speed: 48,
+        useNativeDriver: true,
+      }).start();
+    };
+
+    const handleCompleteAnimation = useCallback((id) => {
+      setHearts((oldHearts) => {
+        return oldHearts.filter((heart) => heart.id !== id);
+      });
+    }, []);
 
     const ViewerComponent = () => {
       return (
@@ -563,8 +666,8 @@ function App() {
                               width: 40,
                               height: 40,
                               borderRadius: 100,
-                              marginRight: 10,
                             }}
+                            containerStyle={{ marginRight: 10 }}
                           />
                         </View>
                       );
@@ -967,10 +1070,38 @@ function App() {
                   right: 0,
                   bottom: 75,
                   backgroundColor: "#FF5674",
+                  zIndex: 1,
                 }}
                 icon="heart"
-                onPress={() => console.log("Pressed")}
+                onPress={() => {
+                  handleLovePress();
+                  // Emit love reaction to other users
+                  ws.send(
+                    JSON.stringify({
+                      data: {
+                        type: "love_reaction",
+                        username: storage.getString("username"),
+                      },
+                    })
+                  );
+                }}
               />
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 150,
+                  right: 25,
+                  zIndex: 0,
+                }}
+              >
+                {hearts.map(({ id }) => (
+                  <AnimatedHeart
+                    key={id}
+                    id={id}
+                    onCompleteAnimation={handleCompleteAnimation}
+                  />
+                ))}
+              </View>
             </>
           }
           {...props}
@@ -1009,6 +1140,16 @@ function App() {
               {...props}
               onPress={(e) => {
                 if (
+                  (route.name === "Newsfeed" &&
+                    storage.getString("username") == "test") ||
+                  (route.name === "Chat" &&
+                    storage.getString("username") == "test")
+                ) {
+                  return Alert.alert(
+                    "Chức năng này không khả dụng trong chế độ xem trước."
+                  );
+                }
+                if (
                   route.name === "Home" ||
                   route.params.currentScreen !== currentScreen
                 ) {
@@ -1045,6 +1186,7 @@ function App() {
           component={HomeScreen}
           initialParams={{
             currentScreen: "HomeScreen",
+            ws: ws,
           }}
           options={{
             title: "Trang chủ",
@@ -1185,8 +1327,17 @@ function App() {
   };
 
   StatusBar.setBarStyle("dark-content", true);
+
+  const createPostRef = useRef(null);
+  const [isPostContentEmpty, setIsPostContentEmpty] = React.useState(true);
+
+  // Function to update postContent status
+  const handlePostContentChange = (content) => {
+    setIsPostContentEmpty(!content); // Update button disable state based on content
+  };
+
   return (
-    <NavigationContainer ref={RootNavigation.navigationRef}>
+    <NavigationContainer linking={linking} ref={RootNavigation.navigationRef}>
       <TailwindProvider>
         <Stack.Navigator>
           <Stack.Screen
@@ -1615,6 +1766,270 @@ function App() {
             }}
             name="IncomingBirthday"
             component={IncomingBirthday}
+          />
+          <Stack.Screen
+            options={{
+              title: "Nhà tài trợ",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Nhà tài trợ"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Sponsors"
+            component={Sponsors}
+          />
+          <Stack.Screen
+            options={{
+              title: "Những thay đổi",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Những thay đổi"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Changelogs"
+            component={Changelogs}
+          />
+          <Stack.Screen
+            options={{
+              title: "Tạo bài viết",
+              presentation: "fullScreenModal",
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Tạo bài viết"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons name="close-outline" color="black" size={30} />
+                </TouchableOpacity>
+              ),
+              headerRight: () => (
+                <Button
+                  title="Đăng"
+                  onPress={() => {
+                    if (createPostRef.current) {
+                      createPostRef.current.handlePost();
+                    }
+                  }}
+                  disabled={isPostContentEmpty}
+                ></Button>
+              ),
+              headerBackVisible: false,
+            }}
+            name="CreatePost"
+          >
+            {(props) => (
+              <CreatePost
+                {...props}
+                ref={createPostRef}
+                onPostContentChange={handlePostContentChange}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            options={{
+              title: "Bình luận",
+              contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Bình luận"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="Comment"
+            component={Comment}
+          />
+          <Stack.Screen
+            options={{
+              title: "Sửa ảnh đại diện",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Sửa ảnh đại diện"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="AvatarEditScreen"
+            component={AddProfilePicture}
+          />
+          <Stack.Screen
+            options={{
+              title: "Cài đặt",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Cài đặt"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="SettingScreen"
+            component={SettingScreen}
+          />
+          <Stack.Screen
+            options={{
+              title: "Xem trước ảnh đại diện",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Xem trước ảnh đại diện"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="AvatarSelected"
+            component={AvatarSelected}
+          />
+          <Stack.Screen
+            options={{
+              title: "Chỉnh sửa ảnh",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Chỉnh sửa ảnh"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="CropAvatar"
+            component={CropAvatar}
+          />
+          <Stack.Screen
+            options={{
+              title: "Đổi mật khẩu",
+              // contentStyle: { backgroundColor: "white" },
+              headerTitle: () => {
+                return (
+                  <SameHeader
+                    defaultStyle
+                    havingBorder
+                    havingBackButton
+                    title="Đổi mật khẩu"
+                  />
+                );
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => RootNavigation.goBack()}>
+                  <Ionicons
+                    name="chevron-back-outline"
+                    color="black"
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ),
+              headerBackVisible: false,
+            }}
+            name="ChangePassword"
+            component={ChangePassword}
           />
         </Stack.Navigator>
       </TailwindProvider>

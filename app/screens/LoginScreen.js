@@ -43,21 +43,21 @@ export default function LoginScreen({ navigation }) {
     } else {
       setLoading(true);
       try {
-        const response = await axios.post("https://c4k60.com/api/login.php", {
+        const response = await axios.post("https://api.c4k60.com/v2.0/login", {
           username: username,
           password: password,
         });
         // console.log(response.data);
 
-        if (response.data[0].Message == "Thành công!") {
+        if (response.data.Message == "Thành công!") {
           setTimeout(async () => {
-            setName(response.data[0].Name);
-            setAvatar(response.data[0].Avatar);
+            setName(response.data.Name);
+            setAvatar(response.data.Avatar);
             // setData();
             setToken("abc123");
-            storage.set("username", response.data[0].Username);
-            storage.set("name", response.data[0].Name);
-            storage.set("avatar", response.data[0].Avatar);
+            storage.set("username", response.data.Username);
+            storage.set("name", response.data.Name);
+            storage.set("avatar", response.data.Avatar);
             storage.set("token", "abc123");
             setLoading(false);
             navigation.dispatch(
@@ -74,7 +74,8 @@ export default function LoginScreen({ navigation }) {
       } catch (error) {
         setLoading(false);
         console.log(error);
-        Alert.alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+        if (error.response.data.Message == "Sai thông tin đăng nhập!")
+          Alert.alert("Sai thông tin đăng nhập!");
       }
     }
   };
@@ -144,7 +145,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={(username) => setUsername(username)}
                 placeholder="Tên đăng nhập"
                 autoCapitalize="none"
-                value={username}
+                value={username == "test" ? "" : username}
                 ref={usernameRef}
               />
               <Pressable

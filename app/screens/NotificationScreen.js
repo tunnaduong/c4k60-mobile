@@ -20,126 +20,34 @@ import {
   ShineOverlay,
 } from "rn-placeholder";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import axios from "axios";
+import { storage } from "../global/storage";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 export default function NotificationScreen({ navigation, route }) {
-  const isFocused = useIsFocused();
-  // const translateX = new Animated.Value(0);
-  // const opacity = new Animated.Value(0);
-  const prevScreen = route.params.previous_screen;
   const [refreshing, setRefreshing] = React.useState(false);
   const [filter, setFilter] = React.useState("all");
-  const [notifications, setNotifications] = React.useState([{}, {}, {}]);
-  const [skeleton, setSkeleton] = React.useState(false);
-
-  // const fadeIn = (from) => {
-  //   translateX.setValue(from == "right" ? 150 : -150);
-  //   // opacity.setValue(0.1);
-
-  //   Animated.parallel([
-  //     createAnimation(translateX, 150, Easing.inout, null, 0),
-  //     // createAnimation(opacity, 200, Easing.inout, null, 1),
-  //   ]).start();
-  // };
+  const [skeleton, setSkeleton] = React.useState(true);
+  const [B, setB] = React.useState([]);
 
   React.useState(() => {
-    setSkeleton(true);
     setTimeout(() => {
       setSkeleton(false);
     }, 1500);
+    fetchNotification();
   }, []);
 
-  // React.useEffect(() => {
-  //   if (isFocused && prevScreen != "NotiScreen") {
-  //     if (
-  //       prevScreen == "HomeScreen" ||
-  //       prevScreen == "NewsfeedScreen" ||
-  //       prevScreen == "ChatScreen"
-  //     ) {
-  //       fadeIn("right");
-  //     } else {
-  //       fadeIn("left");
-  //     }
-  //   }
-  //   setTimeout(() => {
-  //     setFilter("all");
-  //   }, 200);
-  // }, [route]);
+  function fetchNotification() {
+    axios
+      .get("https://api.c4k60.com/v2.0/notification/list?show=all")
+      .then((response) => {
+        setB(response.data.results);
+      });
+  }
 
   let A = [];
-  let B = [
-    {
-      id: 18,
-      title: "Nhắc đi họp lớp chiều mùng 3/9",
-      content:
-        "Hmm hello anh em :))) để thử nghiệm thử khả năng truyền tải thông báo lớp qua app của tui thì nay tui nhắc luôn mn chiều hôm nay (03/09/2022) lúc 3h anh em tập trung tại cổng trường để đi cafe tại Monolic nkaaaa 😘",
-      createdBy: "Dương Tùng Anh",
-      image: [
-        {
-          img_id: 1,
-          url: "https://c4k60.com/assets/images/cafe_hong.jpeg",
-        },
-      ],
-      date: "2022-09-03 10:46:19",
-    },
-    {
-      id: 14,
-      title: "Tùng Anh đẹp trai vcl",
-      content: "Nhỉ?? :)))) ai cũng phải công nhận",
-      createdBy: "Admin C4K60",
-      image: [
-        {
-          img_id: 1,
-          url: "https://c4k60.com/anhvavideo/media/original/%E1%BA%A2nh%20k%E1%BB%B7%20y%E1%BA%BFu/217707980348167410533151108516773PHQ_2379-min.jpg",
-        },
-      ],
-      date: "2021-12-11 21:24:23",
-    },
-    {
-      id: 12,
-      title: "Thu quần áo thuê chụp",
-      content:
-        "Ra chơi tiết 1 ngày mai t sẽ thu từng người từng bộ qao cmay thuê để chiều mai ship trả cho studio, ai thiếu đồ gì sẽ phải đền bù cho bên đó nhé",
-      createdBy: "Ngô Phương Anh",
-      image: [
-        {
-          img_id: 1,
-          url: "no",
-        },
-      ],
-      date: "2021-01-23 21:02:51",
-    },
-    {
-      id: 11,
-      title: "Lịch trình buổi chụp ",
-      content:
-        "7-10h chụp ở trường\n10h-12h mng tự túc ăn trưa và nghỉ ngơi\n12h15 lên xe di chuyển đến vườn nhãn Long Biên\n14h-16h15 chụp tại vườn nhãn\n16h30 lên xe về Phủ Lý\n19h chụp party night tại Vinpearl\nMng đọc để nắm lịch và xin phép bố mẹ nhé",
-      createdBy: "Ngô Phương Anh",
-      image: [
-        {
-          img_id: 1,
-          url: "no",
-        },
-      ],
-      date: "2021-01-23 20:58:59",
-    },
-    {
-      id: 10,
-      title: "Nộp tiền chụp kỷ yếu",
-      content:
-        "Tiền chụp kỉ yếu là 495k/ người lớp sẽ dc trừ 2tr tổng bill nhưng t nghĩ tiền đó cứ để hội phụ huynh cầm vì mình cũng phải bỏ tiền để thuê xe lên Hà Nội chụp và tiền đặt bánh ở Vincom nữa.\nMọi người xin phép phụ huynh chụp kỉ yếu và nộp tiền từ tuần sau nhé, có thể chuyển khoản luôn cho cô Thảo thủ quỹ nhá ( bạn nữ nào ko mặc áo dài của bên chụp thì trừ đi 30k )",
-      createdBy: "Ngô Phương Anh",
-      image: [
-        {
-          img_id: 1,
-          url: "no",
-        },
-      ],
-      date: "2021-01-23 20:57:39",
-    },
-  ];
   let C = [];
 
   return (
@@ -150,22 +58,21 @@ export default function NotificationScreen({ navigation, route }) {
           backgroundColor: "white",
           flex: 1,
         }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+        }}
         sections={[
-          {
-            title: "Mới nhất",
-            data: A,
-          },
-          {
-            title: "Từ ban cán sự lớp",
-            action: () => {
-              Alert.alert("Chưa có gì đâu hihi ^^");
-            },
-            data: B,
-          },
-          {
-            title: "Dành cho bạn",
-            data: C,
-          },
+          ...(A.length > 0 ? [{ title: "Mới nhất", data: A }] : []),
+          ...(B.length > 0
+            ? [
+                {
+                  title: "Từ ban cán sự lớp",
+                  data: B,
+                  action: () => Alert.alert("Chưa có gì đâu hihi ^^"),
+                },
+              ]
+            : []),
+          ...(C.length > 0 ? [{ title: "Dành cho bạn", data: C }] : []),
         ]}
         renderSectionHeader={({ section }) =>
           section.data.length > 0 &&
@@ -191,6 +98,7 @@ export default function NotificationScreen({ navigation, route }) {
             refreshing={refreshing}
             onRefresh={() => {
               setRefreshing(true);
+              fetchNotification();
               setTimeout(() => {
                 setRefreshing(false);
               }, 800);
@@ -263,13 +171,28 @@ export default function NotificationScreen({ navigation, route }) {
             </View>
           </>
         }
-        data={notifications}
+        data={B}
+        keyExtractor={(item, index) => `key-${item.id}`}
         renderItem={({ item }) => (
-          <View key={item.id}>
+          <View>
             {!skeleton ? (
               <TouchableHighlight
                 underlayColor={"rgba(0,0,0,0.1)"}
-                onPress={!item.action ? () => null : item.action}
+                onPress={() => {
+                  if (storage.getString("username") == "test") {
+                    return Alert.alert(
+                      "Chức năng này không khả dụng trong chế độ xem trước."
+                    );
+                  }
+                  navigation.navigate("NotiScreen", {
+                    id: item.id,
+                    title: item.title,
+                    content: item.content,
+                    date: item.date,
+                    by: item.createdBy,
+                    image: item.image,
+                  });
+                }}
               >
                 <View key={item.id} className="px-4">
                   <View className="mb-1.5 py-1.5 flex-row">
@@ -313,7 +236,7 @@ export default function NotificationScreen({ navigation, route }) {
                       <Text
                         numberOfLines={1}
                         lineBreakMode={"tail"}
-                        className="font-bold text-[15px]"
+                        className="font-bold text-[15px] w-[240px]"
                       >
                         {item.title}
                       </Text>
@@ -337,16 +260,15 @@ export default function NotificationScreen({ navigation, route }) {
                   {Array(1)
                     .fill(null)
                     .map(() => (
-                      <>
-                        <Placeholder
-                          Animation={ShineOverlay}
-                          Left={PlaceholderMedia}
-                        >
-                          <PlaceholderLine width={80} />
-                          <PlaceholderLine />
-                          <PlaceholderLine width={30} />
-                        </Placeholder>
-                      </>
+                      <Placeholder
+                        Animation={ShineOverlay}
+                        Left={PlaceholderMedia}
+                        key={Math.random()}
+                      >
+                        <PlaceholderLine width={80} />
+                        <PlaceholderLine />
+                        <PlaceholderLine width={30} />
+                      </Placeholder>
                     ))}
                 </View>
               </View>
@@ -366,24 +288,22 @@ export default function NotificationScreen({ navigation, route }) {
                 </Text>
               </View>
             ) : (
-              <View className="px-4">
-                <View className="border-t-[0.7px] border-gray-200 mt-3 py-4">
-                  {Array(7)
-                    .fill(null)
-                    .map(() => (
-                      <>
-                        <Placeholder
-                          Animation={ShineOverlay}
-                          Left={PlaceholderMedia}
-                        >
-                          <PlaceholderLine width={80} />
-                          <PlaceholderLine />
-                          <PlaceholderLine width={30} />
-                        </Placeholder>
-                      </>
-                    ))}
-                </View>
-              </View>
+              Array(7)
+                .fill(null)
+                .map(() => (
+                  <View className="px-4" key={Math.random()}>
+                    <View className="border-t-[0.7px] border-gray-200 py-4">
+                      <Placeholder
+                        Animation={ShineOverlay}
+                        Left={PlaceholderMedia}
+                      >
+                        <PlaceholderLine width={80} />
+                        <PlaceholderLine />
+                        <PlaceholderLine width={30} />
+                      </Placeholder>
+                    </View>
+                  </View>
+                ))
             )}
           </>
         }

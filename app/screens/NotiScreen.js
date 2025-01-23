@@ -74,13 +74,34 @@ export default class NotiScreen extends Component {
       images: "",
       visible: false,
       imageIndex: 0,
+      notification: null,
     };
 
     this.AddItemsToArray(this.props.route.params.id);
     this.username = storage.getString("username");
   }
 
+  // Add this method to fetch notification data
+  async fetchNotification() {
+    try {
+      const id = this.props.route.params.id;
+      const response = await axios.get(
+        `https://api.c4k60.com/v2.0/notification/list?show=${id}`
+      );
+      this.setState({
+        notification: response.data,
+      });
+
+      // Fetch images if any
+      this.AddItemsToArray(id);
+    } catch (err) {
+      console.error(err);
+      this.setState({ loading: false });
+    }
+  }
+
   componentDidMount() {
+    this.fetchNotification();
     this._removeScreen = this.props.navigation.addListener(
       "beforeRemove",
       () => {
@@ -96,9 +117,8 @@ export default class NotiScreen extends Component {
 
   async AddItemsToArray(id) {
     try {
-      const response = await axios.post(
-        "https://c4k60.com/api/getNotifImages.php",
-        JSON.stringify({ id: id })
+      const response = await axios.get(
+        "https://api.c4k60.com/v2.0/notification/image?id=" + id
       );
       response.data.map((n) => this.addImage(n.uri));
     } catch (err) {
@@ -121,7 +141,7 @@ export default class NotiScreen extends Component {
   };
 
   render() {
-    const { title, content, date, by, image } = this.props.route.params;
+    // const { title, content, date, by, image } = this.props.route.params;
     return (
       <View style={{ flex: 1 }}>
         <KeyboardAvoidingView
@@ -133,30 +153,59 @@ export default class NotiScreen extends Component {
             style={{ flex: 1 }}
             ListHeaderComponent={
               <>
-                <View style={styles.container}>
-                  <Text style={styles.title}>{title}</Text>
-                  <View style={{ flexDirection: "row" }}>
-                    <Ionicons name={"time-outline"} size={15} />
-                    <Text style={styles.date}>
-                      {moment(date).format("Do MMMM, YYYY [lúc] H:mm")}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row" }}>
-                    <Ionicons name={"person-outline"} size={15} />
-                    <Text style={styles.date}>Người đăng: {by}</Text>
-                  </View>
-                  <Text style={styles.content}>{content}</Text>
-                </View>
-                <ImageView
-                  images={Images}
-                  imageIndex={this.state.imageIndex}
-                  visible={this.state.visible}
-                  onRequestClose={this.setVisible}
-                />
+                {this.state.notification == null ? (
+                  <>
+                    <View
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 400,
+                        width: "100%",
+                      }}
+                    >
+                      <ActivityIndicator size={"large"} color="#636568" />
+                      <Text style={{ marginTop: 15 }}>
+                        Đang tải thông báo lớp...
+                      </Text>
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View style={styles.container}>
+                      <Text style={styles.title}>
+                        {this.state.notification.title}
+                      </Text>
+                      <View style={{ flexDirection: "row" }}>
+                        <Ionicons name={"time-outline"} size={15} />
+                        <Text style={styles.date}>
+                          {moment(this.state.notification.date).format(
+                            "Do MMMM, YYYY [lúc] H:mm"
+                          )}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: "row" }}>
+                        <Ionicons name={"person-outline"} size={15} />
+                        <Text style={styles.date}>
+                          Người đăng: {this.state.notification.createdBy}
+                        </Text>
+                      </View>
+                      <Text style={styles.content}>
+                        {this.state.notification.content}
+                      </Text>
+                    </View>
+                    <ImageView
+                      images={Images}
+                      imageIndex={this.state.imageIndex}
+                      visible={this.state.visible}
+                      onRequestClose={this.setVisible}
+                    />
+                  </>
+                )}
               </>
             }
             keyExtractor={(item, index) => index.toString()}
-            data={image}
+            data={this.state.notification?.image}
             renderItem={({ item }) => {
               return (
                 <View style={styles.flatlistwrapper}>
@@ -171,31 +220,33 @@ export default class NotiScreen extends Component {
               );
             }}
             ListFooterComponent={
-              <>
-                <Divider style={{ marginTop: 20 }} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    padding: 10,
-                    marginBottom: 10,
-                  }}
-                >
-                  <Text
+              this.state.notification == null ? null : (
+                <>
+                  <Divider style={{ marginTop: 20 }} />
+                  <View
                     style={{
-                      fontSize: 19,
-                      fontWeight: "bold",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      padding: 10,
+                      marginBottom: 10,
                     }}
                   >
-                    Bình luận
-                  </Text>
-                  <Badge
-                    status="primary"
-                    value={0}
-                    containerStyle={{ marginLeft: 5 }}
-                  />
-                </View>
-              </>
+                    <Text
+                      style={{
+                        fontSize: 19,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Bình luận
+                    </Text>
+                    <Badge
+                      status="primary"
+                      value={0}
+                      containerStyle={{ marginLeft: 5 }}
+                    />
+                  </View>
+                </>
+              )
             }
           />
           <View
@@ -236,6 +287,7 @@ export default class NotiScreen extends Component {
                 <UserAvatar
                   username={this.username}
                   style={styles.commentAvatar}
+                  containerStyle={{ marginRight: 10 }}
                 />
                 <Pressable
                   onPress={() => {
@@ -311,6 +363,5 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50,
-    marginRight: 10,
   },
 });

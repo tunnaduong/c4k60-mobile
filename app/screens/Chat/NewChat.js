@@ -25,9 +25,7 @@ export default function NewChat({ navigation, route }) {
 
   const getMemberList = async () => {
     try {
-      const response = await axios.get(
-        "https://c4k60.com/api/v1.0/users/list/"
-      );
+      const response = await axios.get("https://api.c4k60.com/v2.0/users/list");
       setMemberList(response.data);
       return response.data;
     } catch (err) {
@@ -96,8 +94,8 @@ export default function NewChat({ navigation, route }) {
                       height: 50,
                       width: 50,
                       borderRadius: 25,
-                      marginRight: 5,
                     }}
+                    containerStyle={{ marginRight: 5 }}
                   />
                 )}
               />

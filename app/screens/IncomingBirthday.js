@@ -4,7 +4,7 @@ import axios from "axios";
 import { List } from "react-native-paper";
 import UserAvatar from "../components/UserAvatar";
 
-const IncomingBirthday = () => {
+const IncomingBirthday = ({ navigation }) => {
   const [birthday, setBirthday] = React.useState(null);
 
   React.useEffect(() => {
@@ -17,7 +17,7 @@ const IncomingBirthday = () => {
     // return the birthday
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/users/birthday/?show=all"
+        "https://api.c4k60.com/v2.0/users/birthday?show=all"
       );
       setBirthday(response.data);
       return response.data;
@@ -93,7 +93,12 @@ const IncomingBirthday = () => {
               title={item.name}
               description={item.birthday}
               key={index}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate("ProfileDetail", {
+                  name: item.name,
+                  username: item.username,
+                });
+              }}
               left={() => (
                 <UserAvatar
                   username={item.username}

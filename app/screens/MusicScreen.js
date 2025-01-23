@@ -75,7 +75,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
       setPlaying(true);
     });
     socket.on("views", () => {
-      // console.log(
+      // console.log(new Error().stack,
       //   "Received reload views count signal from server! Now reloading views count..."
       // );
       getData();
@@ -168,7 +168,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
 
   const syncWithServer = async () => {
     await axios
-      .get("http://" + baseBackendServerURL + "/live/")
+      .get("http://" + baseBackendServerURL + "/live")
       .then((res) => {
         const position = res.data.video_in_queue.findIndex(
           (data) => data.position == res.data.now_playing_position
@@ -224,7 +224,7 @@ function MusicScreen({ tab, childToParent, keyboardSummon }) {
 
   const getData = async () => {
     const response = await axios
-      .get("http://" + baseBackendServerURL + "/live/")
+      .get("http://" + baseBackendServerURL + "/live")
       .catch((error) => {
         console.log(error.message);
         setSnackbarShow(true);

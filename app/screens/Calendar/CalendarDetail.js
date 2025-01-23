@@ -23,7 +23,7 @@ export default function CalendarDetail({ route }) {
   const fetchEvents = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/calendar/list/"
+        "https://api.c4k60.com/v2.0/calendar/list"
       );
       setEvents(response.data);
     } catch (error) {

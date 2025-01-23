@@ -18,7 +18,7 @@ export default function GalleryScreen({ navigation }) {
 
   const getGallery = async () => {
     try {
-      const response = await axios.get("https://c4k60.com/api/v1.0/gallery/");
+      const response = await axios.get("https://api.c4k60.com/v2.0/gallery");
       setGallery(response.data);
       return response.data;
     } catch (err) {
@@ -57,6 +57,14 @@ export default function GalleryScreen({ navigation }) {
             style={{
               width: "50%",
               padding: 5,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
             }}
             activeOpacity={0.7}
             onPress={() => {
@@ -76,14 +84,6 @@ export default function GalleryScreen({ navigation }) {
                 backgroundColor: "white",
                 padding: 10,
                 borderRadius: 15,
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
               }}
             >
               <Image

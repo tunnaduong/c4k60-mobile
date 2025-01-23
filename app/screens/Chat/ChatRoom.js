@@ -28,6 +28,7 @@ import {
   Composer,
 } from "react-native-gifted-chat";
 import vi from "dayjs/locale/vi";
+import * as Notifications from "expo-notifications";
 
 export default function ChatRoom({ route, navigation }) {
   const ws = route.params.ws;
@@ -38,6 +39,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageLoading, setImageLoading] = React.useState({});
   const scrollViewRef = React.useRef();
   const [onlineUsers, setOnlineUsers] = React.useState([]);
+  const { username, user_from, name, type } = route.params; // Path parameter
 
   React.useEffect(() => {
     getMessages();
@@ -48,7 +50,7 @@ export default function ChatRoom({ route, navigation }) {
   const getOnlineUsers = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/online/"
+        "https://api.c4k60.com/v2.0/chat/online"
       );
       setOnlineUsers(response.data);
       console.log(
@@ -128,7 +130,7 @@ export default function ChatRoom({ route, navigation }) {
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data).data;
 
-      console.log("message", message);
+      // console.log("message", message);
       // Check if the message is intended for the current user
       if (
         message.user_to !== route.params.user_from &&
@@ -148,7 +150,7 @@ export default function ChatRoom({ route, navigation }) {
         route.params.type == "group" ? "class_group" : route.params.username;
       const user_from = route.params.user_from;
       const response = await axios.get(
-        "https://c4k60.tunnaduong.com/api/v1.0/chat/messages/?user_to=" +
+        "https://api.c4k60.com/v2.0/chat/messages?user_to=" +
           user_to +
           "&user_from=" +
           user_from
@@ -208,7 +210,7 @@ export default function ChatRoom({ route, navigation }) {
         setImageLoading((prev) => ({ ...prev, [imageName]: true }));
 
         const response = await axios.post(
-          "https://c4k60.com/api/v1.0/chat/image/",
+          "https://api.c4k60.com/v2.0/chat/image",
           formData,
           {
             headers: {
@@ -274,7 +276,7 @@ export default function ChatRoom({ route, navigation }) {
     });
 
     if (!result.canceled) {
-      sendMessage("image", result.uri);
+      sendMessage("image", result.assets[0].uri);
     }
   };
 
@@ -311,7 +313,7 @@ export default function ChatRoom({ route, navigation }) {
     );
     console.log(message);
     const response = await axios.post(
-      "https://c4k60.com/api/v1.0/chat/conversations/",
+      "https://api.c4k60.com/v2.0/chat/conversations",
       {
         user_from: route.params.user_from,
         message: message[0].text,
@@ -325,10 +327,24 @@ export default function ChatRoom({ route, navigation }) {
 
     const fullName = await getUserFullName(route.params.user_from);
     console.log(fullName);
-    const response2 = await axios.get(
-      `https://c4k60.com/api/v1.0/notification/send/?to=${route.params.username}&title=${fullName}&body=${message[0].text}`
-    );
-    console.log("noti", response2.data);
+    try {
+      const response2 = await axios.post(
+        `https://api.c4k60.com/v2.0/notification/send`,
+        {
+          to: route.params.username,
+          title: fullName,
+          body: message[0].text,
+          data: {
+            user_from: route.params.user_from,
+            username: route.params.username,
+            name: fullName,
+          },
+        }
+      );
+      console.log("noti", response2.data);
+    } catch (error) {
+      console.log("noti", error);
+    }
   };
 
   // Custom Composer for single-line text input
@@ -412,12 +428,12 @@ export default function ChatRoom({ route, navigation }) {
           text: message.message,
           image:
             message.image_url != null
-              ? "https://c4k60.com/assets/images/chats/" + message.image_url
+              ? "https://api.c4k60.com" + message.image_url
               : null,
           user: {
             _id: message.user_from,
             name: message.user_from,
-            avatar: `https://c4k60.com/api/v1.0/users/avatar/get/?username=${message.user_from}`,
+            avatar: `https://api.c4k60.com/v2.0/users/avatar/${message.user_from}`,
           },
           sent: message.sent == 1,
           received: message.received == 1,
@@ -452,7 +468,7 @@ export default function ChatRoom({ route, navigation }) {
         text={message}
         renderComposer={renderComposer}
       />
-      {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
+      {/* {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />} */}
     </SafeAreaView>
   );
 }

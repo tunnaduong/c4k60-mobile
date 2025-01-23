@@ -22,7 +22,7 @@ export default function ProfileDetail({ route }) {
   const getProfile = async () => {
     try {
       const response = await axios.get(
-        "https://c4k60.com/api/v1.0/users/list/?username=" +
+        "https://api.c4k60.com/v2.0/users/list/?username=" +
           route.params.username
       );
       setProfile(response.data);
@@ -219,7 +219,7 @@ export default function ProfileDetail({ route }) {
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: 700, marginBottom: 10 }}>
-              Tính cách
+              Thông tin thêm
             </Text>
             <Text style={{ fontSize: 17 }}>{profile?.additional_info}</Text>
           </View>

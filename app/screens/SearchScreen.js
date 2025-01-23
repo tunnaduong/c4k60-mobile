@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   ScrollView,
   StatusBar,
+  Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#DFDEDD",
-    paddingTop: 10,
+    paddingTop: Platform.OS === "android" ? 10 + StatusBar.currentHeight : 10,
   },
   searchImage: {
     height: Dimensions.get("window").height * 0.5,
