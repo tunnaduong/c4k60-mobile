@@ -2,7 +2,7 @@
   "expo": {
     "name": "C4K60",
     "slug": "c4k60",
-    "version": "0.9.1",
+    "version": "4.1.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -22,9 +22,7 @@
         }
       ]
     ],
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "jsEngine": "jsc",
     "ios": {
       "supportsTablet": false,
@@ -37,9 +35,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.c4k60.mobile",
-      "versionCode": 13,
-      "googleServicesFile": "./android/google-services.json",
-      "useNextNotificationsApi": true
+      "versionCode": 16,
+      "googleServicesFile": "./android/google-services.json"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
